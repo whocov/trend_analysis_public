@@ -1,0 +1,629 @@
+---
+title: "Assemble data for red-flagging"
+author: "Neale Batra, Finlay Campbell, Yuka Jinnai, Henry Laurenson-Schafer, Thibaut Jombart"
+date: '`r format(Sys.time(), "%A %d %B %Y")`'
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: TRUE
+    toc_collapse: FALSE
+    number_sections: TRUE
+    highlight: pygments
+    theme: spacelab
+    code_folding: hide
+    <!-- df_print: paged -->
+    css: !expr here::here('css', 'style.css')
+params:
+  import_data: FALSE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      fig.width = 8,
+                      fig.height = 6,
+                      dpi = 70,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+This report pulls data on Rt estimates, cases, deaths, testing, and mobility
+from various sources and assembles them to create a dataset for further
+analysis.
+
+
+# Prep work {.tabset .tabset-fade .tabset-pills}
+
+## Scripts
+
+```{r warnings = FALSE}
+rfextras::load_scripts()
+```
+
+## Packages
+
+All CRAN packages can be installed by calling `reportfactory::install_deps()`.
+Package installs on remotes are now handled in a separate script
+`remote_packages.R` which is loaded alongside other scripts in `scripts/` using:
+
+
+```{r}
+
+pacman::p_load(reportfactory, rio, here, purrr, stringr, tidyverse, forcats, # data management
+               phifunc, # covid data functions
+               zoo) # moving averages
+
+```
+
+
+
+
+# Import data  {.tabset .tabset-fade .tabset-pills}
+
+## Cases and deaths from PHI team
+
+Here, the code depends on the parameter `params$import_data` (logical):
+
+* if `TRUE`, all data are imported using `phifunc`, and saved for future
+  reference
+* if `FALSE`, data are read from pre-imported data
+
+```{r eval = params$import_data, echo = params$import_data}
+
+## Cases, deaths, and tests
+all_dat <- phifunc::read_all_data() %>%
+  clean_all_data()
+
+## export data to rds file
+path_export <- here::here("data",
+                          "raw",
+                          "for_quick_loading",
+                          stringr::str_glue("PHI_all_dat_{Sys.Date()}.rds"))
+dir_export <- dirname(path_export)
+if (!dir.exists(dir_export)) dir.create(dir_export)
+rio::export(all_dat, path_export)
+
+```
+
+
+
+```{r eval = !params$import_data, echo = !params$import_data}
+
+path_import <- rfextras::find_latest("PHI_all_dat",
+                                     where = here::here("data"))
+all_dat <- rio::import(path_import)                                   
+
+```
+
+We add/define variables from `all_dat`:
+
+```{r }
+
+## THIS DOES NOT WORK FOR ME:
+## testing?
+all_dat$testing_data2 <- calculate_tpr_weekly(all_dat)
+
+## Cases & deaths
+phi <- all_dat$phi_data
+
+```
+
+
+## Country list
+
+```{r}
+country_list <- all_dat$phi_data$report_country %>%
+  unique() # country dataframe (?)
+```
+
+
+## Population data
+
+```{r}
+# import population data
+pop_data <- phifunc::pull_pop_data() %>% 
+  select(-iso2, -year, -source)
+```
+
+
+## Mobility data from Google
+
+```{r eval = params$import_data, echo = params$import_data}
+
+## Cases, deaths, and tests
+mob_dat <- phifunc::pull_mob_data()
+
+## export data to rds file
+path_export <- here::here("data",
+                          "raw",
+                          "for_quick_loading",
+                          stringr::str_glue("mobility_google_{Sys.Date()}.rds"))
+dir_export <- dirname(path_export)
+if (!dir.exists(dir_export)) dir.create(dir_export)
+rio::export(mob_dat, path_export)
+
+```
+
+```{r eval = !params$import_data, echo = !params$import_data}
+
+path_import <- rfextras::find_latest("mobility",
+                                     where = here::here("data"),
+                                     ignore.case = TRUE)
+mob_dat <- rio::import(path_import)
+
+```
+
+We create other variables here:
+
+```{r}
+
+# mobility data
+mob_dat_g <- mob_dat %>%
+     filter(source == "google") %>%
+  filter(mob_type != "grocery and pharmacy",
+         mob_type != "residential") %>%
+     filter(date > as.Date("2020-09-01")) %>% 
+     left_join(all_dat$phi_data %>%
+               select(iso3, report_country),
+               by = c("country" = "report_country"))
+
+```
+
+
+
+
+
+
+## Global PHSM data from Oxford
+
+Dataset is imported from Oxford Github site. Cleaning includes:  
+
+* column name alignment  
+* Filter to only stay-at-home orders
+* Filter to only national level orders  
+* Marking days when national stay-home orders change stringency  
+* 
+
+```{r}
+# import Oxford data
+####################
+oxCGRT_raw <- read_csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv") 
+# read more at https://github.com/OxCGRT/covid-policy-tracker
+
+# Dataset PHSM (all calendar days) 
+##################################
+ox <- oxCGRT_raw %>% 
+  # clean names
+  janitor::clean_names() %>% 
+  select("report_country" = country_name,
+         "iso3" = country_code,
+         jurisdiction,
+         "report_date" = date,
+         "stayhome_level" = c6_stay_at_home_requirements,
+         "stayhome_scope" = c6_flag) %>% 
+  
+  # clean values
+  mutate(stayhome_scope = recode(stayhome_scope,
+    "0" = "Targeted",
+    "1" = "General")) %>% 
+  mutate(report_date = ymd(as.character(report_date))) %>% 
+  filter(jurisdiction == "NAT_TOTAL") %>%                    # keep only national
+  arrange(report_country, report_date) %>%
+  group_by(report_country) %>% 
+  #mutate(stayhome_previous = lag(stayhome_level)) %>%    # get previous stayhome level
+  mutate(phsm_change = case_when(
+    
+    # increase
+    stayhome_level > lag(stayhome_level) & stayhome_level == 1 ~ "increase to suggested",
+    stayhome_level > lag(stayhome_level) & stayhome_level > 1  ~ "increase to required",
+    
+    # decrease
+    stayhome_level < lag(stayhome_level) & stayhome_level == 1 ~ "decrease to suggested",
+    stayhome_level < lag(stayhome_level) & stayhome_level == 0 ~ "decrease to removed",
+
+    TRUE ~ "constant"))  
+
+
+# Earliest fall 2020 (1Aug-15dec) required lockdown date
+# Date of earliest increase to national "required" stay-home PHSM in Fall 2020 
+##############################################################################
+ox_small <- ox %>%   
+  filter(stringr::str_detect(phsm_change, "increase to required")) %>%   # keep only days where there was an increase to required status
+  
+  # slice earliest increase after 1 August 2020
+  filter(report_date >= as.Date("2020-08-01")) %>% 
+  filter(report_date <= as.Date("2020-12-15")) %>% 
+  group_by(report_country) %>% 
+  arrange(report_date) %>% 
+  slice_head()
+
+```
+
+
+## Import Rt values back to March 2020
+
+```{r eval = params$import_data, echo = params$import_data}
+## collect epinow data - function from Finlay
+get_epinow <- function() {
+  new <- phifunc::pull_epinow() %>%
+  mutate(
+    across(
+      report_country,
+      ~ case_when(
+        .x == "United States of America" ~ "USA",
+        .x == "Republic of Korea" ~ "South Korea",
+        .x == "Russian Federation" ~ "Russia",
+        TRUE ~ .x
+      )
+    )
+  )
+  dates <- new %>%
+    group_by(iso3) %>%
+    summarise(min_date = min(date))
+  old <- import(here("data", "clean", "epinow_with_iso.csv")) %>%
+    as_tibble() %>%
+    left_join(dates, c(iso = "iso3")) %>%
+    filter(date < min_date) %>%
+    mutate(
+      strat = as.character(strat),
+      variable = "R"
+    ) %>%
+    rename(iso3 = iso) %>%
+    left_join(phifunc::pull_pop_data(), "iso3") %>%
+    select(-report_country, -min_date) %>%
+    rename(report_country = country)
+  
+  ## adjust vector in from so that it gradually becomes to by the end
+  adjust <- function(from, to, range = 15) {
+    if(range > length(from)) range <- length(from)
+    ind <- seq(length(from) - range + 1, length(from))
+    prop <- seq(0, 1, length = range)
+    from[ind] <- (1 - prop)*from[ind] + prop*to
+    return(from)
+  }
+  ## smooth Rt estimates when merging databases
+  smooth <- function(old, new) {
+    if(is.null(old)) return(old)
+    if(is.null(new)) return(select(old, median:upper_90))
+    earliest <- filter(new, date == min(date))
+    map2_dfc(
+      select(old, median:upper_90),
+      select(earliest, median:upper_90),
+      adjust
+    )
+  }
+  ## smooth Rt estimates when joining them
+  old <- left_join(
+    nest(old, old = -report_country),
+    nest(select(new, report_country, date, median:upper_90), new = -report_country)
+  ) %>%
+    mutate(
+      adjust = map2(old, new, smooth),
+      old = map(old, select, -(median:upper_90))
+    ) %>%
+    select(-new) %>%
+    unnest(c(old, adjust))
+  bind_rows(new, old) %>%
+    arrange(iso3, date)
+}
+
+
+# get Rt values back to March 2020
+rt_vals <- get_epinow() %>% 
+    filter(date < Sys.Date())
+
+## export data to rds file
+path_export <- here::here("data",
+                          "raw",
+                          "for_quick_loading",
+                          stringr::str_glue("rt_dat_proc_{Sys.Date()}.rds"))
+dir_export <- dirname(path_export)
+if (!dir.exists(dir_export)) dir.create(dir_export)
+rio::export(rt_vals, path_export)
+```
+
+```{r eval = !params$import_data, echo = !params$import_data}
+
+path_import <- rfextras::find_latest("rt_dat_proc",
+                                     where = here::here("data"))
+rt_vals <- rio::import(path_import)                                   
+
+```
+
+
+
+# Collating data {.tabset .tabset-fade .tabset-pills}
+
+In this section we collate data from the various streams into a single dataset
+for further analysis.
+
+Data we will use are stratified by country and by day; they include:
+
+* case incidence
+* death incidence  
+* country population  
+* % positive cases
+* google mobility index  
+* Rt: mean, median, lower and upper bounds
+* classification: *growth* (Rt CI > 1), *decline*(Rt CI < 1) or *unclear* (Rt CI
+  includes 1)  
+  
+For most predictors, we will also include data lagged by 1,2, and 3 weeks.
+
+
+## Begin with cases and deaths
+
+```{r }
+final_dat <- phi %>%
+  group_by(report_country, report_date) %>%
+  summarise(cases = sum(case_new, na.rm = TRUE),
+            deaths = sum(death_new, na.rm = TRUE))
+
+final_dat
+
+```
+
+
+## Add testing
+
+```{r }
+
+testing_dat <- all_dat$testing_data %>%
+  incidence2::incidence(date,
+                        counts = daily_change,
+                        groups = country,
+                        interval = 1) %>%
+  rename(tests = daily_change)
+testing_dat
+
+final_dat <- final_dat %>%
+  full_join(testing_dat, by = c("report_date" = "date_index", "report_country" = "country"))
+
+```
+
+## Add population  
+
+And re-arrange columns
+
+```{r}
+final_dat <- final_dat %>% 
+  left_join(pop_data, by = "report_country") %>% 
+  select(who_region, report_country, iso3, population, report_date, everything())
+```
+
+
+
+## Rt data
+
+```{r }
+
+rt_data <- rt_vals %>%
+  tibble() %>% 
+  select(date,
+         report_country,
+         iso3,
+         Rt_mean = mean,
+         Rt_median = median,
+         Rt_lower = lower_90,
+         Rt_upper = upper_90) %>%
+  mutate(classification = case_when(
+             Rt_lower > 1 ~ "growth",
+             Rt_upper < 1 ~ "decline",
+             TRUE ~ "unclear")) %>% 
+  select(date, iso3, classification, everything())
+
+final_dat <- final_dat %>% 
+  left_join(rt_data, by = c("iso3", "report_country", "report_date" = "date"))
+
+```
+
+
+## Adding mobility
+
+Note: we convert the data to a `data.table` to gain tremendous speedup of calculations:
+
+```{r }
+
+mobility_dat <- mob_dat  %>%
+  dtplyr::lazy_dt() %>%
+  group_by(date, country, mob_type) %>%
+  summarise(mobility = sum(value, na.rm = TRUE)) %>%
+  as_tibble() %>%
+  pivot_wider(names_from = mob_type, values_from = mobility, names_prefix = "mob_")
+mobility_dat
+
+final_dat <- final_dat %>%
+  left_join(mobility_dat, by = c("report_date" = "date", "report_country" = "country"))
+
+final_dat
+
+```
+
+
+## Adding PHSM  
+
+Columns added include:  
+
+* PHSM order jurisdictional level (filter to national only)  
+* Stay home level (0,1,2, or 3)  
+* Order scope general or targeted  
+
+
+```{r}
+final_dat <- final_dat %>% 
+  
+  # add oxford stayhome PHSM info for all calendar days
+  left_join(ox, by = c("report_country", "iso3", "report_date")) %>% 
+  
+  # add the Fall 2020 lockdown date (earliest increase to national required stayhome from 1aug-15dec 2020) 
+  left_join(ox_small %>%           
+              ungroup() %>%
+              mutate(earliest_lockdown = report_date) %>% 
+              select(iso3, report_date, earliest_lockdown),
+            by = c("iso3", "report_date")) %>% 
+  
+  # add "day-before-lockdown" column (day 0 is country's date of fall 2020 lockdown)
+  group_by(report_country) %>% 
+  mutate(day_num = as.numeric(report_date - max(earliest_lockdown, na.rm=T))) 
+```
+
+
+
+## Add rolling 7-day case/death rates per 100k
+
+```{r}
+final_dat <- final_dat %>% 
+  
+  # weekly rolling sum of cases and deaths
+    arrange(report_country, report_date) %>%   # arrange rows 
+    group_by(report_country) %>%        # group by 
+    
+  # rolling 7-day sum of cases
+    mutate(
+      case_new_7d = slider::slide_index_dbl(  # create new column
+        cases,                          # calculate avg based on value in  column
+        .i = report_date,                      # index column is date_onset, so non-present dates are included in 7day window 
+        .f = ~sum(.x, na.rm = TRUE),    # function is mean() with missing values removed
+        .before = days(6),              # window is the day and 6-days before
+        .complete = FALSE)) %>%         # fills in first days with NA
+  
+  # rolling 7-day sum of deaths
+    mutate(
+      death_new_7d = slider::slide_index_dbl(  # create new column
+        deaths   ,                      # calculate avg based on value in  column
+        .i = report_date,                      # index column is date_onset, so non-present dates are included in 7day window 
+        .f = ~sum(.x, na.rm = TRUE),    # function is mean() with missing values removed
+        .before = days(6),              # window is the day and 6-days before
+        .complete = FALSE)) %>%         # fills in first days with NA
+  
+  # convert to rates per 100k
+  mutate(case_new_7d_100k  = (case_new_7d / population) * 100000,
+         death_new_7d_100k = (death_new_7d / population) * 100000)
+
+```
+
+
+## Building new variables
+
+These are built from existing variables; they include:
+
+* `cases_pc`: incidence of cases per capita
+* `deaths_pc`: incidence of deaths per capita
+* `tests_pc`: incidence of tests per capita
+* `fatalities`: ratio of death and cases incidence 
+* `positive_tests`: ratio of incidence of cases over tests
+* `car_pc`: cumulative attack rate per capita
+* `cdr_pc`: cumulative death rate per capita
+
+* ``:
+
+```{r }
+
+final_dat <- final_dat %>%
+  mutate(cases_pc = cases / population,
+         deaths_pc = deaths / population,
+         tests_pc = tests / population,
+         fatalities = deaths / cases,
+         positive_tests = cases / tests,
+         car_pc = cumsum(cases_pc),
+         cdr_pc = cumsum(deaths_pc)
+         )
+
+final_dat
+
+```
+
+
+## Removing 'future' data points
+
+There are oddly some data points into the future. We remove these:
+
+```{r }
+
+today <- Sys.Date()
+final_dat <- final_dat %>%
+  filter(report_date < today)
+
+```
+
+
+## Adding lagged variables
+
+Lagged variables are harder to define as they will be calculated as weekly
+averages; we proceed as:
+
+1. calculate average values of indicators over the week leading up to a given
+   day
+2. use the lag function to get values of 2 and 3 weeks ago
+
+```{r }
+
+final_dat <- final_dat %>%
+  arrange(report_country, report_date) %>%
+  group_by(report_country) %>%
+  mutate_at(vars(Rt_mean:last_col()),
+            list(lag1 = ~ rollapply(.,
+                                    7,
+                                    function(x) mean(x, na.rm = TRUE),
+                                    align = 'right', fill = NA))) %>%
+  mutate_at(vars(Rt_mean_lag1:last_col()),
+            list(lag2 = ~lag(., 7),
+                 lag3 = ~lag(., 14)))
+
+names(final_dat) <- gsub("lag1_lag", "lag", names(final_dat))
+
+final_dat                                     
+
+```
+
+## Expand to include all possible country-days
+
+To standardize number of rows for each country. Fills in with NA.
+
+```{r}
+
+# Define all possible country-days
+all_country_days <- final_dat %>% 
+  ungroup() %>% 
+  expand(report_date, report_country)
+
+# expand via right_join so final_dat includes all possible country-days
+final_dat <- final_dat %>% 
+  dplyr::right_join(all_country_days)
+
+table(final_dat$report_country, useNA = "always")
+
+```
+
+## Date column  
+
+Adding a "date" column to not force change to subsequent code.  
+
+```{r}
+final_dat <- final_dat %>% 
+  mutate(date = report_date) %>% 
+  select(who_region, report_country, iso3, population, report_date, date, everything())
+```
+
+# Save final dataset
+
+The data is saved both in the *data/clean* folder and in the current folder.
+
+```{r }
+
+## export data to rds file in data/clean
+file_name <- stringr::str_glue("final_dat_{Sys.Date()}.rds")
+path_export <- here::here("data",
+                          "clean",
+                          file_name)
+dir_export <- dirname(path_export)
+if (!dir.exists(dir_export)) dir.create(dir_export)
+rio::export(final_dat, path_export)
+
+
+## export data to rds file in current folder
+rio::export(final_dat, file_name)
+
+```
+

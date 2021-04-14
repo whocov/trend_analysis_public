@@ -1,0 +1,514 @@
+---
+title: "Using ASMODEE to detect trend changes in COVID-19"
+author: "Thibaut Jombart, Neale Batra, Finlay Campbell, Yuka Jinnai, Henry Laurenson-Schafer, Olivier le Polain"
+date: '`r format(Sys.time(), "%A %d %B %Y")`'
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: TRUE
+    toc_collapse: FALSE
+    number_sections: TRUE
+    highlight: pygments
+    theme: spacelab
+    code_folding: hide
+    <!-- df_print: paged -->
+    css: !expr here::here('css', 'style.css')
+params:
+  who_region: "EURO"
+  n_cores: 1
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      fig.width = 8,
+                      fig.height = 6,
+                      dpi = 70,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+
+# Prep work {.tabset .tabset-fade .tabset-pills}
+
+## Scripts
+
+```{r warnings = FALSE}
+
+rfextras::load_scripts()
+
+```
+
+## Packages
+
+All CRAN packages can be installed by calling `reportfactory::install_deps()`.
+Package installs on remotes are now handled in a separate script
+`remote_packages.R` which is loaded alongside other scripts in `scripts/` using:
+
+
+```{r}
+
+pacman::p_load(
+            tidyverse, # data management
+            ggrepel # plots
+        )
+
+## remotes loaded separately
+library(trending)
+library(trendeval)
+library(trendbreaker)
+library(incidence2)
+library(i2extras)
+
+```
+
+
+
+## Load the data
+
+```{r }
+
+dat <- load_final_data()
+data_stamp <- get_timestamp(dat)
+data_stamp
+dat
+
+```
+
+
+
+## Filter the data
+
+We keep only the countries for the desired WHO region; defaults to EURO:
+
+```{r }
+
+params$who_region
+dat <- dat %>%
+  filter(who_region %in% params$who_region)
+
+```
+
+
+
+
+
+----------------------------
+
+# Trends in cases
+
+## Data
+
+Data will be easier to handle if first converted to an *incidence2* object, as
+*asmodee* will recognize these inputs and handle de stratification by country
+for us. We also add the *weekday* variable, and retain only the last 6 weeks of
+data.
+
+```{r }
+
+cases_i <- dat %>%
+  incidence(date, counts = c(cases, tests, deaths), groups = report_country) %>%
+  mutate(weekend = day_of_week(date_index)) %>% # add weekday
+  keep_last(7 * 7) %>%
+  mutate(weekday = factor(weekdays(date_index)))
+  
+cases_i
+
+```
+
+We also remove countries for which we have less than 100 cases or tests in total
+over the considered time period:
+
+```{r }
+
+to_keep <- cases_i %>%
+  group_by(report_country) %>%
+  summarise(total_cases = sum(cases, na.rm = TRUE),
+            total_tests = sum(tests, na.rm = TRUE)) %>%
+  filter(total_cases > 100 | total_tests > 100) %>%
+  pull(report_country)
+
+n_countries <- length(unique(to_keep))
+
+cases_i <- cases_i %>%
+  filter(report_country %in% to_keep)
+
+```
+
+
+
+## Model generators
+
+Here we use some ad-hoc code to handle cases where the training set contains not
+one, but 2 temporal trends. The proposed solution is to duplicate each candidate
+model of the form `model(response ~ xxx + time)` into:
+
+1. the same model
+2. a set of *k* models in the form: `model(response ~ xxx + change_k:time +
+time)` where `change_k` is a binary qualitative variable marking before/after
+day *k*; the set of models generated will explore various values of *k*
+
+
+### Adding binary variables to the data
+
+Here we add the *change_k* variables mentioned above; considering we have 6
+weeks of data in total, including 5 for training, we allow *k* to vary from day
+8 to day 28.
+
+```{r }
+
+cases_i <- cases_i %>%
+  mutate(day = as.integer(date_index - min(date_index)))
+
+min_k <- 9
+max_k <- 25
+k_values <- min_k:max_k
+change_k_df <- lapply(k_values,
+                       function(k)
+                         cases_i %>%
+                         group_by(report_country) %>%
+                         transmute(if_else(day <= k, "before", "after")) %>%
+                         pull(2)) %>%
+  data.frame() %>%
+  tibble() %>%
+  setNames(paste0("change_", k_values))
+
+cases_i <- cases_i %>%
+  bind_cols(change_k_df)
+
+```
+
+
+### Define split models
+
+```{r }
+
+model_grid <- expand.grid(
+    c("", "tests"), # with/without tests
+    "date_index", # time effect
+    c("", "weekend", "weekday"), # optional offsets
+    c("", paste("date_index*change", k_values, sep = "_")) # optional split
+)
+
+## convert to text
+predictors_txt <- model_grid %>%
+  apply(1, paste, collapse = " + ")
+
+## cleanup
+predictors_txt <- gsub("(\\+[ ]*)+[ ]*\\+", " + ", predictors_txt) # +... + -> +
+predictors_txt <- sub("^[ ]*\\+", "", predictors_txt) # heading +
+predictors_txt <- sub("\\+[ ]*$", "", predictors_txt) # trailing +
+predictors_txt <- sub("^[ ]+", "", predictors_txt) # heading spaces
+predictors_txt <- sub("[ ]+$", "", predictors_txt) # trailing spaces
+predictors_txt <- sub("[ ]+", " ", predictors_txt) # multiple spaces
+
+## add constant models
+predictors_txt <- c("1", predictors_txt)
+
+```
+
+## Candidate models
+
+Candidate models are generated to include:
+
+* Poisson GLM or NegBin GLM
+* combinations of:
+    + with date effect
+    + with / without testing effect
+    + with / without weekend effect
+    + with / without weekday effect
+    + with / without trend shift effect (different slope before/after) with
+      changing points on day 8, 9, ... or 28 (first training day is day 0)
+	
+
+```{r }
+
+models_txt  <- c(
+    ## sprintf("lm_model(cases ~ %s)", predictors_txt), # linear models
+    sprintf("glm_model(cases ~ %s, family = gaussian)", predictors_txt) , # Gaussian GLMs
+    sprintf("glm_nb_model(cases ~ %s)", predictors_txt) # NegBin GLMs
+)
+
+length(models_txt)
+head(models_txt)
+tail(models_txt)
+
+cases_models <- lapply(models_txt, function(e) eval(parse(text = e)))
+
+```
+
+
+
+
+## Run ASMODEE
+
+Case data can be problematic because of occasional artifactual 'zeros', which
+reflect the absence of reporting on a given day, typically followed by a higher
+case count reflecting the backlog. Unfortunately, this often throws off the
+Negbin GLM, which is most of the time our best option: Poisson GLM drastically
+under-estimates variance and sees most points as outliers, and Gaussian GLM can
+predict negative numbers.
+
+To circumvent the issue, we use the new feature from *i2extras* called
+`flag_low_counts()`, which we use to set to `NA` all counts below a certain
+threshold (here, 1/100 of the median). This is done separately for each country.
+
+```{r }
+
+cases_res <- cases_i %>%
+##  flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
+  asmodee(cases_models, fixed_k = 7, method = evaluate_aic,
+          include_warnings = FALSE,
+          simulate_pi = FALSE,
+          n_cores = params$n_cores)
+
+## ## for loop for debugging purposes
+## split_x <- cases_i %>%
+##   flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
+##   split(cases_i$report_country)
+## for (i in seq_along(split_x)) {
+##   asmodee(split_x[[i]], cases_models, fixed_k = 7, method = evaluate_aic,
+##           include_warnings = FALSE,
+##           simulate_pi = FALSE)
+## }
+
+```
+
+
+## Plot with all countries
+
+```{r fig.height = 2 * round(n_countries / 3), out.width = "100%"}
+
+cases_res %>%
+  plot(ncol = 3)
+
+```
+
+
+
+## Countries summaries
+
+We use `summary` to have an overview of outliers by country:
+
+```{r }
+
+cases_outliers <- cases_res %>%
+  summary() %>%
+  select(Country = group,
+         n_recent_increases,
+         n_recent_decreases,
+         p_recent_outliers)
+
+DT::datatable(cases_outliers,
+              options = list(
+                  pageLength = nrow(cases_outliers)))
+
+```
+
+
+
+
+
+
+
+---------------------------------
+
+# Growth rates
+
+## Growth rates
+
+These estimates of daily growth rates are based on negative binomial GLM fitted
+to the last 3 weeks of data. Positive values indicate epidemic growth, and
+negative values indicate decline. Confidence intervals including zero indicate
+uncertain trends.
+
+
+```{r fig.height = 8, out.width = "90%"}
+
+r_df <- cases_i %>%
+  flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
+  keep_last(3*7) %>%
+  fit_curve("negbin") %>%
+  growth_rate() %>%
+  filter(count_variable == "cases") %>%
+  mutate(type = case_when(r_lower > 0 ~ "growth",
+                          r_upper < 0 ~ "decline",
+                          TRUE ~ "uncertain"),
+         factor(type, levels = c("growth", "uncertain", "decline")))
+
+scale_type <- scale_color_manual(
+  "Incidence trend",
+  values = c(growth = "#EC6446",
+             decline = "#5DADC6",
+             uncertain = "#A9A9A9")
+)
+
+r_df %>%
+  ggplot(aes(y = report_country, x = r, color = type)) +
+  geom_errorbar(aes(xmin = r_lower, xmax = r_upper)) +
+  geom_point() +
+  theme_bw() +
+  scale_type +
+#  scale_x_continuous(labels=scales::percent) +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  labs(x = "Daily growth rate (r)", y = "")
+
+```
+
+
+
+
+
+--------------------------------
+
+# Overall dynamics
+
+## Merging indicators
+
+```{r }
+
+# Population by country
+df_pop <- dat %>%
+  group_by(report_country) %>%
+  summarise(population = mean(population, na.rm = TRUE))
+
+# Cumulative incidence over the last  week per 100k inhabitants
+df_recent_incid <- cases_i %>%
+  keep_last(7) %>%
+  group_by(report_country) %>%
+  summarise(n_cases = sum(cases),
+            n_deaths = sum(deaths)) %>%
+  left_join(df_pop) %>%
+  mutate(case_incid_last_week = 1e5 * n_cases / population,
+         death_incid_last_week = 1e5 * n_deaths / population)
+
+# Table containing r, recent increases, incidence per 1000
+df_dynamics <- cases_outliers %>%
+  select(Country, n_recent_increases) %>%
+  right_join(select(r_df, Country = report_country, r, r_lower, r_upper)) %>%
+  left_join(df_recent_incid, by = c("Country" = "report_country"))
+
+# Add data on past peak incidence, excluding the last 90 days of data
+df_peaks <- dat %>%
+  filter(who_region == params$who_region,
+         date <= (data_stamp - 90)) %>%
+  group_by(report_country) %>%
+  summarise(incid_peak = max(case_new_7d_100k, na.rm = TRUE)) %>%
+  filter(incid_peak > 10)
+
+df_dynamics <- df_dynamics %>%
+  left_join(df_peaks %>% rename(Country = report_country)) %>%
+  mutate(perc_peak = case_incid_last_week / incid_peak)
+
+```
+
+
+## Deaths, growth rates and changes
+
+This figure reports:
+
+* growth rate based on the last 3 weeks of data
+* last weeks's deaths per capita
+* significant increases detected by ASMODEE in the last week
+
+```{r  fig.height = 7, out.width = "100%"}
+
+plot_overall_deaths <- df_dynamics %>%
+  ggplot(aes(x = r, y = death_incid_last_week, color = n_recent_increases)) +
+  # geom_segment(aes(x = r_lower, xend = r_upper, yend = incid_last_week)) + 
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  ## geom_hline(data = df_thresholds,
+  ##            aes(yintercept = thres,
+  ##                size = day_num),
+  ##                alpha = 0.5, color = "#F5964F") +
+  geom_point() +
+  geom_label_repel(aes(label = Country), max.overlaps = 20) +
+  scale_size("Days before\nlast lockdown",
+             trans = "reverse") +
+  scale_colour_steps(
+    "Days of increase over\nthe last week",
+    low = "#5b7bb5",
+    high = "#d10031",
+    breaks = 0:7) +  
+  labs(x = "Daily growth rate",
+       y = "Week's death incidence per 100k inhabitants"
+       )
+
+plot_overall_deaths
+
+```
+
+
+## Relative cases, growth and changes
+
+
+This figure reports:
+
+* growth rate based on the last 3 weeks of data
+* last weeks's case incidence per capita, expressed as a proportion of the past
+  peak incidence
+* significant increases detected by ASMODEE in the last week
+
+```{r  fig.height = 7, out.width = "100%"}
+
+plot_overall_peaks <- df_dynamics %>%
+  ggplot(aes(x = r, y = perc_peak, color = n_recent_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point() +
+  geom_label_repel(aes(label = Country), max.overlaps = 20) +
+  scale_size("Days before\nlast lockdown",
+             trans = "reverse") +
+  scale_colour_steps(
+    "Days of increase over\nthe last week",
+    low = "#5b7bb5",
+    high = "#d10031",
+    breaks = 0:7) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Daily growth rate",
+       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)"
+       )
+
+plot_overall_peaks
+
+```
+
+
+
+
+------------------------------
+
+# Export results
+
+We export the following products for further uses in other systems, in an object
+called `asmodee_outputs`:
+
+* `summary`: summary of the ASMODEE results
+* `results`: outputs of ASMODEE
+* `plot_overall_deaths`: *ggplot2* object of the overall dynamics plot using
+  death per capita on the y-axis
+* `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot using
+  incidence as percentage of historical peak (excluding the last 90 days) on the
+  y-axis
+
+
+```{r }
+
+asmodee_outputs <- list(
+  summary = cases_outliers,
+  results = cases_res,
+  plot_overall_deaths = plot_overall_deaths,
+  plot_overall_peaks = plot_overall_peaks
+)
+
+## export asmodee summary
+file_name <- sprintf("asmodee_outputs_%s_%s.rds",
+                     paste(params$who_region, collapse = "_"),
+                     max(dat$date))
+path_out <- here::here("data", "clean", file_name)
+rio::export(asmodee_outputs, path_out)
+
+```
+
