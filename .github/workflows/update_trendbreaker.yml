@@ -1,5 +1,5 @@
 # Name of the workflow
-name: update-data
+name: update-trendbreaker
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch, as well as 1200 every day
@@ -9,12 +9,12 @@ on:
 #  release:
 #    types: [ published ]
   schedule:
-     - cron:  '00 13 * * *'
+     - cron:  '00 17 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # Important: ubuntu-latest is not set up properly for R, so use macOS
 jobs:
-  update-data:
+  update-trendbreaker:
     runs-on: macos-latest
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
@@ -40,20 +40,22 @@ jobs:
           remotes::install_github("reconhub/rfextras", upgrade = "never")
           reportfactory::install_deps(factory = "factory", upgrade = "never")
           remotes::install_github("reconhub/incidence2", upgrade = "never")
+          remotes::install_github("reconhub/trendbreaker", upgrade = "never")
         shell: Rscript {0}
  
       - name: Install deps of the factory and compile data report
         run: |
           setwd("factory")
           source("run_remote_data.R")
+          source("run_remote_trendbreaker.R")
         shell: Rscript {0}
         
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add factory/data/clean
-          git commit -m "Automatic data update"
+          git add factory/data/clean/asmodee*
+          git commit -m "Automatic update of trendbreaker results"
       
       - name: Push files
         run: |
