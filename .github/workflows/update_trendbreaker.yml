@@ -38,7 +38,7 @@ jobs:
           install.packages(pkgs, repos = "https://cloud.r-project.org/")
           remotes::install_github("reconhub/reportfactory", upgrade = "never")
           remotes::install_github("reconhub/rfextras", upgrade = "never")
-          reportfactory::install_deps(factory = "factory", upgrade = "never")
+          reportfactory::install_deps(upgrade = "never")
           remotes::install_github("reconhub/incidence2", upgrade = "never")
           remotes::install_github("reconhub/trendbreaker", upgrade = "never")
         shell: Rscript {0}
