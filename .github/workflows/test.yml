@@ -33,7 +33,7 @@ jobs:
     
       - name: Test script
         run: |
-          val <- Sys.getenv(TEST_VAR)
+          val <- Sys.getenv("TEST_VAR")
           cat(val, file = "test.txt")
         shell: Rscript {0}
        
