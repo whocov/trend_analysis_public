@@ -16,6 +16,8 @@ on:
 jobs:
   test-automation:
     runs-on: macos-latest
+    env:
+      TEST_VAR: ${{ secrets.TEST }}
     steps:
       - name: Checkout repos
         uses: actions/checkout@v2
@@ -29,9 +31,9 @@ jobs:
       - name: Setup pandoc
         uses: r-lib/actions/setup-pandoc@v1
     
-      - name: Install dependencies
+      - name: Test script
         run: |
-          val <- ${{ secrets.TEST }}
+          val <- Sys.getenv(TEST_VAR)
           cat(val, file = "test.txt")
         shell: Rscript {0}
        
