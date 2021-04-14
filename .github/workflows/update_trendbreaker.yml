@@ -9,7 +9,7 @@ on:
 #  release:
 #    types: [ published ]
   schedule:
-     - cron:  '00 16,17 * * *'
+     - cron:  '03 16,17 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # Important: ubuntu-latest is not set up properly for R, so use macOS
@@ -45,7 +45,6 @@ jobs:
  
       - name: Install deps of the factory and compile data report
         run: |
-          setwd("factory")
           source("run_remote_data.R")
           source("run_remote_trendbreaker.R")
         shell: Rscript {0}
@@ -54,7 +53,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add factory/data/clean/asmodee*
+          git add data/clean/asmodee*
           git commit -m "Automatic update of trendbreaker results"
       
       - name: Push files
