@@ -4,8 +4,8 @@ name: test-automation
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch, as well as 1200 every day
 on:
-  push:
-    branches: [ main ]
+#  push:
+#    branches: [ main ]
 #  release:
 #    types: [ published ]
 #  schedule:
