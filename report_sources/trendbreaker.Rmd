@@ -482,8 +482,10 @@ plot_overall_peaks
 
 # Export results
 
+## Save ASMODEE outputs 
+
 We export the following products for further uses in other systems, in an object
-called `asmodee_outputs`:
+called `asmodee_outputs`; all objects are stored in */data/clean/asmodee*:
 
 * `summary`: summary of the ASMODEE results
 * `results`: outputs of ASMODEE
@@ -507,7 +509,7 @@ asmodee_outputs <- list(
 file_name <- sprintf("asmodee_outputs_%s_%s.rds",
                      paste(params$who_region, collapse = "_"),
                      max(dat$date))
-path_out <- here::here("data", "clean", file_name)
+path_out <- here::here("data", "clean", "asmodee", file_name)
 rio::export(asmodee_outputs, path_out)
 
 ```
