@@ -94,6 +94,8 @@ Links to the *rds* files:
 
 #### SEARO region
 
+#### Infection levels as % of historical incidence peak
+
 <img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
