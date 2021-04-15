@@ -532,6 +532,14 @@ file_name <- sprintf("asmodee_outputs_%s_%s.rds",
 path_out <- here::here("asmodee_outputs", "rds", file_name)
 rio::export(asmodee_outputs, path_out)
 
+## make a copy as latest file
+latest_file_name <- sprintf("asmodee_outputs_%s_latest.rds",
+                            paste(params$who_region, collapse = "_")
+                            )
+latest_path_out <- here::here("asmodee_outputs", "rds", latest_file_name)
+file.copy(from = path_out, to = latest_path_out, overwrite = TRUE)
+
+  
 ```
 
 
@@ -547,21 +555,35 @@ Here we save the two key figures showing 'overall dynamics' to *png* files in
 fig_name <- sprintf("waffle_deaths_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     max(dat$date))
-path_fig <- here::here("asmodee_outputs", "png", fig_name)
+fig_path <- here::here("asmodee_outputs", "png", fig_name)
 
-png(path_fig, width = 25, height = 20, units = "cm", res = 150)
+png(fig_path, width = 25, height = 20, units = "cm", res = 150)
 print(plot_overall_deaths)
 dev.off()
+
+# Make a copy as 'latest'
+latest_fig_name <- sprintf("waffle_deaths_%s_latest.png",
+                           paste(params$who_region, collapse = "_")
+                           )
+latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
+file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 
 # cases as % historical peak as y axis
 fig_name <- sprintf("waffle_peak_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     max(dat$date))
-path_fig <- here::here("asmodee_outputs", "png", fig_name)
+fig_path <- here::here("asmodee_outputs", "png", fig_name)
 
-png(path_fig, width = 25, height = 20, units = "cm", res = 150)
+png(fig_path, width = 25, height = 20, units = "cm", res = 150)
 print(plot_overall_peaks)
 dev.off()
+
+# Make a copy as 'latest'
+latest_fig_name <- sprintf("waffle_peaks_%s_latest.png",
+                           paste(params$who_region, collapse = "_")
+                           )
+latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
+file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 ```
