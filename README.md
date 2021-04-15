@@ -1,4 +1,25 @@
-# Welcome to this report factory\!
+
+# Welcome to the WHO COVID-19 trend analysis repository
+
+**Disclaimer: this repository is work in progress; please do not use without contacting the [author](mailto:thibautjombart@gmail.com).**
+
+## Updated content
+
+### Overall dynamics figures
+
+#### EURO region
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="70%">
+
+<br>
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="70%">
+
+
+
+----------------------------
+
+# Using the report factory
 
 The factory will help you handle multiple `rmarkdown` reports at the
 same time. Put your `.Rmd` files in `report_sources`, refer to any
