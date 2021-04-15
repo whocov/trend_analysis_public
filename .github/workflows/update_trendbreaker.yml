@@ -65,5 +65,5 @@ jobs:
       
       - name: Push files
         run: |
-          git push
+          git push --force
  
