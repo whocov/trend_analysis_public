@@ -7,6 +7,11 @@ on:
   schedule:
      - cron:  '00 11,16 * * *'
   workflow_dispatch:
+    inputs:
+      whoregion:
+        description: 'optional; a single region'
+        required: false
+        default: '' 
 #  push:
 #    branches: [ main ]
 #  release:
@@ -19,6 +24,7 @@ jobs:
     runs-on: macos-latest
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
+      WHO_REGION: ${{ github.event.inputs.whoregion}}
     steps:
       - name: Checkout repos
         uses: actions/checkout@v2
