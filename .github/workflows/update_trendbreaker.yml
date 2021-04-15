@@ -44,7 +44,7 @@ jobs:
           remotes::install_github("reconhub/trendbreaker", upgrade = "never")
         shell: Rscript {0}
  
-      - name: Install deps of the factory and compile data report
+      - name: Run data updates and trendbreaker on all WHO regions
         run: |
           source("run_remote_data.R")
           source("run_remote_trendbreaker.R")
@@ -54,7 +54,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add data/clean/asmodee*
+          git add asmodee_outputs
           git commit -m "Automatic update of trendbreaker results"
       
       - name: Push files
