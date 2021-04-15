@@ -12,7 +12,8 @@ regions <- c("AFRO", "EMRO", "EURO", "PAHO", "SEARO", "WPRO")
 ## Note: n_cores needs to be adjusted by the user; best removed on windows,
 ## which does not support this parallelisation.
 for (reg in regions) {
-  compile_reports(report = "trendbreaker.Rmd",
+  try(compile_reports(report = "trendbreaker.Rmd",
                   params = list(who_region = reg, n_cores = 12),
-                  subfolder = reg)
+                  subfolder = reg),
+      silent = TRUE)
 }

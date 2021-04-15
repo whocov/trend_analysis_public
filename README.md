@@ -6,6 +6,16 @@
 
 ## Overall dynamics figures
 
+### Quick links
+
+* [AFRO](https://github.com/whocov/trend_analysis_public#afro-region)
+* [EMRO](https://github.com/whocov/trend_analysis_public#emro-region)
+* [EURO](https://github.com/whocov/trend_analysis_public#euro-region)
+* [PAHO](https://github.com/whocov/trend_analysis_public#paho-region)
+* [SEARO](https://github.com/whocov/trend_analysis_public#searo-region)
+* [WPRO](https://github.com/whocov/trend_analysis_public#wpro-region)
+
+
 ### AFRO region
 
 #### Infection levels as % of historical incidence peak
