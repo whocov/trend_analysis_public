@@ -570,7 +570,7 @@ file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 
 # cases as % historical peak as y axis
-fig_name <- sprintf("waffle_peak_%s_%s.png",
+fig_name <- sprintf("waffle_peaks_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     max(dat$date))
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
