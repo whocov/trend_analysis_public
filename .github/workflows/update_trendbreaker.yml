@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       whoregion:
-        description: 'optional; a single region'
+        description: 'WHO region (optional; a single region)'
         required: false
         default: '' 
 #  push:

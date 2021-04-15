@@ -14,7 +14,8 @@ if (regions == "") {
   regions <- match.arg(regions, expected_regions)
 }
 
+# We silence errors as we want the for loop to continue if some regions fail
 for (reg in regions) {
   params <- list(who_region = reg)
-  source("trendbreaker.R")
+  try(source("trendbreaker.R"), silent = TRUE)
 }
