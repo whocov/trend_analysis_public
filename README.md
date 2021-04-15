@@ -3,9 +3,32 @@
 
 **Disclaimer: this repository is work in progress; please do not use without contacting the [author](mailto:thibautjombart@gmail.com).**
 
-## Updated content
 
-### Overall dynamics figures
+## Overall dynamics figures
+
+### AFRO
+
+#### Infection levels as % of historical incidence peak
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="70%">
+
+<br>
+
+#### Infection levels as weekly deaths per 100k
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="70%">
+
+
+
+#### EMRO
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="70%">
+
+<br>
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="70%">
+
+
 
 #### EURO region
 
@@ -14,6 +37,50 @@
 <br>
 
 <img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="70%">
+
+
+
+#### PAHO
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="70%">
+
+<br>
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="70%">
+
+
+
+#### SEARO
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="70%">
+
+<br>
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="70%">
+
+
+
+#### WPRO
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="70%">
+
+<br>
+
+<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="70%">
+
+
+
+### ASMODEE runs
+
+This section contains links to *asmodee* runs for each WHO region:
+
+* [AFRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_AFRO_latest.rds)
+* [EMRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_EMRO_latest.rds)
+* [EURO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_EURO_latest.rds)
+* [PAHO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_PAHO_latest.rds)
+* [SEARO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_SEARO_latest.rds)
+* [WPRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_WPRO_latest.rds)
+
 
 
 
