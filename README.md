@@ -1,3 +1,4 @@
+[![update-trendbreaker](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml)
 
 # Welcome to the WHO COVID-19 trend analysis repository
 
