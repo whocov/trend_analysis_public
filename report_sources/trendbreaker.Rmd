@@ -385,7 +385,7 @@ df_recent_incid <- cases_i %>%
 
 # Table containing r, recent increases, incidence per 1000
 df_dynamics <- cases_outliers %>%
-  select(Country, n_recent_increases) %>%
+  select(Country, n_recent_increases, n_recent_decreases) %>%
   right_join(select(r_df, Country = report_country, r, r_lower, r_upper)) %>%
   left_join(df_recent_incid, by = c("Country" = "report_country"))
 
@@ -401,6 +401,15 @@ df_dynamics <- df_dynamics %>%
   left_join(df_peaks %>% rename(Country = report_country)) %>%
   mutate(perc_peak = case_incid_last_week / incid_peak)
 
+# Add info on significance of r (> 0 or < 0)
+df_dynamics <- df_dynamics %>%
+  mutate(r_signif = if_else(r_lower > 0 | r_upper < 0, "yes", "no"))
+
+# Add 'net_increase' over last week
+df_dynamics <- df_dynamics %>%
+  mutate(net_increases = n_recent_increases - n_recent_decreases,
+         net_increases = if_else(net_increases > 0L, net_increases, 0L))
+
 ```
 
 
@@ -414,8 +423,13 @@ This figure reports:
 
 ```{r  fig.height = 7, out.width = "100%"}
 
+scale_signif <- scale_shape_manual(
+  "Significant growth/decline",
+  values = c(yes = 19, no = 1)
+  )
+
 plot_overall_deaths <- df_dynamics %>%
-  ggplot(aes(x = r, y = death_incid_last_week, color = n_recent_increases)) +
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
   # geom_segment(aes(x = r_lower, xend = r_upper, yend = incid_last_week)) + 
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
@@ -423,18 +437,21 @@ plot_overall_deaths <- df_dynamics %>%
   ##            aes(yintercept = thres,
   ##                size = day_num),
   ##                alpha = 0.5, color = "#F5964F") +
-  geom_point() +
-  geom_label_repel(aes(label = Country), max.overlaps = 20) +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(aes(label = Country), max.overlaps = 15,
+                  max.time = 2, max.iter = 1e5) +
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
   scale_colour_steps(
     "Days of increase over\nthe last week",
     low = "#5b7bb5",
     high = "#d10031",
-    breaks = 0:7) +  
+    breaks = 0:7) +
+  scale_signif +
   labs(x = "Daily growth rate",
        y = "Week's death incidence per 100k inhabitants"
-       )
+       ) +
+  theme(legend.position = "bottom")
 
 plot_overall_deaths
 
@@ -454,11 +471,12 @@ This figure reports:
 ```{r  fig.height = 7, out.width = "100%"}
 
 plot_overall_peaks <- df_dynamics %>%
-  ggplot(aes(x = r, y = perc_peak, color = n_recent_increases)) +
+  ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
-  geom_point() +
-  geom_label_repel(aes(label = Country), max.overlaps = 20) +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(aes(label = Country), max.overlaps = 15,
+                  max.time = 2, max.iter = 1e5) +
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
   scale_colour_steps(
@@ -467,9 +485,11 @@ plot_overall_peaks <- df_dynamics %>%
     high = "#d10031",
     breaks = 0:7) +
   scale_y_continuous(labels = scales::percent) +
+  scale_signif +
   labs(x = "Daily growth rate",
        y = "Last week's incidence\n(% of historical peak, excluding last 90 days)"
-       )
+       ) +
+  theme(legend.position = "bottom")
 
 plot_overall_peaks
 
@@ -514,3 +534,34 @@ rio::export(asmodee_outputs, path_out)
 
 ```
 
+
+
+## Export main figures
+
+Here we save the two key figures showing 'overall dynamics' to *png* files in
+*asmodee_outputs/png/*:
+
+```{r }
+
+# Deaths PC as y axis
+fig_name <- sprintf("waffle_deaths_%s_%s.png",
+                    paste(params$who_region, collapse = "_"),
+                    max(dat$date))
+path_fig <- here::here("asmodee_outputs", "png", fig_name)
+
+png(path_fig, width = 25, height = 20, units = "cm", res = 150)
+print(plot_overall_deaths)
+dev.off()
+
+
+# cases as % historical peak as y axis
+fig_name <- sprintf("waffle_peak_%s_%s.png",
+                    paste(params$who_region, collapse = "_"),
+                    max(dat$date))
+path_fig <- here::here("asmodee_outputs", "png", fig_name)
+
+png(path_fig, width = 25, height = 20, units = "cm", res = 150)
+print(plot_overall_peaks)
+dev.off()
+
+```
