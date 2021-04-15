@@ -20,16 +20,16 @@ if (file.exists(phifunc_token_file)) {
 }
 
 
-remotes::install_github("reconhub/trending@bootstrap", upgrade = "never")
+remotes::install_github("reconhub/trending", upgrade = "never")
 remotes::install_github("reconverse/incidence2", upgrade = "never")
 remotes::install_github("reconverse/i2extras", upgrade = "never")
 remotes::install_github("reconhub/trendbreaker", upgrade = "never")
 
-if (!is.null(phifunc_token)) {
+if (!is.null(phifunc_token) & !require("phifunc")) {
   remotes::install_github(
-             "whocov/phifunc",
-             auth_token = phifunc_token,
-             subdir = "phifunc", upgrade = "never")
+    "whocov/phifunc",
+    auth_token = phifunc_token,
+    subdir = "phifunc", upgrade = "never")
 }
 
 if (!require("rfextras")) remotes::install_github("reconhub/rfextras", upgrade = "never")
