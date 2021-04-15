@@ -6,7 +6,7 @@ name: update-trendbreaker
 on:
   schedule:
      - cron:  '00 11,16 * * *'
-  workflow_dispatch
+  workflow_dispatch:
 #  push:
 #    branches: [ main ]
 #  release:
