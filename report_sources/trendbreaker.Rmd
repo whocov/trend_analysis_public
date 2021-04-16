@@ -291,7 +291,6 @@ cases_res <- cases_i %>%
 ##           simulate_pi = FALSE)
 ## }
 
-cases_res <- cases_res[-(1:3)]
 ```
 
 ```{r }
@@ -376,8 +375,31 @@ r_df <- cases_i %>%
                           TRUE ~ "uncertain"),
          factor(type, levels = c("growth", "uncertain", "decline")))
 
-# keep track of countries for which r could not be estimated 
-countries_missing_r <- setdiff(cases_i$report_country, r_df$report_country)
+```
+
+
+```{r }
+
+# handle countries with no results
+if (length(countries_missing_r)) {
+  msg <- paste0("Estimates of *r* could not be produced for the following countries:\n",
+                paste(countries_missing_r, collapse = ", "))
+  message(msg)
+  notes <- c(notes, gsub("\n", "<br>", msg))
+}
+
+```
+
+```{r eval = (length(countries_missing_r) > 0), echo = FALSE, results = "asis"}
+
+cat("**Important note:**<br>")
+cat(gsub("\n", "<br>", msg))
+
+```
+
+
+
+```r
 
 scale_type <- scale_color_manual(
   "Incidence trend",
@@ -629,3 +651,9 @@ latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
 file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 ```
+
+
+
+## Export notes
+
+TODO...
