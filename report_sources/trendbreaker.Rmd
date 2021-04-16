@@ -146,7 +146,7 @@ cases_i <- cases_i %>%
 
 ```
 
-```{r eval = (length(removed_countries)>0), echo = FALSE, results = "asis"}
+```{r eval = (length(removed_countries) > 0), echo = FALSE, results = "asis"}
 
 cat("**Important note:**<br>")
 cat(notes)
@@ -291,13 +291,14 @@ cases_res <- cases_i %>%
 ##           simulate_pi = FALSE)
 ## }
 
+cases_res <- cases_res[-(1:3)]
 ```
 
 ```{r }
 
 # handle countries with no results
 countries_missing_asmodee <- setdiff(analysed_countries, names(cases_res))
-if (countries_missing_asmodee) {
+if (length(countries_missing_asmodee)) {
   msg <- paste0("ASMODEE results could not be produced for the following countries:\n",
                 paste(countries_missing_asmodee, collapse = ", "))
   message(msg)
@@ -306,7 +307,7 @@ if (countries_missing_asmodee) {
 
 ```
 
-```{r eval = (countries_missing_asmodee) > 0), echo = FALSE, results = "asis"}
+```{r eval = (length(countries_missing_asmodee) > 0), echo = FALSE, results = "asis"}
 
 cat("**Important note:**<br>")
 cat(gsub("\n", "<br>", msg))
@@ -479,7 +480,7 @@ plot_overall_deaths <- df_dynamics %>%
   ##                size = day_num),
   ##                alpha = 0.5, color = "#F5964F") +
   geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 15,
+  geom_text_repel(aes(label = Country), max.overlaps = 30,
                   max.time = 2, max.iter = 1e5) +
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
@@ -516,7 +517,7 @@ plot_overall_peaks <- df_dynamics %>%
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
   geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 15,
+  geom_text_repel(aes(label = Country), max.overlaps = 30,
                   max.time = 2, max.iter = 1e5) +
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
