@@ -25,8 +25,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width = 8,
                       fig.height = 6,
                       dpi = 70,
-                      warning = FALSE,
-                      message = FALSE)
+                      warning = TRUE,
+                      message = TRUE)
 ```
 
 
@@ -122,18 +122,22 @@ We also remove countries which reported less than 100 cases or tests in the last
 
 ```{r }
 
-to_keep <- cases_i %>%
+analysed_countries <- to_keep <- cases_i %>%
   group_by(report_country) %>%
   summarise(total_cases = sum(cases, na.rm = TRUE),
             total_tests = sum(tests, na.rm = TRUE)) %>%
   filter(total_cases > 10 | total_tests > 10) %>%
   pull(report_country)
 
+notes <- NULL
 removed_countries <- setdiff(cases_i$report_country, to_keep)
-msg <- paste0("The following countries reported < 10 cases/tests over the last 7 weeks\n",
-              "and were not included in further analysis:\n",
-              paste(removed_countries, collapse = ", "))
-message(msg)
+if (length(removed_countries)) {
+  msg <- paste0("The following countries reported < 10 cases/tests over the last 7 weeks ",
+                "and were not included in further analyses:\n",
+                paste(removed_countries, collapse = ", "))
+  message(msg)
+  notes <- c(notes, gsub("\n", "<br>", msg))
+}
 
 n_countries <- length(unique(to_keep))
 
@@ -141,6 +145,14 @@ cases_i <- cases_i %>%
   filter(report_country %in% to_keep)
 
 ```
+
+```{r eval = (length(removed_countries)>0), echo = FALSE, results = "asis"}
+
+cat("**Important note:**<br>")
+cat(notes)
+
+```
+
 
 
 
@@ -281,6 +293,26 @@ cases_res <- cases_i %>%
 
 ```
 
+```{r }
+
+# handle countries with no results
+countries_missing_asmodee <- setdiff(analysed_countries, names(cases_res))
+if (countries_missing_asmodee) {
+  msg <- paste0("ASMODEE results could not be produced for the following countries:\n",
+                paste(countries_missing_asmodee, collapse = ", "))
+  message(msg)
+  notes <- c(notes, gsub("\n", "<br>", msg))
+}
+
+```
+
+```{r eval = (countries_missing_asmodee) > 0), echo = FALSE, results = "asis"}
+
+cat("**Important note:**<br>")
+cat(gsub("\n", "<br>", msg))
+
+```
+
 
 ## Plot with all countries
 
@@ -332,16 +364,19 @@ uncertain trends.
 
 ```{r fig.height = 8, out.width = "90%"}
 
+# estimate the growth rates
 r_df <- cases_i %>%
-  flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
+  select(-deaths, -tests) %>% 
   keep_last(3*7) %>%
-  fit_curve("negbin") %>%
+  fit_curve() %>%
   growth_rate() %>%
-  filter(count_variable == "cases") %>%
   mutate(type = case_when(r_lower > 0 ~ "growth",
                           r_upper < 0 ~ "decline",
                           TRUE ~ "uncertain"),
          factor(type, levels = c("growth", "uncertain", "decline")))
+
+# keep track of countries for which r could not be estimated 
+countries_missing_r <- setdiff(cases_i$report_country, r_df$report_country)
 
 scale_type <- scale_color_manual(
   "Incidence trend",
