@@ -443,7 +443,7 @@ plot_overall_deaths <- df_dynamics %>%
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
   scale_colour_steps(
-    "Days of increase over\nthe last week",
+    "Trend increase over\nthe last week (in days)",
     low = "#5b7bb5",
     high = "#d10031",
     breaks = 0:7) +
@@ -480,7 +480,7 @@ plot_overall_peaks <- df_dynamics %>%
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
   scale_colour_steps(
-    "Days of increase over\nthe last week",
+    "Trend increase over\nthe last week (in days)",
     low = "#5b7bb5",
     high = "#d10031",
     breaks = 0:7) +
@@ -528,7 +528,7 @@ asmodee_outputs <- list(
 ## export asmodee summary
 file_name <- sprintf("asmodee_outputs_%s_%s.rds",
                      paste(params$who_region, collapse = "_"),
-                     max(dat$date))
+                     data_stamp)
 path_out <- here::here("asmodee_outputs", "rds", file_name)
 rio::export(asmodee_outputs, path_out)
 
@@ -554,7 +554,7 @@ Here we save the two key figures showing 'overall dynamics' to *png* files in
 # Deaths PC as y axis
 fig_name <- sprintf("waffle_deaths_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
-                    max(dat$date))
+                    data_stamp)
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
 
 png(fig_path, width = 25, height = 20, units = "cm", res = 150)
@@ -572,7 +572,7 @@ file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 # cases as % historical peak as y axis
 fig_name <- sprintf("waffle_peaks_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
-                    max(dat$date))
+                    data_stamp)
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
 
 png(fig_path, width = 25, height = 20, units = "cm", res = 150)
