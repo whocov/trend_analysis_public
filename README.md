@@ -1,6 +1,5 @@
 Welcome to the WHO COVID-19 trend analysis repository
 ================
-Thibaut Jombart
 
 [![update-trendbreaker](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml)
 
@@ -74,6 +73,10 @@ Links to the *rds* files:
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
 ### PAHO region
+
+The following countries reported \< 10 cases/tests over the last 7 weeks
+and were not included in further analyses:<br>Montserrat, Saint Kitts
+and Nevis, Saint Pierre and Miquelon <br>
 
 #### Infection levels as % of historical incidence peak
 

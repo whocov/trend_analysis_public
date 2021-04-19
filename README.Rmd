@@ -1,12 +1,21 @@
 ---
 title: "Welcome to the WHO COVID-19 trend analysis repository"
-author: "Thibaut Jombart"
 output: 
   github_document:
     html_preview: false
     toc: true
     toc_depth: 3
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      collapse = TRUE,
+                      fig.width = 8,
+                      fig.height = 6,
+                      dpi = 70,
+                      warning = TRUE,
+                      message = TRUE)
+```
 
 [![update-trendbreaker](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml)
 
@@ -53,7 +62,26 @@ Links to the *rds* files:
 
 ## Overall dynamics figures
 
+```{r }
+
+insert_md <- function(x) {
+	cat(readLines(x))
+}
+
+```
+
 ### AFRO region
+
+```{r results = "asis"}
+
+path_to_notes <- here::here("asmodee_outputs", 
+                            "notes",
+                            "analysis_notes_AFRO_latest.md")
+if (file.exists(path_to_notes)) {
+  insert_md(path_to_notes)
+}
+
+```
 
 #### Infection levels as % of historical incidence peak
 
@@ -66,6 +94,17 @@ Links to the *rds* files:
 
 
 ### EMRO region
+
+```{r results = "asis"}
+
+path_to_notes <- here::here("asmodee_outputs", 
+                            "notes",
+                            "analysis_notes_EMRO_latest.md")
+if (file.exists(path_to_notes)) {
+  insert_md(path_to_notes)
+}
+
+```
 
 #### Infection levels as % of historical incidence peak
 
@@ -90,6 +129,17 @@ Links to the *rds* files:
 
 
 ### PAHO region
+
+```{r results = "asis"}
+
+path_to_notes <- here::here("asmodee_outputs", 
+                            "notes",
+                            "analysis_notes_PAHO_latest.md")
+if (file.exists(path_to_notes)) {
+  insert_md(path_to_notes)
+}
+
+```
 
 #### Infection levels as % of historical incidence peak
 
