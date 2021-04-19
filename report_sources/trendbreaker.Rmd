@@ -375,10 +375,13 @@ r_df <- cases_i %>%
                           TRUE ~ "uncertain"),
          factor(type, levels = c("growth", "uncertain", "decline")))
 
+
+
 ```
 
-
 ```{r }
+
+countries_missing_r <- setdiff(analysed_countries, r_df$report_country)
 
 # handle countries with no results
 if (length(countries_missing_r)) {
@@ -566,6 +569,24 @@ plot_overall_peaks
 
 # Export results
 
+## Create needed directories
+
+We create output directories if they don't already exist:
+
+```{r }
+
+target <- here::here("asmodee_outputs")
+if (!dir.exists(target)) dir.create(target)
+
+targets <- c("rds", "png", "notes")
+for (e in targets) {
+  target <- here::here("asmodee_outputs", e)
+  if (!dir.exists(target)) dir.create(target)
+}
+
+```
+
+
 ## Save ASMODEE outputs 
 
 We export the following products for further uses in other systems, in an object
@@ -656,4 +677,20 @@ file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 ## Export notes
 
-TODO...
+```{r }
+
+## export asmodee summary
+file_name <- sprintf("analysis_notes_%s_%s.md",
+                     paste(params$who_region, collapse = "_"),
+                     data_stamp)
+path_out <- here::here("asmodee_outputs", "notes", file_name)
+writeLines(notes, path_out, sep = "\n<br>\n")
+
+## make a copy as latest file
+latest_file_name <- sprintf("analysis_notes_%s_latest.md",
+                            paste(params$who_region, collapse = "_")
+                            )
+latest_path_out <- here::here("asmodee_outputs", "notes", latest_file_name)
+file.copy(from = path_out, to = latest_path_out, overwrite = TRUE)
+
+```
