@@ -101,6 +101,7 @@ path_to_notes <- here::here("asmodee_outputs",
                             "notes",
                             "analysis_notes_EMRO_latest.md")
 if (file.exists(path_to_notes)) {
+  cat("#### Notes\n")
   insert_md(path_to_notes)
 }
 
@@ -117,6 +118,18 @@ if (file.exists(path_to_notes)) {
 
 
 ### EURO region
+
+```{r results = "asis"}
+
+path_to_notes <- here::here("asmodee_outputs", 
+                            "notes",
+                            "analysis_notes_EURO_latest.md")
+if (file.exists(path_to_notes)) {
+  cat("#### Notes\n")
+  insert_md(path_to_notes)
+}
+
+```
 
 #### Infection levels as % of historical incidence peak
 
@@ -136,6 +149,7 @@ path_to_notes <- here::here("asmodee_outputs",
                             "notes",
                             "analysis_notes_PAHO_latest.md")
 if (file.exists(path_to_notes)) {
+  cat("#### Notes\n")
   insert_md(path_to_notes)
 }
 
@@ -153,6 +167,18 @@ if (file.exists(path_to_notes)) {
 
 #### SEARO region
 
+```{r results = "asis"}
+
+path_to_notes <- here::here("asmodee_outputs", 
+                            "notes",
+                            "analysis_notes_SEARO_latest.md")
+if (file.exists(path_to_notes)) {
+  cat("#### Notes\n")
+  insert_md(path_to_notes)
+}
+
+```
+
 #### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
@@ -164,6 +190,18 @@ if (file.exists(path_to_notes)) {
 
 
 ### WPRO region
+
+```{r results = "asis"}
+
+path_to_notes <- here::here("asmodee_outputs", 
+                            "notes",
+                            "analysis_notes_WPRO_latest.md")
+if (file.exists(path_to_notes)) {
+  cat("#### Notes\n")
+  insert_md(path_to_notes)
+}
+
+```
 
 #### Infection levels as % of historical incidence peak
 

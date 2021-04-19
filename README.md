@@ -64,6 +64,12 @@ Links to the *rds* files:
 
 ### EURO region
 
+#### Notes
+
+The following countries reported \< 10 cases/tests over the last 7 weeks
+and were not included in further analyses:<br>Faroe Islands, Greenland,
+Guernsey, Holy See, Tajikistan <br>
+
 #### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
@@ -73,6 +79,8 @@ Links to the *rds* files:
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
 ### PAHO region
+
+#### Notes
 
 The following countries reported \< 10 cases/tests over the last 7 weeks
 and were not included in further analyses:<br>Montserrat, Saint Kitts
@@ -88,6 +96,12 @@ and Nevis, Saint Pierre and Miquelon <br>
 
 #### SEARO region
 
+#### Notes
+
+The following countries reported \< 10 cases/tests over the last 7 weeks
+and were not included in further analyses:<br>Democratic People’s
+Republic of Korea <br>
+
 #### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
@@ -97,6 +111,14 @@ and Nevis, Saint Pierre and Miquelon <br>
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
 ### WPRO region
+
+#### Notes
+
+The following countries reported \< 10 cases/tests over the last 7 weeks
+and were not included in further analyses:<br>American Samoa, Cook
+Islands, Kiribati, Marshall Islands, Micronesia (Federated States of),
+Nauru, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands, Tokelau,
+Tonga, Tuvalu, Vanuatu <br>
 
 #### Infection levels as % of historical incidence peak
 
