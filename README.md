@@ -54,7 +54,9 @@ Links to the *rds* files:
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
-## ——————————-
+-----
+
+-----
 
 ## EMRO region
 
@@ -68,7 +70,9 @@ Links to the *rds* files:
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
-## ——————————-
+-----
+
+-----
 
 ## EURO region
 
@@ -86,7 +90,9 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
-## ——————————-
+-----
+
+-----
 
 ## PAHO region
 
@@ -104,7 +110,9 @@ Miquelon <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
-## ——————————-
+-----
+
+-----
 
 ## SEARO region
 
@@ -121,7 +129,9 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
-## ——————————-
+-----
+
+-----
 
 ## WPRO region
 
