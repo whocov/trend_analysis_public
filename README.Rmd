@@ -186,12 +186,13 @@ msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
                format(latest_date, "%A %d %B %Y"))
 cat(msg)
 
+
 ## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_PAHO_latest.md")
 if (file.exists(path_to_notes)) {
-  cat("#### Notes\n")
+  cat("\n#### Notes\n")
   insert_md(path_to_notes)
 }
 
