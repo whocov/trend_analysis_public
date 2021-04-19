@@ -48,11 +48,11 @@ Links to the *rds* files:
 
 #### Infection levels as % of historical incidence peak
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
 
 
@@ -60,11 +60,11 @@ Links to the *rds* files:
 
 #### Infection levels as % of historical incidence peak
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
 
 
@@ -72,11 +72,11 @@ Links to the *rds* files:
 
 #### Infection levels as % of historical incidence peak
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
 
 
@@ -84,11 +84,11 @@ Links to the *rds* files:
 
 #### Infection levels as % of historical incidence peak
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
 
 
@@ -96,11 +96,11 @@ Links to the *rds* files:
 
 #### Infection levels as % of historical incidence peak
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
 
 
@@ -108,11 +108,11 @@ Links to the *rds* files:
 
 #### Infection levels as % of historical incidence peak
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
 
 #### Infection levels as weekly deaths per 100k
 
-<img src="https://raw.githubusercontent.com/whocov/trend_analysis_public/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
 
 
 
