@@ -6,9 +6,9 @@ Welcome to the WHO COVID-19 trend analysis repository
 **Disclaimer: this repository is work in progress; please do not use
 without contacting the [author](mailto:thibautjombart@gmail.com).**
 
-## Quick links
+# Quick links
 
-### Overall dynamics figures
+## Overall dynamics figures
 
   - [AFRO](https://github.com/whocov/trend_analysis_public#afro-region)
   - [EMRO](https://github.com/whocov/trend_analysis_public#emro-region)
@@ -17,7 +17,7 @@ without contacting the [author](mailto:thibautjombart@gmail.com).**
   - [SEARO](https://github.com/whocov/trend_analysis_public#searo-region)
   - [WPRO](https://github.com/whocov/trend_analysis_public#wpro-region)
 
-### ASMODEE runs
+## ASMODEE runs
 
 This section contains links to *asmodee* results for each WHO region.
 Results are stored as *rds* files, each containing a `list` with the
@@ -40,33 +40,33 @@ Links to the *rds* files:
   - [SEARO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_SEARO_latest.rds)
   - [WPRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_WPRO_latest.rds)
 
-## Overall dynamics figures
+# Overall dynamics figures
 
-### AFRO region
+## AFRO region
 
 <br>Analyses were last updated **Wednesday 14 April 2021**.<br>
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
-### EMRO region
+## EMRO region
 
 <br>Analyses were last updated **Monday 19 April 2021**.<br>
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
-### EURO region
+## EURO region
 
 <br>Analyses were last updated **Monday 19 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
@@ -74,15 +74,15 @@ cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 <br>
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
-### PAHO region
+## PAHO region
 
 <br>Analyses were last updated **Monday 19 April
 2021**.<br><br>**Notes:** The following countries reported \< 10
@@ -90,30 +90,30 @@ cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Montserrat, Saint Kitts and Nevis, Saint Pierre and
 Miquelon <br>
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
-#### SEARO region
+## SEARO region
 
 <br>Analyses were last updated **Monday 19 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
-### WPRO region
+## WPRO region
 
 <br>Analyses were last updated **Monday 19 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
@@ -122,10 +122,10 @@ analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
 Micronesia (Federated States of), Nauru, Niue, Palau, Pitcairn Islands,
 Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu <br>
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">

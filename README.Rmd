@@ -25,9 +25,9 @@ knitr::opts_chunk$set(
 **Disclaimer: this repository is work in progress; please do not use without contacting the [author](mailto:thibautjombart@gmail.com).**
 
 
-## Quick links
+# Quick links
 
-### Overall dynamics figures
+## Overall dynamics figures
 
 * [AFRO](https://github.com/whocov/trend_analysis_public#afro-region)
 * [EMRO](https://github.com/whocov/trend_analysis_public#emro-region)
@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 
 
 
-### ASMODEE runs
+## ASMODEE runs
 
 This section contains links to *asmodee* results for each WHO region. Results
 are stored as *rds* files, each containing a `list` with the following items:
@@ -62,7 +62,7 @@ Links to the *rds* files:
 
 
 
-## Overall dynamics figures
+# Overall dynamics figures
 
 ```{r }
 
@@ -72,7 +72,7 @@ insert_md <- function(x) {
 
 ```
 
-### AFRO region
+## AFRO region
 
 ```{r results = "asis"}
 
@@ -96,17 +96,17 @@ if (file.exists(path_to_notes)) {
 
 ```
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
 
 
-### EMRO region
+## EMRO region
 
 ```{r results = "asis"}
 
@@ -130,17 +130,17 @@ if (file.exists(path_to_notes)) {
 
 ```
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
 
 
-### EURO region
+## EURO region
 
 ```{r results = "asis"}
 
@@ -164,17 +164,17 @@ if (file.exists(path_to_notes)) {
 
 ```
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
 
 
-### PAHO region
+## PAHO region
 
 ```{r results = "asis"}
 
@@ -198,17 +198,17 @@ if (file.exists(path_to_notes)) {
 
 ```
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
 
 
-#### SEARO region
+## SEARO region
 
 ```{r results = "asis"}
 
@@ -232,17 +232,17 @@ if (file.exists(path_to_notes)) {
 
 ```
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
 
 
-### WPRO region
+## WPRO region
 
 ```{r results = "asis"}
 
@@ -266,11 +266,11 @@ if (file.exists(path_to_notes)) {
 
 ```
 
-#### Infection levels as % of historical incidence peak
+### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
 
-#### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
 
