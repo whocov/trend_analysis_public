@@ -68,10 +68,11 @@ Links to the *rds* files:
 
 ### EURO region
 
-<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
-Notes The following countries reported \< 10 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Faroe Islands,
-Greenland, Guernsey, Holy See, Tajikistan <br>
+<br>Analyses were last updated **Monday 19 April
+2021**.<br><br>**Notes** <br>The following countries reported \< 10
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
+<br>
 
 #### Infection levels as % of historical incidence peak
 
@@ -84,7 +85,7 @@ Greenland, Guernsey, Holy See, Tajikistan <br>
 ### PAHO region
 
 <br>Analyses were last updated **Monday 19 April
-2021**.<br><br>**Notes:**The following countries reported \< 10
+2021**.<br><br>**Notes:** The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Montserrat, Saint Kitts and Nevis, Saint Pierre and
 Miquelon <br>
@@ -99,10 +100,10 @@ Miquelon <br>
 
 #### SEARO region
 
-<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
-Notes The following countries reported \< 10 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Democratic People’s
-Republic of Korea <br>
+<br>Analyses were last updated **Monday 19 April
+2021**.<br><br>**Notes** <br>The following countries reported \< 10
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Democratic People’s Republic of Korea <br>
 
 #### Infection levels as % of historical incidence peak
 
@@ -114,12 +115,12 @@ Republic of Korea <br>
 
 ### WPRO region
 
-<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
-Notes The following countries reported \< 10 cases/tests over the last 7
-weeks and were not included in further analyses:<br>American Samoa, Cook
-Islands, Kiribati, Marshall Islands, Micronesia (Federated States of),
-Nauru, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands, Tokelau,
-Tonga, Tuvalu, Vanuatu <br>
+<br>Analyses were last updated **Monday 19 April
+2021**.<br><br>**Notes** <br>The following countries reported \< 10
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
+Micronesia (Federated States of), Nauru, Niue, Palau, Pitcairn Islands,
+Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu <br>
 
 #### Infection levels as % of historical incidence peak
 
