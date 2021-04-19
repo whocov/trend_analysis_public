@@ -192,7 +192,9 @@ path_to_notes <- here::here("asmodee_outputs",
                             "notes",
                             "analysis_notes_PAHO_latest.md")
 if (file.exists(path_to_notes)) {
-  cat("\n#### Notes\n")
+  cat("")
+  cat("#### Notes")
+  cat("")
   insert_md(path_to_notes)
 }
 
