@@ -83,10 +83,11 @@ Greenland, Guernsey, Holy See, Tajikistan <br>
 
 ### PAHO region
 
-<br>Analyses were last updated **Monday 19 April 2021**.<br><br>\#\#\#\#
-Notes<br>The following countries reported \< 10 cases/tests over the
-last 7 weeks and were not included in further analyses:<br>Montserrat,
-Saint Kitts and Nevis, Saint Pierre and Miquelon <br>
+<br>Analyses were last updated **Monday 19 April
+2021**.<br><br>**Notes:**The following countries reported \< 10
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Montserrat, Saint Kitts and Nevis, Saint Pierre and
+Miquelon <br>
 
 #### Infection levels as % of historical incidence peak
 
