@@ -78,10 +78,10 @@ insert_md <- function(x) {
 
 ## find latest results
 latest_results <- rfextras::find_latest(
-  "PAHO",
+  "AFRO",
   where = here::here("asmodee_outputs", "rds"))
 latest_date <- rfextras::extract_date(latest_results)
-msg <- sprintf("<br>Analyses were **last updated %s**.<br>",
+msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
                format(latest_date, "%A %d %B %Y"))
 cat(msg)
 
@@ -109,6 +109,16 @@ if (file.exists(path_to_notes)) {
 
 ```{r results = "asis"}
 
+## find latest results
+latest_results <- rfextras::find_latest(
+  "EMRO",
+  where = here::here("asmodee_outputs", "rds"))
+latest_date <- rfextras::extract_date(latest_results)
+msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
+               format(latest_date, "%A %d %B %Y"))
+cat(msg)
+
+## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_EMRO_latest.md")
@@ -133,6 +143,16 @@ if (file.exists(path_to_notes)) {
 
 ```{r results = "asis"}
 
+## find latest results
+latest_results <- rfextras::find_latest(
+  "EURO",
+  where = here::here("asmodee_outputs", "rds"))
+latest_date <- rfextras::extract_date(latest_results)
+msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
+               format(latest_date, "%A %d %B %Y"))
+cat(msg)
+
+## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_EURO_latest.md")
@@ -157,6 +177,16 @@ if (file.exists(path_to_notes)) {
 
 ```{r results = "asis"}
 
+## find latest results
+latest_results <- rfextras::find_latest(
+  "PAHO",
+  where = here::here("asmodee_outputs", "rds"))
+latest_date <- rfextras::extract_date(latest_results)
+msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
+               format(latest_date, "%A %d %B %Y"))
+cat(msg)
+
+## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_PAHO_latest.md")
@@ -181,6 +211,16 @@ if (file.exists(path_to_notes)) {
 
 ```{r results = "asis"}
 
+## find latest results
+latest_results <- rfextras::find_latest(
+  "SEARO",
+  where = here::here("asmodee_outputs", "rds"))
+latest_date <- rfextras::extract_date(latest_results)
+msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
+               format(latest_date, "%A %d %B %Y"))
+cat(msg)
+
+## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_SEARO_latest.md")
@@ -205,6 +245,16 @@ if (file.exists(path_to_notes)) {
 
 ```{r results = "asis"}
 
+## find latest results
+latest_results <- rfextras::find_latest(
+  "WPRO",
+  where = here::here("asmodee_outputs", "rds"))
+latest_date <- rfextras::extract_date(latest_results)
+msg <- sprintf("<br>Analyses were last updated **%s**.<br>",
+               format(latest_date, "%A %d %B %Y"))
+cat(msg)
+
+## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_WPRO_latest.md")

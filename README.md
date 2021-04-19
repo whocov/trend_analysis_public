@@ -44,7 +44,7 @@ Links to the *rds* files:
 
 ### AFRO region
 
-<br>Analyses were **last updated Monday 19 April 2021**.<br>
+<br>Analyses were last updated **Wednesday 14 April 2021**.<br>
 
 #### Infection levels as % of historical incidence peak
 
@@ -56,6 +56,8 @@ Links to the *rds* files:
 
 ### EMRO region
 
+<br>Analyses were last updated **Monday 19 April 2021**.<br>
+
 #### Infection levels as % of historical incidence peak
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
@@ -66,11 +68,10 @@ Links to the *rds* files:
 
 ### EURO region
 
-#### Notes
-
-The following countries reported \< 10 cases/tests over the last 7 weeks
-and were not included in further analyses:<br>Faroe Islands, Greenland,
-Guernsey, Holy See, Tajikistan <br>
+<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
+Notes The following countries reported \< 10 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Faroe Islands,
+Greenland, Guernsey, Holy See, Tajikistan <br>
 
 #### Infection levels as % of historical incidence peak
 
@@ -82,11 +83,10 @@ Guernsey, Holy See, Tajikistan <br>
 
 ### PAHO region
 
-#### Notes
-
-The following countries reported \< 10 cases/tests over the last 7 weeks
-and were not included in further analyses:<br>Montserrat, Saint Kitts
-and Nevis, Saint Pierre and Miquelon <br>
+<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
+Notes The following countries reported \< 10 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Montserrat, Saint
+Kitts and Nevis, Saint Pierre and Miquelon <br>
 
 #### Infection levels as % of historical incidence peak
 
@@ -98,10 +98,9 @@ and Nevis, Saint Pierre and Miquelon <br>
 
 #### SEARO region
 
-#### Notes
-
-The following countries reported \< 10 cases/tests over the last 7 weeks
-and were not included in further analyses:<br>Democratic People’s
+<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
+Notes The following countries reported \< 10 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Democratic People’s
 Republic of Korea <br>
 
 #### Infection levels as % of historical incidence peak
@@ -114,10 +113,9 @@ Republic of Korea <br>
 
 ### WPRO region
 
-#### Notes
-
-The following countries reported \< 10 cases/tests over the last 7 weeks
-and were not included in further analyses:<br>American Samoa, Cook
+<br>Analyses were last updated **Monday 19 April 2021**.<br>\#\#\#\#
+Notes The following countries reported \< 10 cases/tests over the last 7
+weeks and were not included in further analyses:<br>American Samoa, Cook
 Islands, Kiribati, Marshall Islands, Micronesia (Federated States of),
 Nauru, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands, Tokelau,
 Tonga, Tuvalu, Vanuatu <br>
