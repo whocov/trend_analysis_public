@@ -44,10 +44,6 @@ Links to the *rds* files:
 
 ### AFRO region
 
-    ## lubridate::ymd could not find dates in files matching PAHO
-
-    ## Found file: 'asmodee_outputs_PAHO_2021-04-19.rds'
-
 <br>Analyses were **last updated Monday 19 April 2021**.<br>
 
 #### Infection levels as % of historical incidence peak

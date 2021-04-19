@@ -12,7 +12,9 @@ output:
 knitr::opts_chunk$set(
   echo = FALSE,
   eval = TRUE,
-  include = TRUE
+  include = TRUE,
+  warning = FALSE,
+  message = FALSE
 )
 
 ```
