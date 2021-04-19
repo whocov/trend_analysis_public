@@ -7,14 +7,14 @@ output:
     toc_depth: 3
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
-                      collapse = TRUE,
-                      fig.width = 8,
-                      fig.height = 6,
-                      dpi = 70,
-                      warning = TRUE,
-                      message = TRUE)
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  include = TRUE
+)
+
 ```
 
 [![update-trendbreaker](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml)
