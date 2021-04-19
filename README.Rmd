@@ -74,6 +74,16 @@ insert_md <- function(x) {
 
 ```{r results = "asis"}
 
+## find latest results
+latest_results <- rfextras::find_latest(
+  "PAHO",
+  where = here::here("asmodee_outputs", "rds"))
+latest_date <- rfextras::extract_date(latest_results)
+msg <- sprintf("<br>Analyses were **last updated %s**.<br>",
+               format(latest_date, "%A %d %B %Y"))
+cat(msg)
+
+## handle notes
 path_to_notes <- here::here("asmodee_outputs", 
                             "notes",
                             "analysis_notes_AFRO_latest.md")
