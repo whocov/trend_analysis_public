@@ -54,6 +54,8 @@ Links to the *rds* files:
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
+## ——————————-
+
 ## EMRO region
 
 <br>Analyses were last updated **Monday 19 April 2021**.<br>
@@ -65,6 +67,8 @@ Links to the *rds* files:
 ### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
+
+## ——————————-
 
 ## EURO region
 
@@ -82,6 +86,8 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
+## ——————————-
+
 ## PAHO region
 
 <br>Analyses were last updated **Monday 19 April
@@ -98,6 +104,8 @@ Miquelon <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
+## ——————————-
+
 ## SEARO region
 
 <br>Analyses were last updated **Monday 19 April
@@ -112,6 +120,8 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 ### Infection levels as weekly deaths per 100k
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
+
+## ——————————-
 
 ## WPRO region
 

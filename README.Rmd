@@ -106,6 +106,9 @@ if (file.exists(path_to_notes)) {
 
 
 
+-------------------------------
+-------------------------------
+
 ## EMRO region
 
 ```{r results = "asis"}
@@ -139,6 +142,9 @@ if (file.exists(path_to_notes)) {
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
 
+
+-------------------------------
+-------------------------------
 
 ## EURO region
 
@@ -174,6 +180,9 @@ if (file.exists(path_to_notes)) {
 
 
 
+-------------------------------
+-------------------------------
+
 ## PAHO region
 
 ```{r results = "asis"}
@@ -208,6 +217,9 @@ if (file.exists(path_to_notes)) {
 
 
 
+-------------------------------
+-------------------------------
+
 ## SEARO region
 
 ```{r results = "asis"}
@@ -241,6 +253,9 @@ if (file.exists(path_to_notes)) {
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
 
+
+-------------------------------
+-------------------------------
 
 ## WPRO region
 
