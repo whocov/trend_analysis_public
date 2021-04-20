@@ -276,14 +276,13 @@ threshold (here, 1/100 of the median). This is done separately for each country.
 # run asmodee
 cases_res <- cases_i %>%
 ##  flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
-  asmodee(cases_models, fixed_k = 7, method = evaluate_aic,
-          include_warnings = FALSE,
-          simulate_pi = FALSE,
-          n_cores = params$n_cores)
+  asmodee(cases_models, k = 7,
+          simulate_pi = FALSE)
 
 # keep only successful runs
-to_keep <- vapply(cases_res, inherits, logical(1), "trendbreaker")
-cases_res <- cases_res[to_keep]
+to_keep <- vapply(cases_res$output, inherits, logical(1), "trendbreaker")
+cases_res <- cases_res %>%
+  filter(to_keep)
 
 ## ## for loop for debugging purposes
 ## split_x <- cases_i %>%
@@ -301,7 +300,7 @@ cases_res <- cases_res[to_keep]
 ```{r }
 
 # handle countries with no results
-countries_missing_asmodee <- setdiff(analysed_countries, names(cases_res))
+countries_missing_asmodee <- setdiff(analysed_countries, cases_res$group)
 if (length(countries_missing_asmodee)) {
   msg <- paste0("ASMODEE results could not be produced for the following countries:\n",
                 paste(countries_missing_asmodee, collapse = ", "))
@@ -510,7 +509,7 @@ plot_overall_deaths <- df_dynamics %>%
   ##                size = day_num),
   ##                alpha = 0.5, color = "#F5964F") +
   geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 35,
+  geom_text_repel(aes(label = Country), max.overlaps = 40,
                   max.time = 2, max.iter = 1e5) +
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
@@ -547,7 +546,7 @@ plot_overall_peaks <- df_dynamics %>%
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
   geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 35,
+  geom_text_repel(aes(label = Country), max.overlaps = 40,
                   max.time = 2, max.iter = 1e5) +
   scale_size("Days before\nlast lockdown",
              trans = "reverse") +
