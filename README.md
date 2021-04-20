@@ -44,14 +44,10 @@ Links to the *rds* files:
 
 ## AFRO region
 
-<br>Analyses were last updated **Monday 19 April
+<br>Analyses were last updated **Tuesday 20 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>United Republic of Tanzania <br> ASMODEE results could not
-be produced for the following countries:<br>Algeria, Congo, Democratic
-Republic of the Congo, Lesotho, Liberia, Réunion, Rwanda <br> Estimates
-of *r* could not be produced for the following countries:<br>Comoros
-<br>
+analyses:<br>Saint Helena, United Republic of Tanzania <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -67,7 +63,7 @@ of *r* could not be produced for the following countries:<br>Comoros
 
 ## EMRO region
 
-<br>Analyses were last updated **Monday 19 April 2021**.<br>
+<br>Analyses were last updated **Tuesday 20 April 2021**.<br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -83,7 +79,7 @@ of *r* could not be produced for the following countries:<br>Comoros
 
 ## EURO region
 
-<br>Analyses were last updated **Monday 19 April
+<br>Analyses were last updated **Tuesday 20 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
@@ -103,7 +99,7 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 ## PAHO region
 
-<br>Analyses were last updated **Monday 19 April
+<br>Analyses were last updated **Tuesday 20 April
 2021**.<br><br>**Notes:** The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Montserrat, Saint Kitts and Nevis, Saint Pierre and
@@ -123,7 +119,7 @@ Miquelon <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 19 April
+<br>Analyses were last updated **Tuesday 20 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
@@ -142,7 +138,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 ## WPRO region
 
-<br>Analyses were last updated **Monday 19 April
+<br>Analyses were last updated **Tuesday 20 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
