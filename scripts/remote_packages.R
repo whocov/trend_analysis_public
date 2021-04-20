@@ -23,7 +23,7 @@ if (file.exists(phifunc_token_file)) {
 remotes::install_github("reconhub/trending", upgrade = "never")
 remotes::install_github("reconverse/incidence2", upgrade = "never")
 remotes::install_github("reconverse/i2extras", upgrade = "never")
-remotes::install_github("reconhub/trendbreaker@capturing", upgrade = "never")
+remotes::install_github("reconhub/trendbreaker@capturing2", upgrade = "never")
 
 if (!is.null(phifunc_token) & !require("phifunc")) {
   remotes::install_github(

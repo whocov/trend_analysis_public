@@ -40,6 +40,7 @@ rfextras::load_scripts()
 
 ```
 
+
 ## Packages
 
 All CRAN packages can be installed by calling `reportfactory::install_deps()`.
@@ -51,7 +52,8 @@ Package installs on remotes are now handled in a separate script
 
 pacman::p_load(
             tidyverse, # data management
-            ggrepel # plots
+            ggrepel, # plots
+            future # parallelisation
         )
 
 ## remotes loaded separately
@@ -60,6 +62,19 @@ library(trendeval)
 library(trendbreaker)
 library(incidence2)
 library(i2extras)
+
+```
+
+
+## Parallelisation
+
+We use *future* to handle parallelisation on separate R processes (rather than
+multithreading, not supported on windows), which should work across different
+platforms:
+
+```{r }
+
+plan("multisession", workers = params$n_cores)
 
 ```
 
@@ -273,11 +288,13 @@ To circumvent the issue, we use the new feature from *i2extras* called
 threshold (here, 1/100 of the median). This is done separately for each country.
 
 ```{r }
+
 # run asmodee
 cases_res <- cases_i %>%
 ##  flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
   asmodee(cases_models, k = 7,
           simulate_pi = FALSE)
+
 
 # keep only successful runs
 to_keep <- vapply(cases_res$output, inherits, logical(1), "trendbreaker")
@@ -300,7 +317,7 @@ cases_res <- cases_res %>%
 ```{r }
 
 # handle countries with no results
-countries_missing_asmodee <- setdiff(analysed_countries, cases_res$group)
+countries_missing_asmodee <- setdiff(analysed_countries, cases_res$report_country)
 if (length(countries_missing_asmodee)) {
   msg <- paste0("ASMODEE results could not be produced for the following countries:\n",
                 paste(countries_missing_asmodee, collapse = ", "))
@@ -337,7 +354,7 @@ We use `summary` to have an overview of outliers by country:
 
 cases_outliers <- cases_res %>%
   summary() %>%
-  select(Country = group,
+  select(Country = report_country,
          n_recent_increases,
          n_recent_decreases,
          p_recent_outliers)
@@ -501,28 +518,29 @@ scale_signif <- scale_shape_manual(
 
 plot_overall_deaths <- df_dynamics %>%
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
-  # geom_segment(aes(x = r_lower, xend = r_upper, yend = incid_last_week)) + 
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
-  ## geom_hline(data = df_thresholds,
-  ##            aes(yintercept = thres,
-  ##                size = day_num),
-  ##                alpha = 0.5, color = "#F5964F") +
   geom_point(aes(shape = r_signif), size = 3) +
   geom_text_repel(aes(label = Country), max.overlaps = 40,
                   max.time = 2, max.iter = 1e5) +
-  scale_size("Days before\nlast lockdown",
-             trans = "reverse") +
   scale_colour_steps(
-    "Trend increase over\nthe last week (in days)",
+    "Days in last week\nabove\nexpectations",
     low = "#5b7bb5",
     high = "#d10031",
     breaks = 0:7) +
   scale_signif +
-  labs(x = "Daily growth rate",
+  labs(x = "Growth rate of daily cases",
        y = "Week's death incidence per 100k inhabitants"
        ) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
 
 plot_overall_deaths
 
@@ -548,19 +566,25 @@ plot_overall_peaks <- df_dynamics %>%
   geom_point(aes(shape = r_signif), size = 3) +
   geom_text_repel(aes(label = Country), max.overlaps = 40,
                   max.time = 2, max.iter = 1e5) +
-  scale_size("Days before\nlast lockdown",
-             trans = "reverse") +
   scale_colour_steps(
-    "Trend increase over\nthe last week (in days)",
+    "Days in last week\nabove\nexpectations",
     low = "#5b7bb5",
     high = "#d10031",
     breaks = 0:7) +
   scale_y_continuous(labels = scales::percent) +
   scale_signif +
-  labs(x = "Daily growth rate",
+  labs(x = "Growth rate of daily cases",
        y = "Last week's incidence\n(% of historical peak, excluding last 90 days)"
        ) +
-  theme(legend.position = "bottom")
+ theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
 
 plot_overall_peaks
 
@@ -646,7 +670,7 @@ fig_name <- sprintf("waffle_deaths_%s_%s.png",
                     data_stamp)
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
 
-png(fig_path, width = 25, height = 20, units = "cm", res = 150)
+png(fig_path, width = 22, height = 18, units = "cm", res = 150)
 print(plot_overall_deaths)
 dev.off()
 
@@ -664,7 +688,7 @@ fig_name <- sprintf("waffle_peaks_%s_%s.png",
                     data_stamp)
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
 
-png(fig_path, width = 25, height = 20, units = "cm", res = 150)
+png(fig_path, width = 22, height = 18, units = "cm", res = 150)
 print(plot_overall_peaks)
 dev.off()
 
