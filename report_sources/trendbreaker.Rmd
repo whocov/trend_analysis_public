@@ -530,11 +530,13 @@ plot_overall_deaths <- df_dynamics %>%
     breaks = 0:7) +
   scale_signif +
   labs(x = "Growth rate of daily cases",
-       y = "Week's death incidence per 100k inhabitants"
-       ) +
+       y = "Week's death incidence per 100k inhabitants",
+       subtitle = sprintf("Last data update: %s",
+                          format(data_stamp, "%A %d %B %Y"))) +
   theme(legend.position = "bottom",
         axis.text = element_text(size = 12),
         axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
         legend.text = element_text(size = 12),
         legend.title = element_text(size = 14),
         legend.title.align = 0.5) +
@@ -574,11 +576,13 @@ plot_overall_peaks <- df_dynamics %>%
   scale_y_continuous(labels = scales::percent) +
   scale_signif +
   labs(x = "Growth rate of daily cases",
-       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)"
-       ) +
- theme(legend.position = "bottom",
+       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)",
+       subtitle = sprintf("Last data update: %s",
+                          format(data_stamp, "%A %d %B %Y"))) +
+  theme(legend.position = "bottom",
         axis.text = element_text(size = 12),
         axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
         legend.text = element_text(size = 12),
         legend.title = element_text(size = 14),
         legend.title.align = 0.5) +
