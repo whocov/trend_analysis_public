@@ -711,6 +711,10 @@ file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 ```{r }
 
+if (is.null(notes)) {
+  notes <- "Nothing to report. All countries were successfully included in the analyses."
+}
+
 ## export asmodee summary
 file_name <- sprintf("analysis_notes_%s_%s.md",
                      paste(params$who_region, collapse = "_"),
