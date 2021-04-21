@@ -63,7 +63,9 @@ analyses:<br>Saint Helena, United Republic of Tanzania <br>
 
 ## EMRO region
 
-<br>Analyses were last updated **Wednesday 21 April 2021**.<br>
+<br>Analyses were last updated **Wednesday 21 April
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
