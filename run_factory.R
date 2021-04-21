@@ -21,3 +21,7 @@ for (reg in regions) {
   ##                 params = list(who_region = reg, n_cores = 12),
   ##                 subfolder = reg)
 }
+
+
+# update README
+rmarkdown::render('README.Rmd')

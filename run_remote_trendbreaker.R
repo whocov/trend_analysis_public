@@ -19,3 +19,9 @@ for (reg in regions) {
   params <- list(who_region = reg)
   try(source("trendbreaker.R"), silent = TRUE)
 }
+
+
+
+# Update README - using a failsafe for now as it is unclear if pandoc will
+# create problems
+try(rmarkdown::render('README.Rmd'), silent = TRUE)
