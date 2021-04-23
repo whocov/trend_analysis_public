@@ -468,8 +468,8 @@ df_recent_incid <- cases_i %>%
   summarise(n_cases = sum(cases),
             n_deaths = sum(deaths)) %>%
   left_join(df_pop) %>%
-  mutate(case_incid_last_week = 1e5 * n_cases / population,
-         death_incid_last_week = 1e5 * n_deaths / population)
+  mutate(case_incid_last_week = 1e6 * n_cases / population,
+         death_incid_last_week = 1e6 * n_deaths / population)
 
 # Table containing r, recent increases, incidence per 1000
 df_dynamics <- cases_outliers %>%
@@ -483,7 +483,8 @@ df_peaks <- dat %>%
          date <= (data_stamp - 90)) %>%
   group_by(report_country) %>%
   summarise(incid_peak = max(case_new_7d_100k, na.rm = TRUE)) %>%
-  filter(incid_peak > 10)
+  filter(incid_peak > 10) %>%
+  mutate(incid_peak = incid_peak * 10) # incidence per 100k -> 1M
 
 df_dynamics <- df_dynamics %>%
   left_join(df_peaks %>% rename(Country = report_country)) %>%
@@ -530,7 +531,7 @@ plot_overall_deaths <- df_dynamics %>%
     breaks = 0:7) +
   scale_signif +
   labs(x = "Growth rate of daily cases",
-       y = "Week's death incidence per 100k inhabitants",
+       y = "Weekly COVID-19 deaths per 1M inhabitants",
        subtitle = sprintf("Last data update: %s",
                           format(data_stamp, "%A %d %B %Y"))) +
   theme(legend.position = "bottom",
