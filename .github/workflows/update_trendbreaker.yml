@@ -5,7 +5,7 @@ name: update-trendbreaker
 # events but only for the master branch, as well as 1200 every day
 on:
   schedule:
-     - cron:  '00 11,16 * * *'
+     - cron:  '30,00 14,20 * * *'
   workflow_dispatch:
     inputs:
       whoregion:
