@@ -195,9 +195,6 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
-† All references to Kosovo should be understood to be in the context of
-the United Nations Security Council resolution 1244 (1999).
-
 ### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
