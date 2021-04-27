@@ -7,12 +7,13 @@ Welcome to the WHO COVID-19 trend analysis repository
 
 ## General disclaimer
 
-This repository contais work in progress, used internally at WHO for
-country-level surveillance of COVID-19 dynamics. Its content should not
-be used for publications without explicit aggreement from the authors.
-The accuracy of the estimates provided in these analyses is contingent
-on data quality and availability. Results presented here do not
-represent the official view of the WHO, its staff or consultants.
+This repository contains work in progress. It implements an automated
+data pipeline for country-level surveillance of COVID-19 dynamics using
+publicly available data. Its content should not be used for publications
+without explicit agreement from the authors. The accuracy of the
+estimates provided in these analyses is contingent on data quality and
+availability. Results presented here do not represent the official view
+of the WHO, its staff or consultants.
 
 Countries, territories and areas as reported here do not imply the
 expression of any opinion whatsoever on the part of WHO concerning the
@@ -118,6 +119,10 @@ Jombart](mailto:thibautjombart@gmail.com).
 ### License
 
 This repository is distributed under MIT license (see attached files).
+
+### Code of Conduct
+
+This project is submitted to a [code of conduct](CONDUCT.md).
 
 -----
 
