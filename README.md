@@ -3,8 +3,81 @@ Welcome to the WHO COVID-19 trend analysis repository
 
 [![update-trendbreaker](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml)
 
-**Disclaimer: this repository is work in progress; please do not use
-without contacting the [author](mailto:thibautjombart@gmail.com).**
+# Preamble
+
+## General disclaimer
+
+This repository contais work in progress, used internally at WHO for
+country-level surveillance of COVID-19 dynamics. Its content should not
+be used for publications without explicit aggreement from the authors.
+The accuracy of the estimates provided in these analyses is contingent
+on data quality and availability. Results presented here do not
+represent the official view of the WHO, its staff or consultants.
+
+Countries, territories and areas as reported here do not imply the
+expression of any opinion whatsoever on the part of WHO concerning the
+legal status of any country, territory or area or of its authorities.
+
+We seek to provide results for all countries in all WHO regions. For
+technical reasons (missing data, low incidence, model not successfully
+fitting to the data), results may not be available for some countries.
+Where this happens, the list of missing countries is indicated in the
+relevant sections.
+
+## Content of this repository
+
+This repository provides country-level analyses of COVID-19 dynamics
+characterised as summary figures, which outline:
+
+  - **x-axis**: the daily growth rate of reported cases
+  - **y-axis**: the current level of infections in the country (using 2
+    different metrics, see below)
+  - **color**: indications of increase in transmissibility from ASMODEE
+
+The sections below provides details on these elements.
+
+### Growth rates
+
+The daily growth rate is estimated by fitting a Poisson GLM to reported
+cases over the last 3 weeks. Note that whilst it is able to fit most
+countries, this model may underestimate uncertainty. See [this
+issue](https://github.com/whocov/trend_analysis_public/issues/4) and
+[this one](https://github.com/whocov/trend_analysis_public/issues/5) for
+discussions on future improvements.
+
+### Current levels of infection
+
+Two metrics are used as proxy for the current levels of infection:
+
+1.  *% of historical peak of case incidence*: this metric uses the
+    highest case incidence reported over a weekly time window, excluding
+    the last 90 days of data; this metric works in most cases, but there
+    are several caveats:
+      - the last peak may have happened in the last 90 days
+      - some countries with a slow, continuous build-up of cases and no
+        previous waves do not have a ‘peak’
+      - increases in case incidence may reflect increases in
+        testing/surveillance
+2.  *death incidence per 1M inhabitants*: this metric is less sensitive
+    to testing or case reporting; however, it does not solely reflect
+    changes in COVID-19 dynamics, and is likely impacted by healthcare
+    infrastructure
+
+### Recent increases detected by ASMODEE
+
+ASMODEE (**A**utomated **S**election of **M**odels and **D**etection of
+**O**utliers for **E**pid**E**mics) is a new method for detecting recent
+changes of trend in case incidence data. The initial publication
+(Jombart et al. 2021 Phil Trans B) describing the method is currently in
+press, and will be linked as soon as available.
+
+## Contributors
+
+This pipeline benefits from the contributions of the WHO COVID-19
+analytics team, with feedback and inputs from many colleagues outside
+the team.
+
+-----
 
 # Quick links
 
@@ -44,10 +117,12 @@ Links to the *rds* files:
 
 ## AFRO region
 
-<br>Analyses were last updated **Monday 26 April
+<br>Analyses were last updated **Tuesday 27 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Saint Helena, United Republic of Tanzania <br>
+analyses:<br>Saint Helena, United Republic of Tanzania <br> Estimates of
+*r* could not be produced for the following countries:<br>Sao Tome and
+Principe <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -63,7 +138,7 @@ analyses:<br>Saint Helena, United Republic of Tanzania <br>
 
 ## EMRO region
 
-<br>Analyses were last updated **Monday 26 April
+<br>Analyses were last updated **Tuesday 27 April
 2021**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
@@ -81,7 +156,7 @@ successfully included in the analyses. <br>
 
 ## EURO region
 
-<br>Analyses were last updated **Monday 26 April
+<br>Analyses were last updated **Tuesday 27 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
@@ -101,7 +176,7 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 ## PAHO region
 
-<br>Analyses were last updated **Monday 26 April
+<br>Analyses were last updated **Tuesday 27 April
 2021**.<br><br>**Notes:** The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Grenada, Montserrat, Saint Kitts and Nevis, Saint Pierre
@@ -121,7 +196,7 @@ and Miquelon <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 26 April
+<br>Analyses were last updated **Tuesday 27 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
@@ -140,7 +215,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 ## WPRO region
 
-<br>Analyses were last updated **Monday 26 April
+<br>Analyses were last updated **Tuesday 27 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 10
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
