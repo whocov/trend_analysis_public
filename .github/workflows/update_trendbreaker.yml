@@ -48,6 +48,7 @@ jobs:
           reportfactory::install_deps(upgrade = "never")
           remotes::install_github("reconhub/incidence2", upgrade = "never")
           remotes::install_github("reconhub/trendbreaker", upgrade = "never")
+          install.packages("ggnewscale") # unstated dep: phifunc
         shell: Rscript {0}
  
       - name: Run data updates and trendbreaker on all WHO regions
