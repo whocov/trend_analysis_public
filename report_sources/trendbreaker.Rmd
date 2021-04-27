@@ -396,7 +396,14 @@ r_df <- cases_i %>%
                           TRUE ~ "uncertain"),
          factor(type, levels = c("growth", "uncertain", "decline")))
 
-
+## # code used to troubleshoot specific sets of countries
+## cases_i %>%
+##   select(-deaths, -tests) %>% 
+##   keep_last(3 * 7) %>%
+##   fit_curve() %>% 
+##   filter(report_country %in% "Philippines") %>%
+##   plot() +
+##   scale_x_date()
 
 ```
 
@@ -423,7 +430,7 @@ cat(gsub("\n", "<br>", msg))
 
 
 
-```r
+```{r }
 
 scale_type <- scale_color_manual(
   "Incidence trend",
