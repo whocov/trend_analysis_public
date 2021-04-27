@@ -15,9 +15,22 @@ estimates provided in these analyses is contingent on data quality and
 availability. Results presented here do not represent the official view
 of the WHO, its staff or consultants.
 
-Countries, territories and areas as reported here do not imply the
-expression of any opinion whatsoever on the part of WHO concerning the
-legal status of any country, territory or area or of its authorities.
+Caution must be taken when interpreting all data presented, and
+differences between information products published by WHO, national
+public health authorities, and other sources using different inclusion
+criteria and different data cut-off times are to be expected. While
+steps are taken to ensure accuracy and reliability, all data are subject
+to continuous verification and change. All counts are subject to
+variations in case detection, definitions, laboratory testing,
+vaccination strategy, and reporting strategies. See
+<https://covid19.who.int/info/> for further background and other
+important considerations surrounding the source data.
+
+The designations employed and the presentation of these materials do not
+imply the expression of any opinion whatsoever on the part of WHO
+concerning the legal status of any country, territory or area or of its
+authorities, or concerning the delimitation of its frontiers or
+boundaries.
 
 We seek to provide results for all countries in all WHO regions. For
 technical reasons (missing data, low incidence, model not successfully
@@ -182,9 +195,15 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
+† All references to Kosovo should be understood to be in the context of
+the United Nations Security Council resolution 1244 (1999).
+
 ### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
+
+† All references to Kosovo should be understood to be in the context of
+the United Nations Security Council resolution 1244 (1999).
 
 -----
 
@@ -197,6 +216,15 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Grenada, Montserrat, Saint Kitts and Nevis, Saint Pierre
 and Miquelon <br>
+
+**Notes of geographic units**:
+
+  - a dispute exists between the Governments of Argentina and the United
+    Kingdom of Great Britain and Northern Ireland concerning sovereignty
+    over the Falkland Islands (Malvinas)
+
+  - data for Bonaire, Sint Eustatius and Saba have been disaggregated
+    and displayed at the subnational level.
 
 ### Infection levels as % of historical incidence peak
 
