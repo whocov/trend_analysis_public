@@ -538,7 +538,16 @@ This figure reports:
 scale_signif <- scale_shape_manual(
   "Significant growth/decline",
   values = c(yes = 19, no = 1)
-  )
+)
+
+
+scale_asmodee <- scale_colour_steps(
+  "Days in last week\nabove\nexpectations",
+  low = "#5b7bb5",
+  high = "#d10031",
+  breaks = 0:7,
+  limits = c(0,7))
+
 
 plot_overall_deaths <- df_dynamics %>%
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
@@ -547,12 +556,8 @@ plot_overall_deaths <- df_dynamics %>%
   geom_point(aes(shape = r_signif), size = 3) +
   geom_text_repel(aes(label = Country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
-  scale_colour_steps(
-    "Days in last week\nabove\nexpectations",
-    low = "#5b7bb5",
-    high = "#d10031",
-    breaks = 0:7) +
   scale_signif +
+  scale_asmodee +
   labs(x = "Growth rate of daily cases",
        y = "Weekly COVID-19 deaths per 1M inhabitants",
        subtitle = sprintf("Last data update: %s",
@@ -592,13 +597,9 @@ plot_overall_peaks <- df_dynamics %>%
   geom_point(aes(shape = r_signif), size = 3) +
   geom_text_repel(aes(label = Country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
-  scale_colour_steps(
-    "Days in last week\nabove\nexpectations",
-    low = "#5b7bb5",
-    high = "#d10031",
-    breaks = 0:7) +
   scale_y_continuous(labels = scales::percent) +
   scale_signif +
+  scale_asmodee +
   labs(x = "Growth rate of daily cases",
        y = "Last week's incidence\n(% of historical peak, excluding last 90 days)",
        subtitle = sprintf("Last data update: %s",
