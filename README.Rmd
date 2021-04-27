@@ -89,12 +89,60 @@ Phil Trans B) describing the method is currently in press, and will be linked as
 soon as available.
 
 
-## Contributors
+## Acknowledgements
+
+### Contributors
 
 This pipeline benefits from the contributions of the WHO COVID-19 analytics
-team, with feedback and inputs from many colleagues outside the team.
+team, with feedback and inputs from colleagues outside the team. Contributions
+are listed by alphabetic order:
+
+Code, data and original design:
+
+* Neale Batra
+* Yuka Jinnai
+* Thibaut Jombart
+* Olivier le Polain
+* Henry Laurenson-Schafer
+* Katelijn Vandemaele
+
+Contributed ideas and feedback:
+
+* Brett Archer
+* Raquel Medialdea Carrera
+* Esther Hamblion
+* Orlagh Ingeborg
+* Zyleen Kassamali
 
 
+### Sending feedback
+
+Feedback is welcome via github [issues](https://github.com/whocov/trend_analysis_public/issues). 
+When filing a new issue:
+ 
+* first check if a similar issue already exists
+* specify whether this is a bug report or a feature request
+
+
+### Contributing to this repository
+
+Contributions to this repository are welcome through 
+[pull requests](https://github.com/whocov/trend_analysis_public/pulls).
+
+
+### Contact
+
+For further enquiries, send an email to [Thibaut Jombart](mailto:thibautjombart@gmail.com).
+
+
+### License
+
+This repository is distributed under MIT license (see attached files).
+
+
+
+
+-----------------------
 
 -----------------------
 
