@@ -483,8 +483,8 @@ df_peaks <- dat %>%
          date <= (data_stamp - 90)) %>%
   group_by(report_country) %>%
   summarise(incid_peak = max(case_new_7d_100k, na.rm = TRUE)) %>%
-  filter(incid_peak > 10) %>%
-  mutate(incid_peak = incid_peak * 10) # incidence per 100k -> 1M
+  mutate(incid_peak = incid_peak * 10) %>% # incidence per 100k -> 1M
+  filter(incid_peak > 0) # to avoid dividing by zero
 
 df_dynamics <- df_dynamics %>%
   left_join(df_peaks %>% rename(Country = report_country)) %>%
@@ -500,6 +500,29 @@ df_dynamics <- df_dynamics %>%
          net_increases = if_else(net_increases > 0L, net_increases, 0L))
 
 ```
+
+
+```{r }
+
+countries_missing_peak <- setdiff(analysed_countries, df_peaks$report_country)
+
+# handle countries with no results
+if (length(countries_missing_peak)) {
+  msg <- paste0("Past incidence peaks could not be found for the following countries:\n",
+                paste(countries_missing_peak, collapse = ", "))
+  message(msg)
+  notes <- c(notes, gsub("\n", "<br>", msg))
+}
+
+```
+
+```{r eval = (length(countries_missing_peak) > 0), echo = FALSE, results = "asis"}
+
+cat("**Important note:**<br>")
+cat(gsub("\n", "<br>", msg))
+
+```
+
 
 
 ## Deaths, growth rates and changes
@@ -522,7 +545,7 @@ plot_overall_deaths <- df_dynamics %>%
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
   geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 40,
+  geom_text_repel(aes(label = Country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_colour_steps(
     "Days in last week\nabove\nexpectations",
@@ -567,7 +590,7 @@ plot_overall_peaks <- df_dynamics %>%
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
   geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 40,
+  geom_text_repel(aes(label = Country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_colour_steps(
     "Days in last week\nabove\nexpectations",
