@@ -100,7 +100,7 @@ if (file.exists(path_to_notes)) {
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
@@ -139,7 +139,7 @@ if (file.exists(path_to_notes)) {
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
@@ -177,7 +177,7 @@ if (file.exists(path_to_notes)) {
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
@@ -215,7 +215,7 @@ if (file.exists(path_to_notes)) {
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
@@ -253,7 +253,7 @@ if (file.exists(path_to_notes)) {
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
@@ -291,7 +291,7 @@ if (file.exists(path_to_notes)) {
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
 

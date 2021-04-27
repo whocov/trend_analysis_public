@@ -53,7 +53,7 @@ analyses:<br>Saint Helena, United Republic of Tanzania <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
 
@@ -71,7 +71,7 @@ successfully included in the analyses. <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
 
@@ -91,7 +91,7 @@ analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
 
@@ -111,7 +111,7 @@ and Miquelon <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
 
@@ -130,7 +130,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
 
@@ -153,6 +153,6 @@ of *r* could not be produced for the following countries:<br>New Zealand
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
 
-### Infection levels as weekly deaths per 100k
+### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
