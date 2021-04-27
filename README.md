@@ -72,57 +72,24 @@ changes of trend in case incidence data. The initial publication
 (Jombart et al. 2021 Phil Trans B) describing the method is currently in
 press, and will be linked as soon as available.
 
-## Acknowledgements
+## Getting in touch
 
-### Contributors
+  - For bug reports, feature requests, or general feedback, please use
+    github
+    [issues](https://github.com/whocov/trend_analysis_public/issues).
 
-This pipeline benefits from the contributions of the WHO COVID-19
-analytics team, with feedback and inputs from colleagues outside the
-team. Contributions are listed by alphabetic order:
+  - You have questions, ideas, or comments you would like to share? Join
+    our [discussion
+    forum](https://github.com/whocov/trend_analysis_public/discussions).
 
-Code, data and original design:
+  - Contributions to this repository are welcome through [pull
+    requests](https://github.com/whocov/trend_analysis_public/pulls).
 
-  - Neale Batra
-  - Yuka Jinnai
-  - Thibaut Jombart
-  - Olivier le Polain
-  - Henry Laurenson-Schafer
-  - Katelijn Vandemaele
+  - For further enquiries, send an email to [Thibaut
+    Jombart](mailto:thibautjombart@gmail.com).
 
-Contributed ideas and feedback:
-
-  - Brett Archer
-  - Raquel Medialdea Carrera
-  - Esther Hamblion
-  - Orlagh Ingeborg
-  - Zyleen Kassamali
-
-### Sending feedback
-
-Feedback is welcome via github
-[issues](https://github.com/whocov/trend_analysis_public/issues). When
-filing a new issue:
-
-  - first check if a similar issue already exists
-  - specify whether this is a bug report or a feature request
-
-### Contributing to this repository
-
-Contributions to this repository are welcome through [pull
-requests](https://github.com/whocov/trend_analysis_public/pulls).
-
-### Contact
-
-For further enquiries, send an email to [Thibaut
-Jombart](mailto:thibautjombart@gmail.com).
-
-### License
-
-This repository is distributed under MIT license (see attached files).
-
-### Code of Conduct
-
-This project is submitted to a [code of conduct](CONDUCT.md).
+Note that for all matters of social interactions, this project is
+submitted to a [code of conduct](CONDUCT.md).
 
 -----
 
@@ -280,3 +247,59 @@ of *r* could not be produced for the following countries:<br>New Zealand
 ### Infection levels as weekly deaths per 1M inhabitants
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
+
+-----
+
+-----
+
+# Contributions
+
+## Contributors
+
+This pipeline benefits from the contributions of the WHO COVID-19
+analytics team, with feedback and inputs from colleagues outside the
+team. Contributions are listed by alphabetic order:
+
+Code, data and original design:
+
+  - Neale Batra
+  - Yuka Jinnai
+  - Thibaut Jombart
+  - Olivier le Polain
+  - Henry Laurenson-Schafer
+  - Katelijn Vandemaele
+
+Contributed ideas and feedback:
+
+  - Brett Archer
+  - Raquel Medialdea Carrera
+  - Esther Hamblion
+  - Orlagh Ingeborg
+  - Zyleen Kassamali
+
+## Sending feedback
+
+Feedback is welcome via github
+[issues](https://github.com/whocov/trend_analysis_public/issues). When
+filing a new issue:
+
+  - first check if a similar issue already exists
+  - specify whether this is a bug report or a feature request
+
+## Contributing to this repository
+
+Contributions to this repository are welcome through [pull
+requests](https://github.com/whocov/trend_analysis_public/pulls).
+
+## Contact
+
+For further enquiries, send an email to [Thibaut
+Jombart](mailto:thibautjombart@gmail.com).
+
+### License
+
+This repository is distributed under MIT license (see attached files).
+
+### Code of Conduct
+
+This project is submitted to a [code of conduct](CONDUCT.md).
