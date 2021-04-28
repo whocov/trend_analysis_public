@@ -32,11 +32,11 @@ concerning the legal status of any country, territory or area or of its
 authorities, or concerning the delimitation of its frontiers or
 boundaries.
 
-We seek to provide results for all countries in all WHO regions. For
-technical reasons (missing data, low incidence, model not successfully
-fitting to the data), results may not be available for some countries.
-Where this happens, the list of missing countries is indicated in the
-relevant sections.
+We seek to provide results for countries in all WHO regions (see
+inclusion criteria below). For technical reasons (missing data, low
+incidence, model not successfully fitting to the data), results may not
+be available for some countries. Where this happens, the list of missing
+countries is indicated in the relevant sections.
 
 ## Content of this repository
 
@@ -84,6 +84,16 @@ ASMODEE (**A**utomated **S**election of **M**odels and **D**etection of
 changes of trend in case incidence data. The initial publication
 (Jombart et al. 2021 Phil Trans B) describing the method is currently in
 press, and will be linked as soon as available.
+
+## Inclusion criteria
+
+Analyses are performed on all countries of WHO regions meeting the
+following criteria:
+
+  - reported at least 100 cases or tests over the last 7 weeks
+  - (*in analyses using peak incidence*) peak weekly incidence excluding
+    the last 90 days of data was at least 15 cases per million
+    inhabitants
 
 ## Getting in touch
 
@@ -147,11 +157,11 @@ Links to the *rds* files:
 ## AFRO region
 
 <br>Analyses were last updated **Tuesday 27 April
-2021**.<br><br>**Notes** <br>The following countries reported \< 10
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Saint Helena, United Republic of Tanzania <br> Estimates of
-*r* could not be produced for the following countries:<br>Sao Tome and
-Principe <br>
+analyses:<br>Liberia, Saint Helena, United Republic of Tanzania <br>
+Estimates of *r* could not be produced for the following
+countries:<br>Sao Tome and Principe <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -168,8 +178,8 @@ Principe <br>
 ## EMRO region
 
 <br>Analyses were last updated **Tuesday 27 April
-2021**.<br><br>**Notes** <br>Nothing to report. All countries were
-successfully included in the analyses. <br>
+2021**.<br><br>**Notes** <br>Past incidence peaks were very low
+(\<15/M/week) and ignored for the following countries:<br>Yemen <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -185,11 +195,11 @@ successfully included in the analyses. <br>
 
 ## EURO region
 
-<br>Analyses were last updated **Tuesday 27 April
-2021**.<br><br>**Notes** <br>The following countries reported \< 10
+<br>Analyses were last updated **Wednesday 28 April
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Faroe Islands, Greenland, Guernsey, Holy See, Tajikistan
-<br>
+analyses:<br>Faroe Islands, Gibraltar, Greenland, Guernsey, Holy See,
+Jersey, Tajikistan <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -209,10 +219,11 @@ the United Nations Security Council resolution 1244 (1999).
 ## PAHO region
 
 <br>Analyses were last updated **Tuesday 27 April
-2021**.<br><br>**Notes:** The following countries reported \< 10
+2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Grenada, Montserrat, Saint Kitts and Nevis, Saint Pierre
-and Miquelon <br>
+analyses:<br>Anguilla, British Virgin Islands, Cayman Islands, Dominica,
+Falkland Islands (Malvinas), Grenada, Montserrat, Saint Kitts and Nevis,
+Saint Pierre and Miquelon <br>
 
 **Notes of geographic units**:
 
@@ -238,9 +249,11 @@ and Miquelon <br>
 ## SEARO region
 
 <br>Analyses were last updated **Tuesday 27 April
-2021**.<br><br>**Notes** <br>The following countries reported \< 10
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Democratic People’s Republic of Korea <br>
+analyses:<br>Democratic People’s Republic of Korea <br> Past incidence
+peaks were very low (\<15/M/week) and ignored for the following
+countries:<br>Timor-Leste <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -257,13 +270,16 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 ## WPRO region
 
 <br>Analyses were last updated **Tuesday 27 April
-2021**.<br><br>**Notes** <br>The following countries reported \< 10
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
-Micronesia (Federated States of), Nauru, Niue, Palau, Pitcairn Islands,
-Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu <br> Estimates
-of *r* could not be produced for the following countries:<br>New Zealand
-<br>
+analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
+Marshall Islands, Micronesia (Federated States of), Nauru, New
+Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
+Tokelau, Tonga, Tuvalu, Vanuatu <br> Estimates of *r* could not be
+produced for the following countries:<br>New Zealand <br> Past incidence
+peaks were very low (\<15/M/week) and ignored for the following
+countries:<br>Cambodia, Fiji, Lao People’s Democratic Republic, Papua
+New Guinea, Viet Nam <br>
 
 ### Infection levels as % of historical incidence peak
 

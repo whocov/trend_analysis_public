@@ -1,4 +1,6 @@
-The following countries reported < 10 cases/tests over the last 7 weeks and were not included in further analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands, Micronesia (Federated States of), Nauru, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia (Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu
 <br>
 Estimates of *r* could not be produced for the following countries:<br>New Zealand
+<br>
+Past incidence peaks were very low (<15/M/week) and ignored for the following countries:<br>Cambodia, Fiji, Lao People's Democratic Republic, Papua New Guinea, Viet Nam
 <br>
