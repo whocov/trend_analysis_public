@@ -485,13 +485,15 @@ df_dynamics <- cases_outliers %>%
   left_join(df_recent_incid, by = c("Country" = "report_country"))
 
 # Add data on past peak incidence, excluding the last 90 days of data
+minimum_peak <- 15
+
 df_peaks <- dat %>%
   filter(who_region == params$who_region,
          date <= (data_stamp - 90)) %>%
   group_by(report_country) %>%
   summarise(incid_peak = max(case_new_7d_100k, na.rm = TRUE)) %>%
   mutate(incid_peak = incid_peak * 10) %>% # incidence per 100k -> 1M
-  filter(incid_peak > 0) # to avoid dividing by zero
+  filter(incid_peak >= minimum_peak)
 
 df_dynamics <- df_dynamics %>%
   left_join(df_peaks %>% rename(Country = report_country)) %>%
@@ -515,8 +517,10 @@ countries_missing_peak <- setdiff(analysed_countries, df_peaks$report_country)
 
 # handle countries with no results
 if (length(countries_missing_peak)) {
-  msg <- paste0("Past incidence peaks could not be found for the following countries:\n",
-                paste(countries_missing_peak, collapse = ", "))
+  msg <- sprintf(
+    "Past incidence peaks were very low (<%d/M/week) and ignored for the following countries:\n%s",
+    minimum_peak,
+    paste(countries_missing_peak, collapse = ", "))
   message(msg)
   notes <- c(notes, gsub("\n", "<br>", msg))
 }
