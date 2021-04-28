@@ -141,13 +141,13 @@ analysed_countries <- to_keep <- cases_i %>%
   group_by(report_country) %>%
   summarise(total_cases = sum(cases, na.rm = TRUE),
             total_tests = sum(tests, na.rm = TRUE)) %>%
-  filter(total_cases > 10 | total_tests > 10) %>%
+  filter(total_cases > 100 | total_tests > 100) %>%
   pull(report_country)
 
 notes <- NULL
 removed_countries <- setdiff(cases_i$report_country, to_keep)
 if (length(removed_countries)) {
-  msg <- paste0("The following countries reported < 10 cases/tests over the last 7 weeks ",
+  msg <- paste0("The following countries reported < 100 cases/tests over the last 7 weeks ",
                 "and were not included in further analyses:\n",
                 paste(removed_countries, collapse = ", "))
   message(msg)

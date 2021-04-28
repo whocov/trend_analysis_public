@@ -48,10 +48,11 @@ the expression of any opinion whatsoever on the part of WHO concerning the legal
 status of any country, territory or area or of its authorities, or concerning
 the delimitation of its frontiers or boundaries.
 
-We seek to provide results for all countries in all WHO regions. For technical
-reasons (missing data, low incidence, model not successfully fitting to the
-data), results may not be available for some countries. Where this happens, the
-list of missing countries is indicated in the relevant sections.
+We seek to provide results for countries in all WHO regions (see inclusion
+criteria below). For technical reasons (missing data, low incidence, model not
+successfully fitting to the data), results may not be available for some
+countries. Where this happens, the list of missing countries is indicated in the
+relevant sections.
 
 
 
@@ -102,10 +103,21 @@ Phil Trans B) describing the method is currently in press, and will be linked as
 soon as available.
 
 
+## Inclusion criteria
+
+Analyses are performed on all countries of WHO regions meeting the following
+criteria:
+
+* reported at least 100 cases or tests over the last 7 weeks
+* (*in analyses using peak incidence*) peak weekly incidence excluding the last
+  90 days of data was at least 15 cases per million inhabitants
+
+
+
 ## Getting in touch
 
-* For bug reports, feature requests, or general feedback, please use github 
-[issues](https://github.com/whocov/trend_analysis_public/issues). 
+* For bug reports, feature requests, or general feedback, please use github
+[issues](https://github.com/whocov/trend_analysis_public/issues).
 
 * You have questions, ideas, or comments you would like to share? Join our 
 [discussion forum](https://github.com/whocov/trend_analysis_public/discussions).
