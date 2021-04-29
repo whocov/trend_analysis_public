@@ -156,7 +156,7 @@ Links to the *rds* files:
 
 ## AFRO region
 
-<br>Analyses were last updated **Tuesday 27 April
+<br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Liberia, Saint Helena, United Republic of Tanzania <br>
@@ -177,7 +177,7 @@ countries:<br>Sao Tome and Principe <br>
 
 ## EMRO region
 
-<br>Analyses were last updated **Tuesday 27 April
+<br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>Past incidence peaks were very low
 (\<15/M/week) and ignored for the following countries:<br>Yemen <br>
 
@@ -195,7 +195,7 @@ countries:<br>Sao Tome and Principe <br>
 
 ## EURO region
 
-<br>Analyses were last updated **Wednesday 28 April
+<br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Gibraltar, Greenland, Guernsey, Holy See,
@@ -218,7 +218,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 ## PAHO region
 
-<br>Analyses were last updated **Tuesday 27 April
+<br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, British Virgin Islands, Cayman Islands, Dominica,
@@ -248,7 +248,7 @@ Saint Pierre and Miquelon <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Tuesday 27 April
+<br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br> Past incidence
@@ -269,7 +269,7 @@ countries:<br>Timor-Leste <br>
 
 ## WPRO region
 
-<br>Analyses were last updated **Tuesday 27 April
+<br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
