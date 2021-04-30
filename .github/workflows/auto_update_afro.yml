@@ -61,6 +61,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add asmodee_outputs
           git commit -m "Automatic update of trendbreaker results - AFRO"
+          git pull
       
       - name: Push changes
         uses: ad-m/github-push-action@master

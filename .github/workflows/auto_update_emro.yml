@@ -23,6 +23,9 @@ jobs:
       - name: Checkout repos
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.PAT_TIBO }}
+          persist-credentials: false
+          fetch-depth: 0
           ref: main
 
       - name: Setup R
@@ -58,8 +61,11 @@ jobs:
           git config --local user.name "GitHub Action"
           git add asmodee_outputs
           git commit -m "Automatic update of trendbreaker results - EMRO"
+          git pull
       
-      - name: Push files
-        run: |
-          git push --force
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT_TIBO }}
+          branch: 'main'  
  
