@@ -156,7 +156,9 @@ Links to the *rds* files:
 
 ## AFRO region
 
-<br>Analyses were last updated **Thursday 29 April
+[![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
+
+<br>Analyses were last updated **Friday 30 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Liberia, Saint Helena, United Republic of Tanzania <br>
@@ -177,6 +179,8 @@ countries:<br>Sao Tome and Principe <br>
 
 ## EMRO region
 
+[![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
+
 <br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>Past incidence peaks were very low
 (\<15/M/week) and ignored for the following countries:<br>Yemen <br>
@@ -194,6 +198,8 @@ countries:<br>Sao Tome and Principe <br>
 -----
 
 ## EURO region
+
+[![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
 <br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
@@ -217,6 +223,8 @@ the United Nations Security Council resolution 1244 (1999).
 -----
 
 ## PAHO region
+
+[![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
 <br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes:** The following countries reported \< 100
@@ -246,6 +254,8 @@ Saint Pierre and Miquelon <br>
 
 -----
 
+[![auto-update-searo](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_searo.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_searo.yml)
+
 ## SEARO region
 
 <br>Analyses were last updated **Thursday 29 April
@@ -268,6 +278,8 @@ countries:<br>Timor-Leste <br>
 -----
 
 ## WPRO region
+
+[![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
 <br>Analyses were last updated **Thursday 29 April
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
