@@ -186,6 +186,8 @@ insert_md <- function(x) {
 
 ## AFRO region
 
+[![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
+
 ```{r results = "asis"}
 
 ## find latest results
@@ -225,6 +227,8 @@ if (file.exists(path_to_notes)) {
 
 ## EMRO region
 
+[![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
+
 ```{r results = "asis"}
 
 ## find latest results
@@ -257,11 +261,15 @@ if (file.exists(path_to_notes)) {
 
 
 
+
+
 -------------------------------
 
 -------------------------------
 
 ## EURO region
+
+[![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
 ```{r results = "asis"}
 
@@ -307,6 +315,8 @@ the United Nations Security Council resolution 1244 (1999).
 
 ## PAHO region
 
+[![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
+
 ```{r results = "asis"}
 
 ## find latest results
@@ -350,9 +360,13 @@ Islands (Malvinas)
 
 
 
+
+
 -------------------------------
 
 -------------------------------
+
+[![auto-update-searo](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_searo.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_searo.yml)
 
 ## SEARO region
 
@@ -388,11 +402,15 @@ if (file.exists(path_to_notes)) {
 
 
 
+
+
 -------------------------------
 
 -------------------------------
 
 ## WPRO region
+
+[![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
 ```{r results = "asis"}
 

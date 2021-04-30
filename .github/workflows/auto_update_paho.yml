@@ -50,7 +50,6 @@ jobs:
           library(reportfactory)
           compile_reports(report = "assemble", params = list(import_data = TRUE))
           compile_reports(report = "trendbreaker.Rmd", params = list(who_region = "PAHO"))
-          rmarkdown::render("README.Rmd")
         shell: Rscript {0}
         
       - name: Commit files
