@@ -1,58 +1,6 @@
 Welcome to the WHO COVID-19 trend analysis repository
 ================
 
-  - [Preamble](#preamble)
-      - [General disclaimer](#general-disclaimer)
-      - [Content of this repository](#content-of-this-repository)
-          - [Growth rates](#growth-rates)
-          - [Current levels of infection](#current-levels-of-infection)
-          - [Recent increases detected by
-            ASMODEE](#recent-increases-detected-by-asmodee)
-      - [Inclusion criteria](#inclusion-criteria)
-      - [Getting in touch](#getting-in-touch)
-  - [Quick links](#quick-links)
-      - [Overall dynamics figures](#overall-dynamics-figures)
-      - [ASMODEE runs](#asmodee-runs)
-  - [Overall dynamics figures](#overall-dynamics-figures-1)
-      - [AFRO region](#afro-region)
-          - [Infection levels as % of historical incidence
-            peak](#infection-levels-as--of-historical-incidence-peak)
-          - [Infection levels as weekly deaths per 1M
-            inhabitants](#infection-levels-as-weekly-deaths-per-1m-inhabitants)
-      - [EMRO region](#emro-region)
-          - [Infection levels as % of historical incidence
-            peak](#infection-levels-as--of-historical-incidence-peak-1)
-          - [Infection levels as weekly deaths per 1M
-            inhabitants](#infection-levels-as-weekly-deaths-per-1m-inhabitants-1)
-      - [EURO region](#euro-region)
-          - [Infection levels as % of historical incidence
-            peak](#infection-levels-as--of-historical-incidence-peak-2)
-          - [Infection levels as weekly deaths per 1M
-            inhabitants](#infection-levels-as-weekly-deaths-per-1m-inhabitants-2)
-      - [PAHO region](#paho-region)
-          - [Infection levels as % of historical incidence
-            peak](#infection-levels-as--of-historical-incidence-peak-3)
-          - [Infection levels as weekly deaths per 1M
-            inhabitants](#infection-levels-as-weekly-deaths-per-1m-inhabitants-3)
-      - [SEARO region](#searo-region)
-          - [Infection levels as % of historical incidence
-            peak](#infection-levels-as--of-historical-incidence-peak-4)
-          - [Infection levels as weekly deaths per 1M
-            inhabitants](#infection-levels-as-weekly-deaths-per-1m-inhabitants-4)
-      - [WPRO region](#wpro-region)
-          - [Infection levels as % of historical incidence
-            peak](#infection-levels-as--of-historical-incidence-peak-5)
-          - [Infection levels as weekly deaths per 1M
-            inhabitants](#infection-levels-as-weekly-deaths-per-1m-inhabitants-5)
-  - [Contributions](#contributions)
-      - [Contributors](#contributors)
-      - [Sending feedback](#sending-feedback)
-      - [Contributing to this
-        repository](#contributing-to-this-repository)
-      - [Contact](#contact)
-          - [License](#license)
-          - [Code of Conduct](#code-of-conduct)
-
 [![update-trendbreaker](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/update_trendbreaker.yml)
 
 # Preamble
