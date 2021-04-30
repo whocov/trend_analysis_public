@@ -1,5 +1,5 @@
 # Name of the workflow
-name: update-trendbreaker
+name: auto-update-all
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch, as well as 1200 every day
@@ -20,7 +20,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # Important: ubuntu-latest is not set up properly for R, so use macOS
 jobs:
-  update-trendbreaker:
+  auto-update-all:
     runs-on: macos-latest
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
@@ -48,13 +48,12 @@ jobs:
           reportfactory::install_deps(upgrade = "never")
           remotes::install_github("reconhub/incidence2", upgrade = "never")
           remotes::install_github("reconhub/trendbreaker", upgrade = "never")
-          install.packages("ggnewscale") # unstated dep: phifunc
+          install.packages("ggnewscale") # ensure dep: phifunc
         shell: Rscript {0}
  
       - name: Run data updates and trendbreaker on all WHO regions
         run: |
-          source("run_remote_data.R")
-          source("run_remote_trendbreaker.R")
+          source("run_factory.R")
         shell: Rscript {0}
         
       - name: Commit files
