@@ -48,7 +48,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add asmodee_outputs
+          git add README.md
           git commit -m "Automatic README refresh"
       
       - name: Push files
