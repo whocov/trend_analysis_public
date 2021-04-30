@@ -5,7 +5,7 @@ name: auto-update-afro
 # events but only for the master branch, as well as 1200 every day
 on:
   schedule:
-     - cron:  '30 14,20 * * *'
+     - cron:  '30 13,19 * * *'
   workflow_dispatch:
 #  push:
 #    branches: [ main ]
@@ -50,6 +50,7 @@ jobs:
           library(reportfactory)
           compile_reports(report = "assemble", params = list(import_data = TRUE))
           compile_reports(report = "trendbreaker.Rmd", params = list(who_region = "AFRO"))
+          rmarkdown::render("README.Rmd")
         shell: Rscript {0}
         
       - name: Commit files
