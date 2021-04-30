@@ -1,0 +1,55 @@
+# Name of the workflow
+name: refresh-readme
+
+# Controls when the action will run. Triggers the workflow on push events as
+# long as the push does not concern README.md (to avoid infinite loops)
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - README.md
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# Important: ubuntu-latest is not set up properly for R, so use macOS
+jobs:
+  refresh-readme:
+    runs-on: macos-latest
+    env:
+      PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
+    steps:
+      - name: Checkout repos
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+
+      - name: Setup pandoc
+        uses: r-lib/actions/setup-pandoc@v1
+    
+      - name: Install dependencies
+        run: |
+          Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true")
+          options(install.packages.check.source = "no")
+          pkgs <- c("rmarkdown")
+          install.packages(pkgs, repos = "https://cloud.r-project.org/")
+        shell: Rscript {0}
+ 
+      - name: Compile the README
+        run: |
+          rmarkdown::render("README.Rmd")
+        shell: Rscript {0}
+        
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add asmodee_outputs
+          git commit -m "Automatic README refresh"
+      
+      - name: Push files
+        run: |
+          git push --force
+ 
