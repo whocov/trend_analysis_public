@@ -233,9 +233,9 @@ countries:<br>Sao Tome and Principe <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Saturday 01 May
-2021**.<br><br>**Notes** <br>Past incidence peaks were very low
-(\<15/M/week) and ignored for the following countries:<br>Yemen <br>
+<br>Analyses were last updated **Sunday 02 May 2021**.<br><br>**Notes**
+<br>Past incidence peaks were very low (\<15/M/week) and ignored for the
+following countries:<br>Yemen <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -310,12 +310,11 @@ Saint Pierre and Miquelon <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Saturday 01 May
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Democratic People’s Republic of Korea <br> Past incidence
-peaks were very low (\<15/M/week) and ignored for the following
-countries:<br>Timor-Leste <br>
+<br>Analyses were last updated **Sunday 02 May 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Democratic People’s
+Republic of Korea <br> Past incidence peaks were very low (\<15/M/week)
+and ignored for the following countries:<br>Timor-Leste <br>
 
 ### Infection levels as % of historical incidence peak
 
