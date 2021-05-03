@@ -283,7 +283,7 @@ and ignored for the following countries:<br>Timor-Leste <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 02 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 03 May 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>American Samoa,
 Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
