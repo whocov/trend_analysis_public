@@ -163,11 +163,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Tuesday 04 May 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Liberia, Saint
-Helena, United Republic of Tanzania <br> Estimates of *r* could not be
-produced for the following countries:<br>Sao Tome and Principe <br>
+<br>Analyses were last updated **Wednesday 05 May
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Liberia, Saint Helena, United Republic of Tanzania <br>
+Estimates of *r* could not be produced for the following
+countries:<br>Sao Tome and Principe <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -185,7 +186,7 @@ produced for the following countries:<br>Sao Tome and Principe <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Wednesday 05 May
+<br>Analyses were last updated **Thursday 06 May
 2021**.<br><br>**Notes** <br>Past incidence peaks were very low
 (\<15/M/week) and ignored for the following countries:<br>Yemen <br>
 
@@ -205,7 +206,7 @@ produced for the following countries:<br>Sao Tome and Principe <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Wednesday 05 May
+<br>Analyses were last updated **Thursday 06 May
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Gibraltar, Greenland, Guernsey, Holy See,
@@ -230,7 +231,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Wednesday 05 May
+<br>Analyses were last updated **Thursday 06 May
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, British Virgin Islands, Cayman Islands, Dominica,
@@ -262,7 +263,7 @@ Saint Pierre and Miquelon <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Wednesday 05 May
+<br>Analyses were last updated **Thursday 06 May
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br> Past incidence
@@ -285,16 +286,17 @@ countries:<br>Timor-Leste <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Tuesday 04 May 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>American Samoa,
-Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
-(Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn
-Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu <br>
-Estimates of *r* could not be produced for the following
-countries:<br>New Zealand <br> Past incidence peaks were very low
-(\<15/M/week) and ignored for the following countries:<br>Cambodia,
-Fiji, Lao People’s Democratic Republic, Papua New Guinea, Viet Nam <br>
+<br>Analyses were last updated **Thursday 06 May
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
+Marshall Islands, Micronesia (Federated States of), Nauru, New
+Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
+Tokelau, Tonga, Tuvalu, Vanuatu <br> Estimates of *r* could not be
+produced for the following countries:<br>New Zealand <br> Past incidence
+peaks were very low (\<15/M/week) and ignored for the following
+countries:<br>Cambodia, Fiji, Lao People’s Democratic Republic, Papua
+New Guinea, Viet Nam <br>
 
 ### Infection levels as % of historical incidence peak
 
