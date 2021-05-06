@@ -54,12 +54,11 @@ jobs:
           compile_reports(report = "assemble", params = list(import_data = TRUE))
           compile_reports(report = "trendbreaker.Rmd", params = list(who_region = "AFRO"))
         shell: Rscript {0}
-        
+               
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action AFRO"
-          git config pull.rebase true
+          git config --local user.name "GitHub Action"
           git add asmodee_outputs
           git commit -m "Automatic update of trendbreaker results - AFRO"
           git pull
@@ -68,5 +67,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PAT_TIBO }}
-          branch: 'main'
-          force: true	  
+          branch: 'main'  
