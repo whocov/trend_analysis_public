@@ -262,12 +262,11 @@ Grenada, Montserrat, Saint Kitts and Nevis, Saint Pierre and Miquelon
 
 ## SEARO region
 
-<br>Analyses were last updated **Thursday 06 May
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Democratic People’s Republic of Korea <br> Past incidence
-peaks were very low (\<15/M/week) and ignored for the following
-countries:<br>Timor-Leste <br>
+<br>Analyses were last updated **Friday 07 May 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Democratic People’s
+Republic of Korea <br> Past incidence peaks were very low (\<15/M/week)
+and ignored for the following countries:<br>Timor-Leste <br>
 
 ### Infection levels as % of historical incidence peak
 
