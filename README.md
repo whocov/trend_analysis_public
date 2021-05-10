@@ -185,7 +185,7 @@ produced for the following countries:<br>Sao Tome and Principe <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 09 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 10 May 2021**.<br><br>**Notes**
 <br>Past incidence peaks were very low (\<15/M/week) and ignored for the
 following countries:<br>Yemen <br>
 
@@ -205,11 +205,10 @@ following countries:<br>Yemen <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Thursday 06 May
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Faroe Islands, Gibraltar, Greenland, Guernsey, Holy See,
-Jersey, Tajikistan <br>
+<br>Analyses were last updated **Monday 10 May 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Faroe Islands,
+Gibraltar, Greenland, Guernsey, Holy See, Jersey, Tajikistan <br>
 
 ### Infection levels as % of historical incidence peak
 
