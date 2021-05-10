@@ -163,7 +163,7 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Friday 07 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 10 May 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Liberia, Saint
 Helena, United Republic of Tanzania <br> Estimates of *r* could not be
@@ -230,7 +230,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Sunday 09 May 2021**.<br><br>**Notes:**
+<br>Analyses were last updated **Monday 10 May 2021**.<br><br>**Notes:**
 The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Anguilla, British
 Virgin Islands, Cayman Islands, Dominica, Falkland Islands (Malvinas),
@@ -284,7 +284,7 @@ and ignored for the following countries:<br>Timor-Leste <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 09 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 10 May 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>American Samoa,
 Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
