@@ -231,7 +231,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Wednesday 12 May
+<br>Analyses were last updated **Thursday 13 May
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, British Virgin Islands, Cayman Islands, Dominica,
