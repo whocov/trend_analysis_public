@@ -231,13 +231,13 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Thursday 13 May
-2021**.<br><br>**Notes:** The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Anguilla, British Virgin Islands, Cayman Islands, Dominica,
-Falkland Islands (Malvinas), Grenada, Montserrat, Saint Kitts and Nevis,
-Saint Pierre and Miquelon <br> Estimates of *r* could not be produced
-for the following countries:<br>Antigua and Barbuda <br>
+<br>Analyses were last updated **Friday 14 May 2021**.<br><br>**Notes:**
+The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Anguilla, British
+Virgin Islands, Cayman Islands, Dominica, Falkland Islands (Malvinas),
+Grenada, Montserrat, Saint Kitts and Nevis, Saint Pierre and Miquelon,
+Turks and Caicos Islands <br> Estimates of *r* could not be produced for
+the following countries:<br>Antigua and Barbuda <br>
 
 **Notes of geographic units**:
 
@@ -285,17 +285,16 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Thursday 13 May
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
-Marshall Islands, Micronesia (Federated States of), Nauru, New
-Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
-Tokelau, Tonga, Tuvalu, Vanuatu <br> Estimates of *r* could not be
-produced for the following countries:<br>New Zealand <br> Past incidence
-peaks were very low (\<15/M/week) and ignored for the following
-countries:<br>Cambodia, Fiji, Lao People’s Democratic Republic, Papua
-New Guinea, Viet Nam <br>
+<br>Analyses were last updated **Friday 14 May 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>American Samoa,
+Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
+(Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn
+Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu <br>
+Estimates of *r* could not be produced for the following
+countries:<br>New Zealand <br> Past incidence peaks were very low
+(\<15/M/week) and ignored for the following countries:<br>Cambodia,
+Fiji, Lao People’s Democratic Republic, Papua New Guinea, Viet Nam <br>
 
 ### Infection levels as % of historical incidence peak
 
