@@ -263,7 +263,7 @@ the following countries:<br>Antigua and Barbuda <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 17 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Tuesday 18 May 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Democratic People’s
 Republic of Korea <br>
