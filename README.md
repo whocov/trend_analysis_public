@@ -185,7 +185,7 @@ produced for the following countries:<br>Sao Tome and Principe <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Monday 17 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Tuesday 18 May 2021**.<br><br>**Notes**
 <br>Past incidence peaks were very low (\<15/M/week) and ignored for the
 following countries:<br>Yemen <br>
 
