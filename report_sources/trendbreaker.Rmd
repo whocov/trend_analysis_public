@@ -611,6 +611,7 @@ scale_asmodee <- scale_colour_steps(
   breaks = 0:7,
   limits = c(0,7))
 
+
 # version 1
 plot_overall_deaths_1 <- df_dynamics %>%
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
@@ -687,6 +688,46 @@ plot_overall_deaths_2 <- df_dynamics %>%
     shape = guide_legend(title.position = "top", order = 2))
 
 plot_overall_deaths_2
+
+
+
+
+# version 3
+plot_overall_deaths_3 <- df_dynamics %>%
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif, x = r_3_5, y = death_incid_week_3),
+             alpha = 0.2, size = 1) +
+  geom_segment(aes(x = r_3_5, y = death_incid_week_3,
+                   xend = r_2_4, yend = death_incid_week_2),
+               alpha = 0.2) +
+  geom_point(aes(shape = r_signif, x = r_2_4, y = death_incid_week_2),
+            alpha = 0.5, size = 2) +
+  geom_segment(aes(x = r_2_4, y = death_incid_week_2,
+                   xend = r, yend = death_incid_last_week),
+               alpha = 0.5) +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(aes(label = Country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_signif +
+  scale_asmodee +
+  labs(x = "Growth rate of daily cases",
+       y = "Weekly COVID-19 deaths per 1M inhabitants",
+       subtitle = sprintf("Last data update: %s",
+                          format(data_stamp, "%A %d %B %Y"))) +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
+
+plot_overall_deaths_3
 
 
 
