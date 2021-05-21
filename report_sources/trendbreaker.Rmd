@@ -385,7 +385,7 @@ uncertain trends.
 
 ```{r fig.height = 8, out.width = "90%"}
 
-# estimate the growth rates
+# estimate the growth rates on last 3 weeks (going back: w1 - w3)
 r_df <- cases_i %>%
   select(-deaths, -tests) %>% 
   keep_last(3*7) %>%
@@ -396,14 +396,31 @@ r_df <- cases_i %>%
                           TRUE ~ "uncertain"),
          factor(type, levels = c("growth", "uncertain", "decline")))
 
-## # code used to troubleshoot specific sets of countries
-## cases_i %>%
-##   select(-deaths, -tests) %>% 
-##   keep_last(3 * 7) %>%
-##   fit_curve() %>% 
-##   filter(report_country %in% "Philippines") %>%
-##   plot() +
-##   scale_x_date()
+#  estimate the growth rates weeks before (going back: w2 - w4)
+r_df_w2_w4 <- cases_i %>%
+  select(-deaths, -tests) %>% 
+  keep_last(4*7) %>%
+  keep_first(3*7) %>% 
+  fit_curve() %>%
+  growth_rate() %>%
+  rename(r_2_4 = r) %>% 
+  select(report_country, r_2_4)
+
+#  estimate the growth rates weeks before (going back: w3 - w5)
+r_df_w3_w5 <- cases_i %>%
+  select(-deaths, -tests) %>% 
+  keep_last(5*7) %>%
+  keep_first(3*7) %>% 
+  fit_curve() %>%
+  growth_rate() %>%
+  rename(r_3_5 = r) %>%
+  select(report_country, r_3_5)
+
+
+# merge estimates
+r_df <- r_df %>%
+  left_join(r_df_w2_w4) %>%
+  left_join(r_df_w3_w5)
 
 ```
 
@@ -468,7 +485,7 @@ df_pop <- dat %>%
   group_by(report_country) %>%
   summarise(population = mean(population, na.rm = TRUE))
 
-# Cumulative incidence over the last  week per 100k inhabitants
+# Cumulative incidence over the last week (going back: w1) per 100k inhabitants
 df_recent_incid <- cases_i %>%
   keep_last(7) %>%
   group_by(report_country) %>%
@@ -478,10 +495,43 @@ df_recent_incid <- cases_i %>%
   mutate(case_incid_last_week = 1e6 * n_cases / population,
          death_incid_last_week = 1e6 * n_deaths / population)
 
+# Cumulative incidence over the previous week (going back: w2) per 100k inhabitants
+df_recent_incid_w2 <- cases_i %>%
+  keep_last(2*7) %>%
+  keep_first(7) %>%
+  group_by(report_country) %>%
+  summarise(n_cases = sum(cases),
+            n_deaths = sum(deaths)) %>%
+  left_join(df_pop) %>%
+  mutate(case_incid_week_2 = 1e6 * n_cases / population,
+         death_incid_week_2 = 1e6 * n_deaths / population) %>%
+  select(report_country, case_incid_week_2, death_incid_week_2)
+
+# Cumulative incidence over the previous week (going back: w3) per 100k inhabitants
+df_recent_incid_w3 <- cases_i %>%
+  keep_last(3*7) %>%
+  keep_first(7) %>%
+  group_by(report_country) %>%
+  summarise(n_cases = sum(cases),
+            n_deaths = sum(deaths)) %>%
+  left_join(df_pop) %>%
+  mutate(case_incid_week_3 = 1e6 * n_cases / population,
+         death_incid_week_3 = 1e6 * n_deaths / population) %>%
+  select(report_country, case_incid_week_3, death_incid_week_3)
+
+# Combine cumulative incidences
+df_recent_incid <- df_recent_incid %>%
+  left_join(df_recent_incid_w2) %>%
+  left_join(df_recent_incid_w3)
+
+
 # Table containing r, recent increases, incidence per 1000
 df_dynamics <- cases_outliers %>%
   select(Country, n_recent_increases, n_recent_decreases) %>%
-  right_join(select(r_df, Country = report_country, r, r_lower, r_upper)) %>%
+  right_join(select(r_df,
+                    Country = report_country,
+                    r, r_lower, r_upper,
+                    r_2_4, r_3_5)) %>%
   left_join(df_recent_incid, by = c("Country" = "report_country"))
 
 # Add data on past peak incidence, excluding the last 90 days of data
@@ -497,7 +547,9 @@ df_peaks <- dat %>%
 
 df_dynamics <- df_dynamics %>%
   left_join(df_peaks %>% rename(Country = report_country)) %>%
-  mutate(perc_peak = case_incid_last_week / incid_peak)
+  mutate(perc_peak = case_incid_last_week / incid_peak,
+         perc_peak_2 = case_incid_week_2 / incid_peak,
+         perc_peak_3 = case_incid_week_3 / incid_peak)
 
 # Add info on significance of r (> 0 or < 0)
 df_dynamics <- df_dynamics %>%
@@ -559,11 +611,20 @@ scale_asmodee <- scale_colour_steps(
   breaks = 0:7,
   limits = c(0,7))
 
-
-plot_overall_deaths <- df_dynamics %>%
+# version 1
+plot_overall_deaths_1 <- df_dynamics %>%
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif, x = r_3_5, y = death_incid_week_3),
+             color = grey(0.2), alpha = 0.2, size = 1) +
+  geom_segment(aes(x = r_2_4, y = death_incid_week_2,
+                   xend = r_3_5, yend = death_incid_week_3),
+               color = grey(0.2), alpha = 0.2, size = 1) +
+  geom_point(aes(shape = r_signif, x = r_2_4, y = death_incid_week_2),
+             color = grey(0.2), alpha = 0.5, size = 2) +
+  geom_segment(aes(xend = r_2_4, yend = death_incid_week_2),
+               color = grey(0.2), alpha = 0.5, size = 2) +
   geom_point(aes(shape = r_signif), size = 3) +
   geom_text_repel(aes(label = Country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
@@ -584,7 +645,50 @@ plot_overall_deaths <- df_dynamics %>%
     color = guide_colorsteps(order = 1),
     shape = guide_legend(title.position = "top", order = 2))
 
-plot_overall_deaths
+plot_overall_deaths_1
+
+
+
+# version 2
+plot_overall_deaths_2 <- df_dynamics %>%
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif, x = r_3_5, y = death_incid_week_3),
+             color = grey(0.2), alpha = 0.2, size = 1) +
+  geom_segment(aes(x = r_3_5, y = death_incid_week_3,
+                   xend = r_2_4, yend = death_incid_week_2),
+               color = grey(0.2), alpha = 0.2,
+               arrow = arrow(length = unit(0.02, "npc"), angle = 15)) +
+  geom_point(aes(shape = r_signif, x = r_2_4, y = death_incid_week_2),
+             color = grey(0.2), alpha = 0.5, size = 2) +
+  geom_segment(aes(x = r_2_4, y = death_incid_week_2,
+                   xend = r, yend = death_incid_last_week),
+               color = grey(0.2), alpha = 0.5,
+               arrow = arrow(length = unit(0.02, "npc"), angle = 15)) +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(aes(label = Country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_signif +
+  scale_asmodee +
+  labs(x = "Growth rate of daily cases",
+       y = "Weekly COVID-19 deaths per 1M inhabitants",
+       subtitle = sprintf("Last data update: %s",
+                          format(data_stamp, "%A %d %B %Y"))) +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
+
+plot_overall_deaths_2
+
+
 
 ```
 
