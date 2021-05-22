@@ -163,12 +163,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Friday 21 May 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Guinea-Bissau,
-Liberia, Saint Helena, United Republic of Tanzania <br> Estimates of *r*
-could not be produced for the following countries:<br>Equatorial Guinea
-<br>
+<br>Analyses were last updated **Saturday 22 May
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Guinea-Bissau, Lesotho, Liberia, Saint Helena, United
+Republic of Tanzania <br> Estimates of *r* could not be produced for the
+following countries:<br>Equatorial Guinea <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -206,11 +206,11 @@ could not be produced for the following countries:<br>Equatorial Guinea
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Friday 21 May 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Faroe Islands,
-Gibraltar, Greenland, Guernsey, Holy See, Isle of Man, Jersey,
-Tajikistan <br>
+<br>Analyses were last updated **Saturday 22 May
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Faroe Islands, Gibraltar, Greenland, Guernsey, Holy See,
+Isle of Man, Jersey, Tajikistan <br>
 
 ### Infection levels as % of historical incidence peak
 
