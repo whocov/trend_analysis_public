@@ -17,6 +17,7 @@ output:
 params:
   who_region: "EURO"
   n_cores: 1
+  tadpole_size: 7
 ---
 
 ```{r setup, include=FALSE}
@@ -27,6 +28,12 @@ knitr::opts_chunk$set(echo = TRUE,
                       dpi = 70,
                       warning = TRUE,
                       message = TRUE)
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "EURO"))
+
 ```
 
 
@@ -385,48 +392,31 @@ uncertain trends.
 
 ```{r fig.height = 8, out.width = "90%"}
 
-# estimate the growth rates on last 3 weeks (going back: w1 - w3)
-r_df <- cases_i %>%
-  select(-deaths, -tests) %>% 
-  keep_last(3*7) %>%
-  fit_curve() %>%
-  growth_rate() %>%
+#  estimate the growth rates days before (going back: d2 - d10)
+## we use future_lapply to speed up computations
+df_r  <- future.apply::future_lapply(
+  0:params$tadpole_size,
+  function(d)
+  cases_i %>%
+    select(-deaths, -tests) %>% 
+    keep_last(3*7 + d) %>%
+    keep_first(3*7) %>% 
+    fit_curve() %>%
+    growth_rate() %>%
+    mutate(last_day = d) %>% 
+    select(report_country, r, r_lower, r_upper, last_day),
+  future.seed = TRUE) %>%
+  bind_rows() %>%
   mutate(type = case_when(r_lower > 0 ~ "growth",
                           r_upper < 0 ~ "decline",
                           TRUE ~ "uncertain"),
-         factor(type, levels = c("growth", "uncertain", "decline")))
-
-#  estimate the growth rates weeks before (going back: w2 - w4)
-r_df_w2_w4 <- cases_i %>%
-  select(-deaths, -tests) %>% 
-  keep_last(4*7) %>%
-  keep_first(3*7) %>% 
-  fit_curve() %>%
-  growth_rate() %>%
-  rename(r_2_4 = r) %>% 
-  select(report_country, r_2_4)
-
-#  estimate the growth rates weeks before (going back: w3 - w5)
-r_df_w3_w5 <- cases_i %>%
-  select(-deaths, -tests) %>% 
-  keep_last(5*7) %>%
-  keep_first(3*7) %>% 
-  fit_curve() %>%
-  growth_rate() %>%
-  rename(r_3_5 = r) %>%
-  select(report_country, r_3_5)
-
-
-# merge estimates
-r_df <- r_df %>%
-  left_join(r_df_w2_w4) %>%
-  left_join(r_df_w3_w5)
+         type = factor(type, levels = c("growth", "uncertain", "decline")))
 
 ```
 
 ```{r }
 
-countries_missing_r <- setdiff(analysed_countries, r_df$report_country)
+countries_missing_r <- setdiff(analysed_countries, df_r$report_country)
 
 # handle countries with no results
 if (length(countries_missing_r)) {
@@ -456,7 +446,8 @@ scale_type <- scale_color_manual(
              uncertain = "#A9A9A9")
 )
 
-r_df %>%
+df_r %>%
+  filter(last_day == 0) %>% 
   ggplot(aes(y = report_country, x = r, color = type)) +
   geom_errorbar(aes(xmin = r_lower, xmax = r_upper)) +
   geom_point() +
@@ -486,53 +477,26 @@ df_pop <- dat %>%
   summarise(population = mean(population, na.rm = TRUE))
 
 # Cumulative incidence over the last week (going back: w1) per 100k inhabitants
-df_recent_incid <- cases_i %>%
-  keep_last(7) %>%
-  group_by(report_country) %>%
-  summarise(n_cases = sum(cases),
-            n_deaths = sum(deaths)) %>%
-  left_join(df_pop) %>%
-  mutate(case_incid_last_week = 1e6 * n_cases / population,
-         death_incid_last_week = 1e6 * n_deaths / population)
+df_recent_incid <- future.apply::future_lapply(
+   0:params$tadpole_size,
+  function(d)
+    cases_i %>%
+      keep_last(7 + d) %>%
+      keep_first(7) %>% 
+      group_by(report_country) %>%
+      summarise(n_cases = sum(cases),
+                n_deaths = sum(deaths)) %>%
+      left_join(df_pop) %>%
+      mutate(case_incid_last_week = 1e6 * n_cases / population,
+             death_incid_last_week = 1e6 * n_deaths / population,
+             last_day = d),
+  future.seed = TRUE) %>%
+  bind_rows()
 
-# Cumulative incidence over the previous week (going back: w2) per 100k inhabitants
-df_recent_incid_w2 <- cases_i %>%
-  keep_last(2*7) %>%
-  keep_first(7) %>%
-  group_by(report_country) %>%
-  summarise(n_cases = sum(cases),
-            n_deaths = sum(deaths)) %>%
-  left_join(df_pop) %>%
-  mutate(case_incid_week_2 = 1e6 * n_cases / population,
-         death_incid_week_2 = 1e6 * n_deaths / population) %>%
-  select(report_country, case_incid_week_2, death_incid_week_2)
-
-# Cumulative incidence over the previous week (going back: w3) per 100k inhabitants
-df_recent_incid_w3 <- cases_i %>%
-  keep_last(3*7) %>%
-  keep_first(7) %>%
-  group_by(report_country) %>%
-  summarise(n_cases = sum(cases),
-            n_deaths = sum(deaths)) %>%
-  left_join(df_pop) %>%
-  mutate(case_incid_week_3 = 1e6 * n_cases / population,
-         death_incid_week_3 = 1e6 * n_deaths / population) %>%
-  select(report_country, case_incid_week_3, death_incid_week_3)
-
-# Combine cumulative incidences
-df_recent_incid <- df_recent_incid %>%
-  left_join(df_recent_incid_w2) %>%
-  left_join(df_recent_incid_w3)
-
-
-# Table containing r, recent increases, incidence per 1000
-df_dynamics <- cases_outliers %>%
-  select(Country, n_recent_increases, n_recent_decreases) %>%
-  right_join(select(r_df,
-                    Country = report_country,
-                    r, r_lower, r_upper,
-                    r_2_4, r_3_5)) %>%
-  left_join(df_recent_incid, by = c("Country" = "report_country"))
+# Table containing r, incidence per capita, recent increases
+df_dynamics <- df_recent_incid %>%
+  left_join(df_r) %>%
+  left_join(cases_outliers, by = c("report_country" = "Country"))
 
 # Add data on past peak incidence, excluding the last 90 days of data
 minimum_peak <- 15
@@ -546,10 +510,8 @@ df_peaks <- dat %>%
   filter(incid_peak >= minimum_peak)
 
 df_dynamics <- df_dynamics %>%
-  left_join(df_peaks %>% rename(Country = report_country)) %>%
-  mutate(perc_peak = case_incid_last_week / incid_peak,
-         perc_peak_2 = case_incid_week_2 / incid_peak,
-         perc_peak_3 = case_incid_week_3 / incid_peak)
+  left_join(df_peaks) %>%
+  mutate(perc_peak = case_incid_last_week / incid_peak)
 
 # Add info on significance of r (> 0 or < 0)
 df_dynamics <- df_dynamics %>%
@@ -559,6 +521,10 @@ df_dynamics <- df_dynamics %>%
 df_dynamics <- df_dynamics %>%
   mutate(net_increases = n_recent_increases - n_recent_decreases,
          net_increases = if_else(net_increases > 0L, net_increases, 0L))
+
+# data with only current time frame
+df_dynamics_current <- df_dynamics %>%
+  filter(last_day == 0)
 
 ```
 
@@ -590,19 +556,14 @@ cat(gsub("\n", "<br>", msg))
 
 ## Deaths, growth rates and changes
 
-This figure reports:
+### Scales
 
-* growth rate based on the last 3 weeks of data
-* last weeks's deaths per capita
-* significant increases detected by ASMODEE in the last week
-
-```{r  fig.height = 7, out.width = "100%"}
+```{r }
 
 scale_signif <- scale_shape_manual(
   "Significant growth/decline",
   values = c(yes = 19, no = 1)
 )
-
 
 scale_asmodee <- scale_colour_steps(
   "Days in last week\nabove\nexpectations",
@@ -611,23 +572,28 @@ scale_asmodee <- scale_colour_steps(
   breaks = 0:7,
   limits = c(0,7))
 
+```
 
-# version 1
-plot_overall_deaths_1 <- df_dynamics %>%
+
+### Main figure
+
+This figure reports:
+
+* growth rate based on the last 3 weeks of data
+* last weeks's deaths per capita
+* significant increases detected by ASMODEE in the last week
+
+```{r  fig.height = 7, out.width = "100%"}
+
+# tadpole plot
+plot_overall_deaths <- df_dynamics_current %>%
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
-  geom_point(aes(shape = r_signif, x = r_3_5, y = death_incid_week_3),
-             color = grey(0.2), alpha = 0.2, size = 1) +
-  geom_segment(aes(x = r_2_4, y = death_incid_week_2,
-                   xend = r_3_5, yend = death_incid_week_3),
-               color = grey(0.2), alpha = 0.2, size = 1) +
-  geom_point(aes(shape = r_signif, x = r_2_4, y = death_incid_week_2),
-             color = grey(0.2), alpha = 0.5, size = 2) +
-  geom_segment(aes(xend = r_2_4, yend = death_incid_week_2),
-               color = grey(0.2), alpha = 0.5, size = 2) +
-  geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 100,
+  geom_point(size = 3) +
+  geom_text_repel(
+    data = df_dynamics_current,
+    aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_signif +
   scale_asmodee +
@@ -646,32 +612,33 @@ plot_overall_deaths_1 <- df_dynamics %>%
     color = guide_colorsteps(order = 1),
     shape = guide_legend(title.position = "top", order = 2))
 
-plot_overall_deaths_1
+plot_overall_deaths
 
 
 
-# version 2
-plot_overall_deaths_2 <- df_dynamics %>%
+```
+
+### Tadpole version
+
+```{r  fig.height = 7, out.width = "100%"}
+
+# tadpole plot
+plot_tadpole_deaths <- df_dynamics %>%
+  group_by(report_country) %>%
+  arrange(last_day) %>% 
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
-  geom_point(aes(shape = r_signif, x = r_3_5, y = death_incid_week_3),
-             color = grey(0.2), alpha = 0.2, size = 1) +
-  geom_segment(aes(x = r_3_5, y = death_incid_week_3,
-                   xend = r_2_4, yend = death_incid_week_2),
-               color = grey(0.2), alpha = 0.2,
-               arrow = arrow(length = unit(0.02, "npc"), angle = 15)) +
-  geom_point(aes(shape = r_signif, x = r_2_4, y = death_incid_week_2),
-             color = grey(0.2), alpha = 0.5, size = 2) +
-  geom_segment(aes(x = r_2_4, y = death_incid_week_2,
-                   xend = r, yend = death_incid_last_week),
-               color = grey(0.2), alpha = 0.5,
-               arrow = arrow(length = unit(0.02, "npc"), angle = 15)) +
-  geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 100,
+  geom_path(aes(group = report_country, alpha = last_day)) + 
+  geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
+  geom_text_repel(
+    data = df_dynamics_current,
+    aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_signif +
   scale_asmodee +
+  scale_alpha_continuous(trans = "reverse") +
+  scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
   labs(x = "Growth rate of daily cases",
        y = "Weekly COVID-19 deaths per 1M inhabitants",
        subtitle = sprintf("Last data update: %s",
@@ -685,57 +652,18 @@ plot_overall_deaths_2 <- df_dynamics %>%
         legend.title.align = 0.5) +
   guides(
     color = guide_colorsteps(order = 1),
-    shape = guide_legend(title.position = "top", order = 2))
+    shape = guide_legend(title.position = "top", order = 2),
+    size = "none",
+    alpha = "none")
 
-plot_overall_deaths_2
-
-
-
-
-# version 3
-plot_overall_deaths_3 <- df_dynamics %>%
-  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
-  theme_bw() +
-  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
-  geom_point(aes(shape = r_signif, x = r_3_5, y = death_incid_week_3),
-             alpha = 0.2, size = 1) +
-  geom_segment(aes(x = r_3_5, y = death_incid_week_3,
-                   xend = r_2_4, yend = death_incid_week_2),
-               alpha = 0.2) +
-  geom_point(aes(shape = r_signif, x = r_2_4, y = death_incid_week_2),
-            alpha = 0.5, size = 2) +
-  geom_segment(aes(x = r_2_4, y = death_incid_week_2,
-                   xend = r, yend = death_incid_last_week),
-               alpha = 0.5) +
-  geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 100,
-                  max.time = 2, max.iter = 1e5) +
-  scale_signif +
-  scale_asmodee +
-  labs(x = "Growth rate of daily cases",
-       y = "Weekly COVID-19 deaths per 1M inhabitants",
-       subtitle = sprintf("Last data update: %s",
-                          format(data_stamp, "%A %d %B %Y"))) +
-  theme(legend.position = "bottom",
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 18),
-        plot.subtitle = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.title = element_text(size = 14),
-        legend.title.align = 0.5) +
-  guides(
-    color = guide_colorsteps(order = 1),
-    shape = guide_legend(title.position = "top", order = 2))
-
-plot_overall_deaths_3
-
-
+plot_tadpole_deaths
 
 ```
 
 
 ## Relative cases, growth and changes
 
+### Main figure
 
 This figure reports:
 
@@ -746,12 +674,14 @@ This figure reports:
 
 ```{r  fig.height = 7, out.width = "100%"}
 
-plot_overall_peaks <- df_dynamics %>%
+plot_overall_peaks <- df_dynamics_current %>%
   ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
-  geom_point(aes(shape = r_signif), size = 3) +
-  geom_text_repel(aes(label = Country), max.overlaps = 100,
+  geom_point(size = 3) +
+  geom_text_repel(
+    data = df_dynamics_current,
+    aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_y_continuous(labels = scales::percent) +
   scale_signif +
@@ -772,6 +702,49 @@ plot_overall_peaks <- df_dynamics %>%
     shape = guide_legend(title.position = "top", order = 2))
 
 plot_overall_peaks
+
+```
+
+
+### Tadpole version
+
+```{r  fig.height = 7, out.width = "100%"}
+
+plot_tadpole_peaks <- df_dynamics %>%
+  group_by(report_country) %>%
+  arrange(last_day) %>% 
+  ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_path(aes(group = report_country, alpha = last_day)) + 
+  geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
+  geom_text_repel(
+    data = df_dynamics_current,
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_signif +
+  scale_asmodee +
+  scale_alpha_continuous(trans = "reverse") +
+  scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
+  labs(x = "Growth rate of daily cases",
+       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)",
+       subtitle = sprintf("Last data update: %s",
+                          format(data_stamp, "%A %d %B %Y"))) +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2),
+    size = "none",
+    alpha = "none")
+
+plot_tadpole_peaks
 
 ```
 
@@ -847,9 +820,10 @@ file.copy(from = path_out, to = latest_path_out, overwrite = TRUE)
 Here we save the two key figures showing 'overall dynamics' to *png* files in
 *asmodee_outputs/png/*:
 
-```{r }
+```{r fig.show='hide'}
 
-# Deaths PC as y axis
+# Pinplots
+## Deaths PC as y axis
 fig_name <- sprintf("waffle_deaths_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     data_stamp)
@@ -859,7 +833,7 @@ png(fig_path, width = 22, height = 18, units = "cm", res = 150)
 print(plot_overall_deaths)
 dev.off()
 
-# Make a copy as 'latest'
+## Make a copy as 'latest'
 latest_fig_name <- sprintf("waffle_deaths_%s_latest.png",
                            paste(params$who_region, collapse = "_")
                            )
@@ -867,7 +841,7 @@ latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
 file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 
-# cases as % historical peak as y axis
+## cases as % historical peak as y axis
 fig_name <- sprintf("waffle_peaks_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     data_stamp)
@@ -877,8 +851,45 @@ png(fig_path, width = 22, height = 18, units = "cm", res = 150)
 print(plot_overall_peaks)
 dev.off()
 
-# Make a copy as 'latest'
+## Make a copy as 'latest'
 latest_fig_name <- sprintf("waffle_peaks_%s_latest.png",
+                           paste(params$who_region, collapse = "_")
+                           )
+latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
+file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
+
+
+# Tadpoles
+## Deaths PC as y axis
+fig_name <- sprintf("tadpole_deaths_%s_%s.png",
+                    paste(params$who_region, collapse = "_"),
+                    data_stamp)
+fig_path <- here::here("asmodee_outputs", "png", fig_name)
+
+png(fig_path, width = 22, height = 18, units = "cm", res = 150)
+print(plot_tadpole_deaths)
+dev.off()
+
+# Make a copy as 'latest'
+latest_fig_name <- sprintf("tadpole_deaths_%s_latest.png",
+                           paste(params$who_region, collapse = "_")
+                           )
+latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
+file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
+
+
+## cases as % historical peak as y axis
+fig_name <- sprintf("tadpole_peaks_%s_%s.png",
+                    paste(params$who_region, collapse = "_"),
+                    data_stamp)
+fig_path <- here::here("asmodee_outputs", "png", fig_name)
+
+png(fig_path, width = 22, height = 18, units = "cm", res = 150)
+print(plot_tadpole_peaks)
+dev.off()
+
+## Make a copy as 'latest'
+latest_fig_name <- sprintf("tadpole_peaks_%s_latest.png",
                            paste(params$who_region, collapse = "_")
                            )
 latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
