@@ -284,7 +284,7 @@ Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Monday 24 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Tuesday 25 May 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>American Samoa,
 Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
@@ -292,7 +292,7 @@ Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
 Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis
 and Futuna <br> Past incidence peaks were very low (\<15/M/week) and
 ignored for the following countries:<br>Cambodia, Fiji, Lao People’s
-Democratic Republic, Papua New Guinea, Viet Nam <br>
+Democratic Republic, Viet Nam <br>
 
 ### Infection levels as % of historical incidence peak
 
