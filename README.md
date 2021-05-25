@@ -1,11 +1,6 @@
 Welcome to the WHO COVID-19 trend analysis repository
 ================
 
-  - [Preamble](#preamble)
-  - [Quick links](#quick-links)
-  - [Overall dynamics figures](#overall-dynamics-figures-1)
-  - [Contributions](#contributions)
-
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
 # Preamble
@@ -185,7 +180,7 @@ Tanzania <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Monday 24 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Tuesday 25 May 2021**.<br><br>**Notes**
 <br>Past incidence peaks were very low (\<15/M/week) and ignored for the
 following countries:<br>Yemen <br>
 
@@ -263,7 +258,7 @@ Caicos Islands <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 24 May 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Tuesday 25 May 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Democratic People’s
 Republic of Korea <br>
