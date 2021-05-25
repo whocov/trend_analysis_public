@@ -667,7 +667,8 @@ called `asmodee_outputs`; all objects are stored in */asmodee_outputs/rds/*:
 * `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot using
   incidence as percentage of historical peak (excluding the last 90 days) on the
   y-axis
-
+* `df_dynamics`: a `data.frame` containing all the required info to recreate
+  either global dynamics plots
 
 ```{r }
 
@@ -675,7 +676,8 @@ asmodee_outputs <- list(
   summary = cases_outliers,
   results = cases_res,
   plot_overall_deaths = plot_overall_deaths,
-  plot_overall_peaks = plot_overall_peaks
+  plot_overall_peaks = plot_overall_peaks,
+  df_dynamics = df_dynamics
 )
 
 ## export asmodee summary
