@@ -110,8 +110,9 @@ x <- x_all %>%
 
 
 
+------------------------------------
 
-# Generate pre-classification
+# Generate pre-classification {.tabset .tabset-fade .tabset-pills}
 
 ## Classification algorithm
 
@@ -448,8 +449,9 @@ plot(asmodee_res, ncol = 3)
 
 
 
+----------------------------
 
-# Export table
+# Export table {.tabset .tabset-fade .tabset-pills}
 
 ```{r }
 
