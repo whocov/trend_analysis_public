@@ -1,0 +1,213 @@
+---
+title: "Listing situations of concern"
+author: "Thibaut Jombart"
+date: '`r format(Sys.time(), "%A %d %B %Y")`'
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: TRUE
+    toc_collapse: FALSE
+    number_sections: TRUE
+    highlight: pygments
+    theme: spacelab
+    code_folding: hide
+    <!-- df_print: paged -->
+    css: !expr here::here('css', 'style.css')
+params:
+  who_region: "EURO"
+  n_cores: 1
+  tadpole_size: 7
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      fig.width = 8,
+                      fig.height = 6,
+                      dpi = 70,
+                      warning = TRUE,
+                      message = TRUE)
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "EURO"))
+
+```
+
+
+# Prep work {.tabset .tabset-fade .tabset-pills}
+
+## Scripts
+
+```{r warnings = FALSE}
+
+rfextras::load_scripts()
+
+```
+
+
+## Packages
+
+All CRAN packages can be installed by calling `reportfactory::install_deps()`.
+Package installs on remotes are now handled in a separate script
+`remote_packages.R` which is loaded alongside other scripts in `scripts/` using:
+
+
+```{r}
+
+pacman::p_load(
+  tidyverse,
+  rio
+)
+
+```
+
+
+
+## Load the data
+
+We load the `$df_dynamics` components of the list of results stored for each WHO
+region, output by `trendbreaker.Rmd`:
+
+```{r }
+
+all_files <- list.files(here::here("asmodee_outputs"),
+                        pattern = "latest.rds",
+                        recursive = TRUE,
+                        full.names = TRUE)
+
+all_content <- map(all_files, rio::import)
+regions <- all_files %>%
+  gsub("[[:lower:][:punct:]]", "", .)
+
+all_df <- all_content %>%
+  map(list("df_dynamics")) %>%
+  setNames(regions)
+
+```
+
+Add region data and assemble into a single `data.frame`, keeping only the
+current day:
+
+```{r }
+
+
+for (i in seq_along(regions)) {
+  all_df[[i]] <- mutate(all_df[[i]], who_region = regions[i])
+}
+
+x <- all_df %>%
+  bind_rows() %>%
+  filter(last_day == 0)
+
+```
+
+
+
+
+# Generate pre-classification
+
+## Classification algorithm
+
+We define the following classes for levels of concerns:
+
+* not listed
+* *low*: average incidence *and* no decline
+* *mid*: high incidence *or* fast growth, **or** average incidence *and* growth
+* *high*: high/very high incidence *and* growing, **or** low incidence *and* growing fast
+  very fast
+* *very high*: high/very high incidence *and* growing fast/very fast
+
+We use the following classification rules, depending on the values of the growth
+rate (*r*), current incidence (as % of previous peak) and signs of acceleration
+(ASMODEE net increases over last week):
+
+* if incid < 50%:
+    + if r > high_r -> **M**
+	+ else -> NL
+* if 50% < incid  100%:
+    + if r > high_r -> **H**
+    + else if r > 0.02 -> **M**
+	+ else if r is not < 0 -> **L**
+    + else -> **NL**
+* if incid > 100%:
+    + if r > high_r -> **VH**
+    + else if r > 0 -> **H**
+	+ else if r is not < 0 -> **M**
+    + else -> **NL**
+* if acceleration, upgrade by 1 step (bound at **VH**)
+
+with by default, *high_r* = 0.05, and at least 3 days of net increase to register as
+a sign of acceleration.
+
+
+```{r }
+
+make_classif <- function(incid, r, r_lower, r_upper, accel,
+                         high_r = 0.05,
+                         r_limit = 0.02,
+                         n_accel = 3) {
+
+  # The output will be stored as numbers first and converted at the end:
+  ## 0 = NL
+  ## 1 = low
+  ## 2 = mid
+  ## 3 = high
+  ## 4 = very high
+  
+  if (incid < 0.5) {
+    if (r > high_r) {
+      out <- 2
+    } else {
+      out <- 0
+    }
+  } else if (incid < 1) {
+      if (r > high_r) {
+        out <- 3
+      } else if (r > r_limit) {
+        out <- 2
+      } else if (r)
+  } else {
+
+  } 
+
+}
+
+
+
+## x %>%
+##   group_by(report_country) %>%
+##   mutate(
+##     classif = case_when(
+      
+##     )
+##       )
+
+```
+
+
+## Export notes
+
+```{r eval = FALSE}
+
+if (is.null(notes)) {
+  notes <- "Nothing to report. All countries were successfully included in the analyses."
+}
+
+## export asmodee summary
+file_name <- sprintf("analysis_notes_%s_%s.md",
+                     paste(params$who_region, collapse = "_"),
+                     data_stamp)
+path_out <- here::here("asmodee_outputs", "notes", file_name)
+writeLines(notes, path_out, sep = "\n<br>\n")
+
+## make a copy as latest file
+latest_file_name <- sprintf("analysis_notes_%s_latest.md",
+                            paste(params$who_region, collapse = "_")
+                            )
+latest_path_out <- here::here("asmodee_outputs", "notes", latest_file_name)
+file.copy(from = path_out, to = latest_path_out, overwrite = TRUE)
+
+```
