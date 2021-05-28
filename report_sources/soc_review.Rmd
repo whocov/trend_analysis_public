@@ -15,8 +15,6 @@ output:
     <!-- df_print: paged -->
     css: !expr here::here('css', 'style.css')
 params:
-  who_region: "EURO"
-  n_cores: 1
   tadpole_size: 7
 ---
 
@@ -32,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r eval = FALSE, echo = FALSE}
 
-rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "EURO"))
+rmarkdown::render('soc_review.Rmd')
 
 ```
 
@@ -62,6 +60,9 @@ pacman::p_load(
   rio,
   ggrepel
 )
+
+# load separately github-only packages
+library(trendbreaker)
 
 ```
 
@@ -99,8 +100,10 @@ for (i in seq_along(regions)) {
   all_df[[i]] <- mutate(all_df[[i]], who_region = regions[i])
 }
 
-x <- all_df %>%
-  bind_rows() %>%
+x_all <- all_df %>%
+  bind_rows()
+
+x <- x_all %>%
   filter(last_day == 0)
 
 ```
@@ -211,7 +214,11 @@ x <- x %>%
                            accel = net_increases),
     classif = factor(classif, levels =  c("NL", "Low", "Mid", "High", "Very High"))
   )
-      
+
+
+## add classification to x_all
+x_all <- x_all %>%
+  left_join(x %>% select(report_country, classif))
 
 ```
 
@@ -242,9 +249,11 @@ out %>%
 
 ## Pinplot
 
-This pinplot shows all countries classified as 'Mid' and above:
+These pinplots shows all countries classified as 'Mid' and above.
 
-```{r }
+### By % incidence peak
+
+```{r fig.height = 7, out.width = "100%"}
 
 scale_signif <- scale_shape_manual(
   "Significant growth/decline",
@@ -289,31 +298,170 @@ plot_overall_peaks
 ```
 
 
+### By deaths per capita
+
+```{r  fig.height = 7, out.width = "100%"}
+
+# tadpole plot
+plot_overall_deaths <- x %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_signif +
+  scale_asmodee +
+  labs(x = "Growth rate of daily cases",
+       y = "Weekly COVID-19 deaths per 1M inhabitants") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
+
+plot_overall_deaths
+
+```
+
+
+
 
 ## Tadpoles
 
+### By % incidence peak
+
+```{r fig.height = 7, out.width = "100%"}
+
+plot_tadpole_peaks <- x_all %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  group_by(report_country) %>%
+  arrange(last_day) %>% 
+  ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_path(aes(group = report_country, alpha = last_day)) + 
+  geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
+  geom_text_repel(
+    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_y_continuous(labels = scales::percent, trans = "log10") +
+  scale_signif +
+  scale_asmodee +
+  scale_alpha_continuous(trans = "reverse") +
+  scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
+  labs(x = "Growth rate of daily cases",
+       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2),
+    size = "none",
+    alpha = "none")
+
+plot_tadpole_peaks
 
 
-## Export notes
+```
 
-```{r eval = FALSE}
 
-if (is.null(notes)) {
-  notes <- "Nothing to report. All countries were successfully included in the analyses."
-}
+### By deaths per capita
+
+```{r  fig.height = 7, out.width = "100%"}
+
+# tadpole plot
+plot_tadpole_deaths <- x_all %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  group_by(report_country) %>%
+  arrange(last_day) %>% 
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_path(aes(group = report_country, alpha = last_day)) + 
+  geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
+  geom_text_repel(
+    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_signif +
+  scale_asmodee +
+  scale_alpha_continuous(trans = "reverse") +
+  scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
+  labs(x = "Growth rate of daily cases",
+       y = "Weekly COVID-19 deaths per 1M inhabitants") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2),
+    size = "none",
+    alpha = "none")
+
+plot_tadpole_deaths
+
+```
+
+
+
+## ASMODEE plots
+
+We provide ASMODEE plots for countries classified as "Mid" and above.
+
+```{r }
+
+to_keep <- x %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>%
+  pull(report_country)
+
+asmodee_res <- map(all_content, list("results")) %>%
+  bind_rows() %>%
+  filter(report_country %in% to_keep)
+
+n_plots <- nrow(asmodee_res)
+
+```
+
+```{r fig.height = 2 * round(n_plots / 3), out.width = "100%"}
+
+plot(asmodee_res, ncol = 3)
+
+```
+
+
+
+
+# Export table
+
+```{r }
 
 ## export asmodee summary
-file_name <- sprintf("analysis_notes_%s_%s.md",
-                     paste(params$who_region, collapse = "_"),
-                     data_stamp)
-path_out <- here::here("asmodee_outputs", "notes", file_name)
-writeLines(notes, path_out, sep = "\n<br>\n")
+file_name <- sprintf("dynamics_synthesis_%s.xlsx",
+                     Sys.Date())
+path_out <- here::here("synthesis", file_name)
+rio::export(out, file = path_out)
 
 ## make a copy as latest file
-latest_file_name <- sprintf("analysis_notes_%s_latest.md",
-                            paste(params$who_region, collapse = "_")
-                            )
-latest_path_out <- here::here("asmodee_outputs", "notes", latest_file_name)
+latest_file_name <- "dynamics_synthesis_latest.xlsx"
+latest_path_out <- here::here("synthesis", latest_file_name)
 file.copy(from = path_out, to = latest_path_out, overwrite = TRUE)
 
 ```
