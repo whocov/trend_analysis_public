@@ -59,7 +59,8 @@ Package installs on remotes are now handled in a separate script
 
 pacman::p_load(
   tidyverse,
-  rio
+  rio,
+  ggrepel
 )
 
 ```
@@ -111,6 +112,8 @@ x <- all_df %>%
 
 ## Classification algorithm
 
+<img src="https://github.com/thibautjombart/misc_figures/raw/master/diagrams/decision_CoC.png" width = "70%">
+
 We define the following classes for levels of concerns:
 
 * not listed
@@ -156,36 +159,139 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
   ## 2 = mid
   ## 3 = high
   ## 4 = very high
+
+  if (is.na(incid) | is.na(r) | is.na(accel)) return(NA_character_)
   
+  ## incid 0-50%
   if (incid < 0.5) {
-    if (r > high_r) {
+    if (r_lower > high_r) {
       out <- 2
     } else {
       out <- 0
     }
   } else if (incid < 1) {
-      if (r > high_r) {
+      ## incid 50-100%
+      if (r_lower > high_r) {
         out <- 3
-      } else if (r > r_limit) {
+      } else if (r_lower > r_limit) {
         out <- 2
-      } else if (r)
+      } else if (r_lower > -r_limit) {
+        out <- 1
+      } else {
+        out <- 0
+      }
   } else {
-
+    ## incid >100%
+    if (r_lower > high_r) {
+        out <- 4
+      } else if (r_lower > 0) {
+        out <- 3
+      } else if (r_upper > 0) {
+        out <- 2
+      } else {
+        out <- 0
+      }
   } 
 
+  ## add +1 if acceleration
+  if (accel >= n_accel & out < 4) {
+    out <- out + 1
+  }
+
+  c("NL", "Low", "Mid", "High", "Very High")[out + 1]
 }
 
 
-
-## x %>%
-##   group_by(report_country) %>%
-##   mutate(
-##     classif = case_when(
+## apply classification algo to countries
+x <- x %>%
+  group_by(report_country) %>%
+  mutate(
+    classif = make_classif(incid = perc_peak,
+                           r = r, r_lower = r_lower, r_upper = r_upper,
+                           accel = net_increases),
+    classif = factor(classif, levels =  c("NL", "Low", "Mid", "High", "Very High"))
+  )
       
-##     )
-##       )
 
 ```
+
+
+
+## Leaderboard table
+
+We reformat the results into `out` and print the table with Low levels and above:
+
+```{r }
+
+out <- x %>%
+  arrange(desc(as.integer(classif))) %>%
+  select(report_country, classif, r, r_lower, r_upper, perc_peak, net_increases) %>%
+  mutate(r = round(r, 2),
+         r_lower = round(r_lower, 2),
+         r_upper = round(r_upper, 2),
+         perc_peak = paste(round(100 * perc_peak), "%")         
+         )
+
+out %>%
+  filter(classif != "NL") %>%
+  DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
+
+```
+
+
+
+## Pinplot
+
+This pinplot shows all countries classified as 'Mid' and above:
+
+```{r }
+
+scale_signif <- scale_shape_manual(
+  "Significant growth/decline",
+  values = c(yes = 19, no = 1)
+)
+
+scale_asmodee <- scale_colour_steps(
+  "Days in last week\nabove\nexpectations",
+  low = "#5b7bb5",
+  high = "#d10031",
+  breaks = 0:7,
+  limits = c(0,7))
+
+
+plot_overall_peaks <- x %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_y_continuous(labels = scales::percent, trans = "log10") +
+  scale_signif +
+  scale_asmodee +
+  labs(x = "Growth rate of daily cases",
+       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
+
+plot_overall_peaks
+
+```
+
+
+
+## Tadpoles
+
 
 
 ## Export notes
