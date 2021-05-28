@@ -14,7 +14,7 @@ password <- Sys.getenv("SENDINBLUE_SMTP_PASSWORD")
 library(emayili)
 library(magrittr)
 
-recipients <- c("thibautjombart@gmail.com", "polaino@who.int")
+recipients <- c("thibautjombart@gmail.com", "polaino@who.int", "batran@who.int")
 
 txt_body <- sprintf(
   "Please find attached the latest COVID-19 dynamics synthesis report. This automated update was generated at %s. You can download the full .xlsx file from: https://github.com/whocov/trend_analysis_public/raw/main/synthesis/dynamics_synthesis_latest.xlsx",
