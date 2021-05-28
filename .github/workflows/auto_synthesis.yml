@@ -1,0 +1,65 @@
+# Name of the workflow
+name: auto-synthesis
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch, as well as 1200 every day
+on:
+  schedule:
+     - cron:  '00 16 * * 2'
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# Important: ubuntu-latest is not set up properly for R, so use macOS
+jobs:
+  auto-synthesis:
+    runs-on: macos-latest
+    env:
+      PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
+      SENDINBLUE_SMTP_PASSWORD: ${{ secrets.SENDINBLUE_SMTP_PASSWORD }}
+    steps:
+      - name: Checkout repos
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          token: ${{ secrets.PAT_TIBO }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v1
+
+      - name: Setup pandoc
+        uses: r-lib/actions/setup-pandoc@v1
+    
+      - name: Install dependencies
+        run: |
+          Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true")
+          options(install.packages.check.source = "no")
+          pkgs <- c("remotes", "here", "ISOweek", "emayili", "emayili")
+          install.packages(pkgs, repos = "https://cloud.r-project.org/")
+          remotes::install_github("reconhub/reportfactory", upgrade = "never")
+          remotes::install_github("reconhub/rfextras", upgrade = "never")
+          reportfactory::install_deps(upgrade = "never")
+          remotes::install_github("reconhub/incidence2", upgrade = "never")
+          remotes::install_github("reconhub/trendbreaker", upgrade = "never")
+          install.packages("ggnewscale") # ensure dep: phifunc
+        shell: Rscript {0}
+ 
+      - name: Run data updates and trendbreaker on all WHO regions
+        run: |
+          source("run_synthesis.R")
+        shell: Rscript {0}
+        
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add asmodee_outputs
+          git commit -m "Automatic synthesis of COVID-19 dynamics"
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT_TIBO }}
+          branch: 'main'  
+ 
