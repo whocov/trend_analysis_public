@@ -14,11 +14,18 @@ password <- Sys.getenv("SENDINBLUE_SMTP_PASSWORD")
 library(emayili)
 library(magrittr)
 
+recipients <- c("thibautjombart@gmail.com", "polaino@who.int")
+
+txt_body <- sprintf(
+  "Please find attached the latest COVID-19 dynamics synthesis report. This automated update was generated at %s. You can download the full .xlsx file from: https://github.com/whocov/trend_analysis_public/raw/main/synthesis/dynamics_synthesis_latest.xlsx",
+  Sys.time()
+  )
+
 email <- envelope() %>%
   from("thibautjombart@gmail.com") %>%
-  to("thibautjombart@gmail.com") %>%
+  to(recipients) %>%
   subject("COVID-19 dynamics synthesis") %>%
-  text("Please find attached the latest version of the COVID-19 dynamics synthesis report") %>%
+  text(txt_body) %>%
   attachment("soc_review.zip")
 
 smtp <- server(host = "smtp-relay.sendinblue.com",
@@ -27,4 +34,3 @@ smtp <- server(host = "smtp-relay.sendinblue.com",
                password = password)
 
 smtp(email)
-#smtp(email, verbose = TRUE)
