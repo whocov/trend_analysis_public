@@ -185,9 +185,9 @@ Principe, United Republic of Tanzania <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Friday 28 May 2021**.<br><br>**Notes**
-<br>Past incidence peaks were very low (\<15/M/week) and ignored for the
-following countries:<br>Yemen <br>
+<br>Analyses were last updated **Saturday 29 May
+2021**.<br><br>**Notes** <br>Past incidence peaks were very low
+(\<15/M/week) and ignored for the following countries:<br>Yemen <br>
 
 ### Infection levels as % of historical incidence peak
 
