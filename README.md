@@ -262,10 +262,10 @@ Saint Pierre and Miquelon, Turks and Caicos Islands <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Saturday 29 May
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Democratic People’s Republic of Korea <br>
+<br>Analyses were last updated **Sunday 30 May 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Democratic People’s
+Republic of Korea <br>
 
 ### Infection levels as % of historical incidence peak
 
