@@ -54,3 +54,18 @@ load_asmodee_results <- function(who_region = "EURO") {
   attr(out, "timestamp") <- file_date
   out
 }
+
+
+
+
+
+#' Load country data
+#'
+#' Contains: who_region, report_country, iso3, population
+#' 
+#' @author Tibo
+load_countries_data <- function() {
+  file_path <-  here::here("data", "clean", "countries_info.rds")
+  rio::import(file_path)
+}
+
