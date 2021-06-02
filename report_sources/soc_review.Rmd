@@ -455,11 +455,16 @@ plot(asmodee_res, ncol = 3)
 
 ```{r }
 
+## add country info and order table
+out_full <- load_countries_data() %>%
+  left_join(out) %>%
+  arrange(who_region, report_country)
+
 ## export asmodee summary
 file_name <- sprintf("dynamics_synthesis_%s.xlsx",
                      Sys.Date())
 path_out <- here::here("synthesis", file_name)
-rio::export(out, file = path_out)
+rio::export(out_full, file = path_out)
 
 ## make a copy as latest file
 latest_file_name <- "dynamics_synthesis_latest.xlsx"
