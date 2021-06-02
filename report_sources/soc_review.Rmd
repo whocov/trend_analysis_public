@@ -453,13 +453,50 @@ plot(asmodee_res, ncol = 3)
 
 # Export table {.tabset .tabset-fade .tabset-pills}
 
+
+## Add extra info
+
+We add the following info to the output table:
+
+* Monday of the reporting week
+* country info (WHO region, iso3 and population size)
+
+We also renamed columns for compatibility with the decision spreadsheets:
+
 ```{r }
+
+## add country info and order table
+out_full <- load_countries_data() %>%
+  left_join(out) %>%
+  arrange(who_region, report_country)
+
+## add date and rename/reorder columns
+out_full <- out_full %>%
+  mutate(assessment_week_begins = Sys.Date() %>%
+           grates::as_yrwk() %>%
+           as.Date()) %>%
+  select(assessment_week_begins,
+         Country = report_country,
+         who_region,
+         growth_rate = r,
+         relative_incidence = perc_peak,
+         net_increases,
+         epi_classification = classif,
+         everything())
+
+```
+
+
+## Export table to xlsx
+
+```{r }
+
 
 ## export asmodee summary
 file_name <- sprintf("dynamics_synthesis_%s.xlsx",
                      Sys.Date())
 path_out <- here::here("synthesis", file_name)
-rio::export(out, file = path_out)
+rio::export(out_full, file = path_out)
 
 ## make a copy as latest file
 latest_file_name <- "dynamics_synthesis_latest.xlsx"
