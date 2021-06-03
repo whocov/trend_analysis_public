@@ -473,7 +473,7 @@ out_full <- load_countries_data() %>%
 ## add date and rename/reorder columns
 out_full <- out_full %>%
   mutate(assessment_week_begins = Sys.Date() %>%
-           grates::as_yrwk() %>%
+           grates::as_yearweek() %>%
            as.Date()) %>%
   select(assessment_week_begins,
          Country = report_country,
