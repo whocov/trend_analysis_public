@@ -435,7 +435,8 @@ to_keep <- x %>%
 
 asmodee_res <- map(all_content, list("results")) %>%
   bind_rows() %>%
-  filter(report_country %in% to_keep)
+  filter(report_country %in% to_keep) %>%
+  arrange(report_country)
 
 n_plots <- nrow(asmodee_res)
 
