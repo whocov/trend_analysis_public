@@ -60,14 +60,14 @@ Package installs on remotes are now handled in a separate script
 pacman::p_load(
             tidyverse, # data management
             ggrepel, # plots
-            future # parallelisation
-        )
+            future, # parallelisation
+            incidence2
+)
 
 ## remotes loaded separately
 library(trending)
 library(trendeval)
 library(trendbreaker)
-library(incidence2)
 library(i2extras)
 
 ```
