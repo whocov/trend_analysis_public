@@ -40,7 +40,6 @@ jobs:
           remotes::install_github("reconhub/reportfactory", upgrade = "never")
           remotes::install_github("reconhub/rfextras", upgrade = "never")
           reportfactory::install_deps(upgrade = "never")
-          remotes::install_github("reconhub/incidence2", upgrade = "never")
           remotes::install_github("reconhub/trendbreaker", upgrade = "never")
           install.packages("ggnewscale") # ensure dep: phifunc
         shell: Rscript {0}
