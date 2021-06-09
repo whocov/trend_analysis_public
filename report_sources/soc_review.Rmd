@@ -109,6 +109,20 @@ x <- x_all %>%
 ```
 
 
+## Load VOI data
+
+```{r }
+
+dat_voi <- find_latest("proportions_voi", where = here::here("data")) %>%
+  rio::import() %>%
+  pivot_wider(names_from = quantile, values_from = value)
+
+dat_voi
+
+
+```
+
+
 
 ------------------------------------
 
@@ -449,6 +463,46 @@ plot(asmodee_res, ncol = 3)
 ```
 
 
+
+## VoC / VoI plots
+
+We plot VoC / VoI dynamics over time for the countries classified as 'Mid' and
+above, for the last 6 weeks:
+
+```{r }
+
+## re-arrange data into wide format, filter relevant stuff
+voi <- dat_voi %>%
+  filter(report_country %in% to_keep,
+         date >= (Sys.Date() - 7*4),
+         date < Sys.Date()) %>%
+  arrange(report_country)
+
+## ## simplify lineage voi/voc vs the rest
+## voi <- voi %>%
+##   mutate(lower = max(0, lower),
+##          upper = min(1, upper)
+##          )
+
+```
+
+Make the plot:
+
+```{r }
+
+# generate color palette for variants
+
+
+# 
+
+ggplot(voi, aes(x = date)) +
+  geom_line(aes(y = mid, color = variant), size = 1) +
+  facet_wrap(~ report_country) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = variant),
+              alpha = 0.2, color = "transparent") +
+  theme_bw()
+
+```
 
 ----------------------------
 
