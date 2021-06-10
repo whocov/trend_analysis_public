@@ -9,6 +9,8 @@ on:
     branches: [ main ]
     paths-ignore:
       - README.md
+      - run_synthesis.R
+      - report_sources/soc_review.Rmd
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # Important: ubuntu-latest is not set up properly for R, so use macOS

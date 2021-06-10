@@ -5,7 +5,9 @@ setwd(here::here("report_sources"))
 rmarkdown::render('soc_review.Rmd')
 
 # zip report
-zip(file = "soc_review.html", zipfile = "soc_review.zip")
+zip_name <- sprintf( "soc_review_%s.zip", Sys.Date())
+zip(files = c("soc_review.html", "dynamics_synthesis.xlsx"),
+    zipfile = zip_name)
 
 # get smtp password from environment
 password <- Sys.getenv("SENDINBLUE_SMTP_PASSWORD")
@@ -14,10 +16,14 @@ password <- Sys.getenv("SENDINBLUE_SMTP_PASSWORD")
 library(emayili)
 library(magrittr)
 
-recipients <- c("thibautjombart@gmail.com", "polaino@who.int", "batran@who.int", "laurensonschaferh@who.int")
+recipients <- c("thibautjombart@gmail.com",
+                "polaino@who.int",
+                "batran@who.int",
+                "laurensonschaferh@who.int",
+                "vandemaelek@who.int")
 
 txt_body <- sprintf(
-  "Please find attached the latest COVID-19 dynamics synthesis report. This automated update was generated at %s. You can download the full .xlsx file from: https://github.com/whocov/trend_analysis_public/raw/main/synthesis/dynamics_synthesis_latest.xlsx",
+  "Dear Colleague, <br><br>Please find attached the latest COVID-19 dynamics synthesis report as well as an xlsx file with pre-classification of countries sorted by WHO region. Note that not all countries may have been included in the analysis, so that some lines may be empty. You will find more information on inclusion criteria at: https://github.com/whocov/trend_analysis_public/.<br><br>This automated update was generated on the %s.<br><br>Best regards, <br>Thibaut Jombart<br>(through github actions)",
   Sys.time()
   )
 
@@ -26,11 +32,12 @@ email <- envelope() %>%
   to(recipients) %>%
   subject("COVID-19 dynamics synthesis") %>%
   text(txt_body) %>%
-  attachment("soc_review.zip")
+  attachment(zip_name)
 
-smtp <- server(host = "smtp-relay.sendinblue.com",
-               port = 587,
-               username = "thibautjombart@gmail.com",
-               password = password)
+smtp <- server(
+  host = "smtp-relay.sendinblue.com",
+  port = 587,
+  username = "thibautjombart@gmail.com",
+  password = password)
 
 smtp(email)
