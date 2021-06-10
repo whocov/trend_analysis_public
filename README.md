@@ -1,6 +1,11 @@
 Welcome to the WHO COVID-19 trend analysis repository
 ================
 
+  - [Preamble](#preamble)
+  - [Quick links](#quick-links)
+  - [Overall dynamics figures](#overall-dynamics-figures-1)
+  - [Contributions](#contributions)
+
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
 # Preamble
