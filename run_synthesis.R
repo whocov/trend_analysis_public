@@ -16,7 +16,11 @@ password <- Sys.getenv("SENDINBLUE_SMTP_PASSWORD")
 library(emayili)
 library(magrittr)
 
-recipients <- c("thibautjombart@gmail.com", "polaino@who.int", "batran@who.int", "laurensonschaferh@who.int")
+recipients <- c("thibautjombart@gmail.com",
+                "polaino@who.int",
+                "batran@who.int",
+                "laurensonschaferh@who.int",
+                "vandemaelek@who.int")
 
 txt_body <- sprintf(
   "Dear Colleague, <br><br>Please find attached the latest COVID-19 dynamics synthesis report as well as an xlsx file with pre-classification of countries sorted by WHO region. Note that not all countries may have been included in the analysis, so that some lines may be empty. You will find more information on inclusion criteria at: https://github.com/whocov/trend_analysis_public/.<br><br>This automated update was generated on the %s.<br><br>Best regards, <br>Thibaut Jombart (through github actions)",
