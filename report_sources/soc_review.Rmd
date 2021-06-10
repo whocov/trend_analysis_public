@@ -492,16 +492,7 @@ out_full <- out_full %>%
 
 ```{r }
 
-
 ## export asmodee summary
-file_name <- sprintf("dynamics_synthesis_%s.xlsx",
-                     Sys.Date())
-path_out <- here::here("synthesis", file_name)
-rio::export(out_full, file = path_out)
-
-## make a copy as latest file
-latest_file_name <- "dynamics_synthesis_latest.xlsx"
-latest_path_out <- here::here("synthesis", latest_file_name)
-file.copy(from = path_out, to = latest_path_out, overwrite = TRUE)
+rio::export(out_full, file = "dynamics_synthesis.xlsx")
 
 ```

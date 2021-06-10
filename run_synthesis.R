@@ -5,7 +5,9 @@ setwd(here::here("report_sources"))
 rmarkdown::render('soc_review.Rmd')
 
 # zip report
-zip(file = "soc_review.html", zipfile = "soc_review.zip")
+zip_name <- sprintf( "soc_review_%s.zip", Sys.Date())
+zip(files = c("soc_review.html", "dynamics_synthesis.xlsx"),
+    zipfile = zip_name)
 
 # get smtp password from environment
 password <- Sys.getenv("SENDINBLUE_SMTP_PASSWORD")
@@ -26,11 +28,12 @@ email <- envelope() %>%
   to(recipients) %>%
   subject("COVID-19 dynamics synthesis") %>%
   text(txt_body) %>%
-  attachment("soc_review.zip")
+  attachment(zip_name)
 
-smtp <- server(host = "smtp-relay.sendinblue.com",
-               port = 587,
-               username = "thibautjombart@gmail.com",
-               password = password)
+smtp <- server(
+  host = "smtp-relay.sendinblue.com",
+  port = 587,
+  username = "thibautjombart@gmail.com",
+  password = password)
 
 smtp(email)
