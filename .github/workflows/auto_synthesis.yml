@@ -5,7 +5,7 @@ name: auto-synthesis
 # events but only for the master branch, as well as 1200 every day
 on:
   schedule:
-     - cron:  '00 12 * * 2'
+     - cron:  '00 6 * * 1'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
