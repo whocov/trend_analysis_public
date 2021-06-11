@@ -109,6 +109,20 @@ x <- x_all %>%
 ```
 
 
+## Load VOI data
+
+```{r }
+
+dat_voi <- find_latest("proportions_voi", where = here::here("data")) %>%
+  rio::import() %>%
+  pivot_wider(names_from = quantile, values_from = value)
+
+dat_voi
+
+
+```
+
+
 
 ------------------------------------
 
@@ -449,6 +463,68 @@ plot(asmodee_res, ncol = 3)
 ```
 
 
+
+## VoC / VoI plots
+
+We plot VoC / VoI dynamics over time for the countries classified as 'Mid' and
+above, for the last 6 weeks:
+
+```{r }
+
+## re-arrange data into wide format, filter relevant stuff
+voi <- dat_voi %>%
+  filter(report_country %in% to_keep,
+         date >= (Sys.Date() - 7*4),
+         date < Sys.Date()) %>%
+  arrange(report_country)
+
+## re-order variants
+voi <- voi %>%
+  mutate(variant = factor(variant),
+         variant = forcats::fct_relevel(variant, "Other", after = Inf))
+
+## ## simplify lineage voi/voc vs the rest
+## voi <- voi %>%
+##   mutate(lower = max(0, lower),
+##          upper = min(1, upper)
+##          )
+
+n_plots <- length(unique(voi$report_country))
+
+```
+
+Make the plot:
+
+```{r fig.height = 2 * round(n_plots / 3), out.width = "100%"}
+
+# generate color palette for variants
+lev <- levels(voi$variant)
+n_variants <- length(lev) - 1
+set.seed(1)
+col_voi <- sample(incidence2::muted(n_variants))
+#col_voi <- adegenet::funky(n_variants)
+val <- c(col_voi, "grey")
+names(val) <- lev
+scale_variants_color <- scale_color_manual("", values = val)
+scale_variants_fill <- scale_fill_manual("", values = val)
+
+
+ggplot(voi, aes(x = date)) +
+  geom_line(aes(y = mid, color = variant), size = 1) +
+  facet_wrap(~ report_country) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = variant),
+              alpha = 0.3, color = "transparent") +
+  theme_bw() +
+  scale_variants_color +
+  scale_variants_fill +
+  scale_x_date(date_labels = "%d %b") +
+  labs(title = "Variant distributions over time",
+       x = "",
+       y = "Variant frequency (% sequenced cases)") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust=1))
+
+```
 
 ----------------------------
 
