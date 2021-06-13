@@ -230,13 +230,12 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Saturday 12 June
+<br>Analyses were last updated **Sunday 13 June
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Anguilla, Bonaire, Sint Eustatius and Saba, British Virgin
-Islands, Cayman Islands, Dominica, Falkland Islands (Malvinas), Grenada,
-Montserrat, Saint Barthélemy, Saint Pierre and Miquelon, Turks and
-Caicos Islands <br>
+analyses:<br>Anguilla, Bonaire, Sint Eustatius and Saba, Cayman Islands,
+Dominica, Falkland Islands (Malvinas), Grenada, Montserrat, Saint
+Barthélemy, Saint Pierre and Miquelon, Turks and Caicos Islands <br>
 
 **Notes of geographic units**:
 
@@ -284,15 +283,15 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Saturday 12 June
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
-Marshall Islands, Micronesia (Federated States of), Nauru, New
-Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
-Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br> Past incidence
-peaks were very low (\<15/M/week) and ignored for the following
-countries:<br>Fiji, Lao People’s Democratic Republic, Viet Nam <br>
+<br>Analyses were last updated **Sunday 13 June 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>American Samoa,
+Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
+(Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn
+Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis
+and Futuna <br> Past incidence peaks were very low (\<15/M/week) and
+ignored for the following countries:<br>Fiji, Lao People’s Democratic
+Republic, Viet Nam <br>
 
 ### Infection levels as % of historical incidence peak
 
