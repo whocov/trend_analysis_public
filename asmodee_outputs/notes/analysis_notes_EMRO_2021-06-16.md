@@ -1,2 +1,2 @@
-Past incidence peaks were very low (<15/M/week) and ignored for the following countries:<br>Yemen
+Nothing to report. All countries were successfully included in the analyses.
 <br>

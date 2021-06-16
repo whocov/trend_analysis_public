@@ -1,11 +1,6 @@
 Welcome to the WHO COVID-19 trend analysis repository
 ================
 
-  - [Preamble](#preamble)
-  - [Quick links](#quick-links)
-  - [Overall dynamics figures](#overall-dynamics-figures-1)
-  - [Contributions](#contributions)
-
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
 # Preamble
@@ -69,14 +64,9 @@ discussions on future improvements.
 Two metrics are used as proxy for the current levels of infection:
 
 1.  *% of historical peak of case incidence*: this metric uses the
-    highest case incidence reported over a weekly time window, excluding
-    the last 90 days of data; this metric works in most cases, but there
-    are several caveats:
-      - the last peak may have happened in the last 90 days
-      - some countries with a slow, continuous build-up of cases and no
-        previous waves do not have a ‘peak’
-      - increases in case incidence may reflect increases in
-        testing/surveillance
+    highest case incidence reported over a weekly time window; in
+    situations where a country is currently going up its historical
+    peak, this metric will slightly exceed 100%
 2.  *death incidence per 1M inhabitants*: this metric is less sensitive
     to testing or case reporting; however, it does not solely reflect
     changes in COVID-19 dynamics, and is likely impacted by healthcare
@@ -96,9 +86,8 @@ Analyses are performed on all countries of WHO regions meeting the
 following criteria:
 
   - reported at least 100 cases or tests over the last 7 weeks
-  - (*in analyses using peak incidence*) peak weekly incidence excluding
-    the last 90 days of data was at least 15 cases per million
-    inhabitants
+  - (*in analyses using peak incidence*) peak weekly incidence is
+    strictly positive (i.e. at least on case was reported in the past)
 
 ## Getting in touch
 
@@ -145,8 +134,7 @@ following items:
   - `plot_overall_deaths`: *ggplot2* object of the overall dynamics plot
     using death per capita on the y-axis
   - `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot
-    using incidence as percentage of historical peak (excluding the last
-    90 days) on the y-axis
+    using incidence as percentage of historical peak on the y-axis
 
 Links to the *rds* files:
 
@@ -186,8 +174,8 @@ Principe, United Republic of Tanzania <br>
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
 <br>Analyses were last updated **Wednesday 16 June
-2021**.<br><br>**Notes** <br>Past incidence peaks were very low
-(\<15/M/week) and ignored for the following countries:<br>Yemen <br>
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -290,9 +278,7 @@ cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
 Marshall Islands, Micronesia (Federated States of), Nauru, New
 Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
-Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br> Past incidence
-peaks were very low (\<15/M/week) and ignored for the following
-countries:<br>Fiji, Lao People’s Democratic Republic, Viet Nam <br>
+Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br>
 
 ### Infection levels as % of historical incidence peak
 
