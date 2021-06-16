@@ -296,7 +296,7 @@ plot_overall_peaks <- x %>%
   scale_signif +
   scale_asmodee +
   labs(x = "Growth rate of daily cases",
-       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)") +
+       y = "Last week's incidence\n(% of historical peak)") +
   theme(legend.position = "bottom",
         axis.text = element_text(size = 12),
         axis.title = element_text(size = 18),
@@ -374,7 +374,7 @@ plot_tadpole_peaks <- x_all %>%
   scale_alpha_continuous(trans = "reverse") +
   scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
   labs(x = "Growth rate of daily cases",
-       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)") +
+       y = "Last week's incidence\n(% of historical peak)") +
   theme(legend.position = "bottom",
         axis.text = element_text(size = 12),
         axis.title = element_text(size = 18),
