@@ -1,0 +1,574 @@
+---
+title: "Assessing Epidemiological Level of Risk (ELR)"
+author: "Thibaut Jombart"
+date: '`r format(Sys.time(), "%A %d %B %Y")`'
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: TRUE
+    toc_collapse: FALSE
+    number_sections: TRUE
+    highlight: pygments
+    theme: spacelab
+    code_folding: hide
+    <!-- df_print: paged -->
+    css: !expr here::here('css', 'style.css')
+params:
+  tadpole_size: 7
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      fig.width = 8,
+                      fig.height = 6,
+                      dpi = 70,
+                      warning = TRUE,
+                      message = TRUE)
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+rmarkdown::render('elr_review.Rmd')
+
+```
+
+
+# Prep work {.tabset .tabset-fade .tabset-pills}
+
+## Scripts
+
+```{r warnings = FALSE}
+
+rfextras::load_scripts()
+
+```
+
+
+## Packages
+
+All CRAN packages can be installed by calling `reportfactory::install_deps()`.
+Package installs on remotes are now handled in a separate script
+`remote_packages.R` which is loaded alongside other scripts in `scripts/` using:
+
+
+```{r}
+
+pacman::p_load(
+  tidyverse,
+  rio,
+  ggrepel
+)
+
+# load separately github-only packages
+library(trendbreaker)
+
+```
+
+
+
+## Load the data
+
+We load the `$df_dynamics` components of the list of results stored for each WHO
+region, output by `trendbreaker.Rmd`:
+
+```{r }
+
+all_files <- list.files(here::here("asmodee_outputs"),
+                        pattern = "latest.rds",
+                        recursive = TRUE,
+                        full.names = TRUE)
+
+all_content <- map(all_files, rio::import)
+regions <- all_files %>%
+  gsub("[[:lower:][:punct:]]", "", .)
+
+all_df <- all_content %>%
+  map(list("df_dynamics")) %>%
+  setNames(regions)
+
+```
+
+Add region data and assemble into a single `data.frame`, keeping only the
+current day:
+
+```{r }
+
+
+for (i in seq_along(regions)) {
+  all_df[[i]] <- mutate(all_df[[i]], who_region = regions[i])
+}
+
+x_all <- all_df %>%
+  bind_rows()
+
+x <- x_all %>%
+  filter(last_day == 0)
+
+```
+
+
+## Load VOI data
+
+```{r }
+
+dat_voi <- find_latest("proportions_voi", where = here::here("data")) %>%
+  rio::import() %>%
+  pivot_wider(names_from = quantile, values_from = value)
+
+dat_voi
+
+
+```
+
+
+
+------------------------------------
+
+# Generate pre-classification {.tabset .tabset-fade .tabset-pills}
+
+## Classification algorithm
+
+<img src="https://github.com/thibautjombart/misc_figures/raw/master/diagrams/decision_CoC.png" width = "70%">
+
+We define the following classes for levels of concerns:
+
+* not listed
+* *low*: average incidence *and* no decline
+* *mid*: high incidence *or* fast growth, **or** average incidence *and* growth
+* *high*: high/very high incidence *and* growing, **or** low incidence *and* growing fast
+  very fast
+* *very high*: high/very high incidence *and* growing fast/very fast
+
+We use the following classification rules, depending on the values of the growth
+rate (*r*), current incidence (as % of previous peak) and signs of acceleration
+(ASMODEE net increases over last week):
+
+* if incid < 50%:
+    + if r > high_r -> **M**
+	+ else -> NL
+* if 50% < incid  100%:
+    + if r > high_r -> **H**
+    + else if r > 0.02 -> **M**
+	+ else if r is not < 0 -> **L**
+    + else -> **NL**
+* if incid > 100%:
+    + if r > high_r -> **VH**
+    + else if r > 0 -> **H**
+	+ else if r is not < 0 -> **M**
+    + else -> **NL**
+* if acceleration, upgrade by 1 step (bound at **VH**)
+
+with by default, *high_r* = 0.05, and at least 3 days of net increase to register as
+a sign of acceleration.
+
+
+```{r }
+
+make_classif <- function(incid, r, r_lower, r_upper, accel,
+                         high_r = 0.05,
+                         r_limit = 0.02,
+                         n_accel = 3) {
+
+  # The output will be stored as numbers first and converted at the end:
+  ## 0 = NL
+  ## 1 = low
+  ## 2 = mid
+  ## 3 = high
+  ## 4 = very high
+
+  if (is.na(incid) | is.na(r) | is.na(accel)) return(NA_character_)
+  
+  ## incid 0-50%
+  if (incid < 0.5) {
+    if (r_lower > high_r) {
+      out <- 2
+    } else {
+      out <- 0
+    }
+  } else if (incid < 1) {
+      ## incid 50-100%
+      if (r_lower > high_r) {
+        out <- 3
+      } else if (r_lower > r_limit) {
+        out <- 2
+      } else if (r_lower > -r_limit) {
+        out <- 1
+      } else {
+        out <- 0
+      }
+  } else {
+    ## incid >100%
+    if (r_lower > high_r) {
+        out <- 4
+      } else if (r_lower > 0) {
+        out <- 3
+      } else if (r_upper > 0) {
+        out <- 2
+      } else {
+        out <- 0
+      }
+  } 
+
+  ## add +1 if acceleration
+  if (accel >= n_accel & out < 4) {
+    out <- out + 1
+  }
+
+  c("NL", "Low", "Mid", "High", "Very High")[out + 1]
+}
+
+
+## apply classification algo to countries
+x <- x %>%
+  group_by(report_country) %>%
+  mutate(
+    classif = make_classif(incid = perc_peak,
+                           r = r, r_lower = r_lower, r_upper = r_upper,
+                           accel = net_increases),
+    classif = factor(classif, levels =  c("NL", "Low", "Mid", "High", "Very High"))
+  )
+
+
+## add classification to x_all
+x_all <- x_all %>%
+  left_join(x %>% select(report_country, classif))
+
+```
+
+
+
+## Leaderboard table
+
+We reformat the results into `out` and print the table with Low levels and above:
+
+```{r }
+
+out <- x %>%
+  arrange(desc(as.integer(classif))) %>%
+  select(report_country, classif, r, r_lower, r_upper, perc_peak, net_increases) %>%
+  mutate(r = round(r, 2),
+         r_lower = round(r_lower, 2),
+         r_upper = round(r_upper, 2),
+         perc_peak = paste(round(100 * perc_peak), "%")         
+         )
+
+out %>%
+  filter(classif != "NL") %>%
+  DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
+
+```
+
+
+
+## Pinplot
+
+These pinplots shows all countries classified as 'Mid' and above.
+
+### By % incidence peak
+
+```{r fig.height = 7, out.width = "100%"}
+
+scale_signif <- scale_shape_manual(
+  "Significant growth/decline",
+  values = c(yes = 19, no = 1)
+)
+
+scale_asmodee <- scale_colour_steps(
+  "Days in last week\nabove\nexpectations",
+  low = "#5b7bb5",
+  high = "#d10031",
+  breaks = 0:7,
+  limits = c(0,7))
+
+
+plot_overall_peaks <- x %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_y_continuous(labels = scales::percent, trans = "log10") +
+  scale_signif +
+  scale_asmodee +
+  labs(x = "Growth rate of daily cases",
+       y = "Last week's incidence\n(% of historical peak)") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
+
+plot_overall_peaks
+
+```
+
+
+### By deaths per capita
+
+```{r  fig.height = 7, out.width = "100%"}
+
+# tadpole plot
+plot_overall_deaths <- x %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_point(aes(shape = r_signif), size = 3) +
+  geom_text_repel(
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_signif +
+  scale_asmodee +
+  labs(x = "Growth rate of daily cases",
+       y = "Weekly COVID-19 deaths per 1M inhabitants") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2))
+
+plot_overall_deaths
+
+```
+
+
+
+
+## Tadpoles
+
+### By % incidence peak
+
+```{r fig.height = 7, out.width = "100%"}
+
+plot_tadpole_peaks <- x_all %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  group_by(report_country) %>%
+  arrange(last_day) %>% 
+  ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_path(aes(group = report_country, alpha = last_day)) + 
+  geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
+  geom_text_repel(
+    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_y_continuous(labels = scales::percent, trans = "log10") +
+  scale_signif +
+  scale_asmodee +
+  scale_alpha_continuous(trans = "reverse") +
+  scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
+  labs(x = "Growth rate of daily cases",
+       y = "Last week's incidence\n(% of historical peak)") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2),
+    size = "none",
+    alpha = "none")
+
+plot_tadpole_peaks
+
+
+```
+
+
+### By deaths per capita
+
+```{r  fig.height = 7, out.width = "100%"}
+
+# tadpole plot
+plot_tadpole_deaths <- x_all %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  group_by(report_country) %>%
+  arrange(last_day) %>% 
+  ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
+  theme_bw() +
+  geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
+  geom_path(aes(group = report_country, alpha = last_day)) + 
+  geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
+  geom_text_repel(
+    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    aes(label = report_country), max.overlaps = 100,
+                  max.time = 2, max.iter = 1e5) +
+  scale_signif +
+  scale_asmodee +
+  scale_alpha_continuous(trans = "reverse") +
+  scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
+  labs(x = "Growth rate of daily cases",
+       y = "Weekly COVID-19 deaths per 1M inhabitants") +
+  theme(legend.position = "bottom",
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.title.align = 0.5) +
+  guides(
+    color = guide_colorsteps(order = 1),
+    shape = guide_legend(title.position = "top", order = 2),
+    size = "none",
+    alpha = "none")
+
+plot_tadpole_deaths
+
+```
+
+
+
+## ASMODEE plots
+
+We provide ASMODEE plots for countries classified as "Mid" and above.
+
+```{r }
+
+to_keep <- x %>%
+  filter(classif %in% c("Mid", "High", "Very High")) %>%
+  pull(report_country)
+
+asmodee_res <- map(all_content, list("results")) %>%
+  bind_rows() %>%
+  filter(report_country %in% to_keep) %>%
+  arrange(report_country)
+
+n_plots <- nrow(asmodee_res)
+
+```
+
+```{r fig.height = 2 * round(n_plots / 3), out.width = "100%"}
+
+plot(asmodee_res, ncol = 3)
+
+```
+
+
+
+## VoC / VoI plots
+
+We plot VoC / VoI dynamics over time for the countries classified as 'Mid' and
+above, for the last 6 weeks:
+
+```{r }
+
+## re-arrange data into wide format, filter relevant stuff
+voi <- dat_voi %>%
+  filter(report_country %in% to_keep,
+         date >= (Sys.Date() - 7*4),
+         date < Sys.Date()) %>%
+  arrange(report_country)
+
+## re-order variants
+voi <- voi %>%
+  mutate(variant = factor(variant),
+         variant = forcats::fct_relevel(variant, "Other", after = Inf))
+
+## ## simplify lineage voi/voc vs the rest
+## voi <- voi %>%
+##   mutate(lower = max(0, lower),
+##          upper = min(1, upper)
+##          )
+
+n_plots <- length(unique(voi$report_country))
+
+```
+
+Make the plot:
+
+```{r fig.height = 2 * round(n_plots / 3), out.width = "100%"}
+
+# generate color palette for variants
+lev <- levels(voi$variant)
+n_variants <- length(lev) - 1
+set.seed(1)
+col_voi <- sample(incidence2::muted(n_variants))
+#col_voi <- adegenet::funky(n_variants)
+val <- c(col_voi, "grey")
+names(val) <- lev
+scale_variants_color <- scale_color_manual("", values = val)
+scale_variants_fill <- scale_fill_manual("", values = val)
+
+
+ggplot(voi, aes(x = date)) +
+  geom_line(aes(y = mid, color = variant), size = 1) +
+  facet_wrap(~ report_country) +
+  geom_ribbon(aes(ymin = lower, ymax = upper, fill = variant),
+              alpha = 0.3, color = "transparent") +
+  theme_bw() +
+  scale_variants_color +
+  scale_variants_fill +
+  scale_x_date(date_labels = "%d %b") +
+  labs(title = "Variant distributions over time",
+       x = "",
+       y = "Variant frequency (% sequenced cases)") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust=1))
+
+```
+
+----------------------------
+
+# Export table {.tabset .tabset-fade .tabset-pills}
+
+
+## Add extra info
+
+We add the following info to the output table:
+
+* Monday of the reporting week
+* country info (WHO region, iso3 and population size)
+
+We also renamed columns for compatibility with the decision spreadsheets:
+
+```{r }
+
+## add country info and order table
+out_full <- load_countries_data() %>%
+  left_join(out) %>%
+  arrange(who_region, report_country)
+
+## add date and rename/reorder columns
+out_full <- out_full %>%
+  mutate(assessment_week_begins = Sys.Date() %>%
+           grates::as_yearweek() %>%
+           as.Date()) %>%
+  select(assessment_week_begins,
+         Country = report_country,
+         who_region,
+         growth_rate = r,
+         relative_incidence = perc_peak,
+         net_increases,
+         epi_classification = classif,
+         everything())
+
+```
+
+
+## Export table to xlsx
+
+```{r }
+
+## export asmodee summary
+rio::export(out_full, file = "dynamics_synthesis.xlsx")
+
+```

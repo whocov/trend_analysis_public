@@ -498,12 +498,12 @@ df_dynamics <- df_recent_incid %>%
   left_join(df_r) %>%
   left_join(cases_outliers, by = c("report_country" = "Country"))
 
-# Add data on past peak incidence, excluding the last 90 days of data
-minimum_peak <- 15
+# Add data on past peak incidence
+minimum_peak <- 0
 
 df_peaks <- dat %>%
   filter(who_region == params$who_region,
-         date <= (data_stamp - 90)) %>%
+         date < data_stamp) %>%
   group_by(report_country) %>%
   summarise(incid_peak = max(case_new_7d_100k, na.rm = TRUE)) %>%
   mutate(incid_peak = incid_peak * 10) %>% # incidence per 100k -> 1M
@@ -536,7 +536,7 @@ countries_missing_peak <- setdiff(analysed_countries, df_peaks$report_country)
 # handle countries with no results
 if (length(countries_missing_peak)) {
   msg <- sprintf(
-    "Past incidence peaks were very low (<%d/M/week) and ignored for the following countries:\n%s",
+    "Past incidence peaks could not be found (no case previously reported) for the following countries:\n%s",
     minimum_peak,
     paste(countries_missing_peak, collapse = ", "))
   message(msg)
@@ -687,7 +687,7 @@ plot_overall_peaks <- df_dynamics_current %>%
   scale_signif +
   scale_asmodee +
   labs(x = "Growth rate of daily cases",
-       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)",
+       y = "Last week's incidence\n(% of historical peak)",
        subtitle = sprintf("Last data update: %s",
                           format(data_stamp, "%A %d %B %Y"))) +
   theme(legend.position = "bottom",
@@ -728,7 +728,7 @@ plot_tadpole_peaks <- df_dynamics %>%
   scale_alpha_continuous(trans = "reverse") +
   scale_size_continuous(range = c(0.5, 3), trans = "reverse") +
   labs(x = "Growth rate of daily cases",
-       y = "Last week's incidence\n(% of historical peak, excluding last 90 days)",
+       y = "Last week's incidence\n(% of historical peak)",
        subtitle = sprintf("Last data update: %s",
                           format(data_stamp, "%A %d %B %Y"))) +
   theme(legend.position = "bottom",
@@ -783,8 +783,7 @@ called `asmodee_outputs`; all objects are stored in */asmodee_outputs/rds/*:
 * `plot_overall_deaths`: *ggplot2* object of the overall dynamics plot using
   death per capita on the y-axis
 * `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot using
-  incidence as percentage of historical peak (excluding the last 90 days) on the
-  y-axis
+  incidence as percentage of historical peak on the y-axis
 * `df_dynamics`: a `data.frame` containing all the required info to recreate
   either global dynamics plots
 

@@ -84,12 +84,9 @@ improvements.
 Two metrics are used as proxy for the current levels of infection:
 
 1. *% of historical peak of case incidence*: this metric uses the highest case
-   incidence reported over a weekly time window, excluding the last 90 days of
-   data; this metric works in most cases, but there are several caveats:
-    * the last peak may have happened in the last 90 days
-    * some countries with a slow, continuous build-up of cases and no previous
-     waves do not have a 'peak'
-    * increases in case incidence may reflect increases in testing/surveillance
+   incidence reported over a weekly time window; in situations where a country
+   is currently going up its historical peak, this metric will slightly exceed
+   100%
 2. *death incidence per 1M inhabitants*: this metric is less sensitive to
    testing or case reporting; however, it does not solely reflect changes in
    COVID-19 dynamics, and is likely impacted by healthcare infrastructure
@@ -110,8 +107,8 @@ Analyses are performed on all countries of WHO regions meeting the following
 criteria:
 
 * reported at least 100 cases or tests over the last 7 weeks
-* (*in analyses using peak incidence*) peak weekly incidence excluding the last
-  90 days of data was at least 15 cases per million inhabitants
+* (*in analyses using peak incidence*) peak weekly incidence is strictly
+  positive (i.e. at least on case was reported in the past)
 
 
 
@@ -161,8 +158,7 @@ are stored as *rds* files, each containing a `list` with the following items:
 * `plot_overall_deaths`: *ggplot2* object of the overall dynamics plot using
   death per capita on the y-axis
 * `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot using
-  incidence as percentage of historical peak (excluding the last 90 days) on the
-  y-axis
+  incidence as percentage of historical peak on the y-axis
 
 Links to the *rds* files:
 
