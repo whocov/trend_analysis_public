@@ -1,5 +1,5 @@
 ---
-title: "Listing situations of concern"
+title: "Assessing Epidemiological Level of Risk (ELR)"
 author: "Thibaut Jombart"
 date: '`r format(Sys.time(), "%A %d %B %Y")`'
 output: 
@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r eval = FALSE, echo = FALSE}
 
-rmarkdown::render('soc_review.Rmd')
+rmarkdown::render('elr_review.Rmd')
 
 ```
 
