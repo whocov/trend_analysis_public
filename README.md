@@ -256,10 +256,10 @@ Caicos Islands <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Thursday 17 June
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Democratic People’s Republic of Korea <br>
+<br>Analyses were last updated **Friday 18 June 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Democratic People’s
+Republic of Korea <br>
 
 ### Infection levels as % of historical incidence peak
 
