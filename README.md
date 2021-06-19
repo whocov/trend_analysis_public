@@ -178,9 +178,9 @@ Republic of Tanzania <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Friday 18 June 2021**.<br><br>**Notes**
-<br>Nothing to report. All countries were successfully included in the
-analyses. <br>
+<br>Analyses were last updated **Saturday 19 June
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
