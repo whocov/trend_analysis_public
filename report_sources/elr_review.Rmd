@@ -292,7 +292,7 @@ plot_overall_peaks <- x %>%
   geom_text_repel(
     aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
-  scale_y_continuous(labels = scales::percent, trans = "log10") +
+  scale_y_continuous(labels = scales::percent) +
   scale_signif +
   scale_asmodee +
   labs(x = "Growth rate of daily cases",
@@ -368,7 +368,7 @@ plot_tadpole_peaks <- x_all %>%
     data = filter(x, classif %in% c("Mid", "High", "Very High")),
     aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
-  scale_y_continuous(labels = scales::percent, trans = "log10") +
+  scale_y_continuous(labels = scales::percent) +
   scale_signif +
   scale_asmodee +
   scale_alpha_continuous(trans = "reverse") +

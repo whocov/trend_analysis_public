@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r eval = FALSE, echo = FALSE}
 
-rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "EURO"))
+rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "AFRO"))
 
 ```
 
@@ -503,7 +503,7 @@ minimum_peak <- 0
 
 df_peaks <- dat %>%
   filter(who_region == params$who_region,
-         date < data_stamp) %>%
+         date < (data_stamp - 7)) %>%
   group_by(report_country) %>%
   summarise(incid_peak = max(case_new_7d_100k, na.rm = TRUE)) %>%
   mutate(incid_peak = incid_peak * 10) %>% # incidence per 100k -> 1M
