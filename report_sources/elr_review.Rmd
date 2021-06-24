@@ -504,8 +504,8 @@ Make the plot:
 lev <- levels(voi$variant)
 n_variants <- length(lev) - 1
 set.seed(1)
-col_voi <- sample(incidence2::muted(n_variants))
-#col_voi <- adegenet::funky(n_variants)
+#col_voi <- sample(incidence2::muted(n_variants))
+col_voi <- adegenet::funky(n_variants)
 val <- c(col_voi, "grey")
 names(val) <- lev
 scale_variants_color <- scale_color_manual("", values = val)
