@@ -145,15 +145,15 @@ We use the following classification rules, depending on the values of the growth
 rate (*r*), current incidence (as % of previous peak) and signs of acceleration
 (ASMODEE net increases over last week):
 
-* if incid < 50%:
+* if incid < 40%:
     + if r > high_r -> **M**
 	+ else -> NL
-* if 50% < incid  100%:
+* if 40% <= incid <= 80%:
     + if r > high_r -> **H**
     + else if r > 0.02 -> **M**
 	+ else if r is not < 0 -> **L**
     + else -> **NL**
-* if incid > 100%:
+* if incid > 80%:
     + if r > high_r -> **VH**
     + else if r > 0 -> **H**
 	+ else if r is not < 0 -> **M**
@@ -169,7 +169,8 @@ a sign of acceleration.
 make_classif <- function(incid, r, r_lower, r_upper, accel,
                          high_r = 0.05,
                          r_limit = 0.02,
-                         n_accel = 3) {
+                         n_accel = 3,
+                         incid_tiers = c(0.4, 0.8)) {
 
   # The output will be stored as numbers first and converted at the end:
   ## 0 = NL
@@ -178,17 +179,19 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
   ## 3 = high
   ## 4 = very high
 
+  incid_tiers <- sort(incid_tiers)
+  
   if (is.na(incid) | is.na(r) | is.na(accel)) return(NA_character_)
   
-  ## incid 0-50%
-  if (incid < 0.5) {
+  ## incid 0-40%
+  if (incid < incid_tiers[1]) {
     if (r_lower > high_r) {
       out <- 2
     } else {
       out <- 0
     }
-  } else if (incid < 1) {
-      ## incid 50-100%
+  } else if (incid <= incid_tiers[2]) {
+      ## incid 40-80%
       if (r_lower > high_r) {
         out <- 3
       } else if (r_lower > r_limit) {
@@ -199,7 +202,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
         out <- 0
       }
   } else {
-    ## incid >100%
+    ## incid >80%
     if (r_lower > high_r) {
         out <- 4
       } else if (r_lower > 0) {
@@ -248,9 +251,9 @@ We reformat the results into `out` and print the table with Low levels and above
 out <- x %>%
   arrange(desc(as.integer(classif))) %>%
   select(report_country, classif, r, r_lower, r_upper, perc_peak, net_increases) %>%
-  mutate(r = round(r, 2),
-         r_lower = round(r_lower, 2),
-         r_upper = round(r_upper, 2),
+  mutate(r = round(r, 3),
+         r_lower = round(r_lower, 3),
+         r_upper = round(r_upper, 3),
          perc_peak = paste(round(100 * perc_peak), "%")         
          )
 
