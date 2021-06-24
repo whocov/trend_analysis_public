@@ -198,7 +198,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Wednesday 23 June
+<br>Analyses were last updated **Thursday 24 June
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Gibraltar, Greenland, Guernsey, Holy See, Isle of Man,
@@ -223,13 +223,13 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Wednesday 23 June
+<br>Analyses were last updated **Thursday 24 June
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Anguilla, Antigua and Barbuda, Bonaire, Sint Eustatius and
-Saba, Cayman Islands, Dominica, Falkland Islands (Malvinas), Grenada,
-Montserrat, Saint Barthélemy, Saint Pierre and Miquelon, Turks and
-Caicos Islands <br>
+analyses:<br>Anguilla, Antigua and Barbuda, Bermuda, Bonaire, Sint
+Eustatius and Saba, British Virgin Islands, Cayman Islands, Dominica,
+Falkland Islands (Malvinas), Grenada, Montserrat, Saint Barthélemy,
+Saint Pierre and Miquelon, Turks and Caicos Islands <br>
 
 **Notes of geographic units**:
 
