@@ -156,11 +156,11 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Sunday 20 June 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Comoros,
-Guinea-Bissau, Mayotte, Saint Helena, Sao Tome and Principe, United
-Republic of Tanzania <br>
+<br>Analyses were last updated **Wednesday 23 June
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Comoros, Guinea-Bissau, Mayotte, Saint Helena, Sao Tome and
+Principe, United Republic of Tanzania <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -178,9 +178,9 @@ Republic of Tanzania <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 20 June 2021**.<br><br>**Notes**
-<br>Nothing to report. All countries were successfully included in the
-analyses. <br>
+<br>Analyses were last updated **Wednesday 23 June
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -198,11 +198,11 @@ analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Sunday 20 June 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Faroe Islands,
-Gibraltar, Greenland, Guernsey, Holy See, Isle of Man, Jersey, Monaco,
-San Marino, Tajikistan <br>
+<br>Analyses were last updated **Wednesday 23 June
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Gibraltar, Greenland, Guernsey, Holy See, Isle of Man,
+Jersey, Monaco, San Marino, Tajikistan <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -223,7 +223,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Sunday 20 June
+<br>Analyses were last updated **Wednesday 23 June
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Antigua and Barbuda, Bonaire, Sint Eustatius and
@@ -256,10 +256,10 @@ Caicos Islands <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Sunday 20 June 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Democratic People’s
-Republic of Korea <br>
+<br>Analyses were last updated **Wednesday 23 June
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Democratic People’s Republic of Korea <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -277,13 +277,13 @@ Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 20 June 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>American Samoa,
-Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
-(Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn
-Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis
-and Futuna <br>
+<br>Analyses were last updated **Wednesday 23 June
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
+Marshall Islands, Micronesia (Federated States of), Nauru, New
+Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
+Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br>
 
 ### Infection levels as % of historical incidence peak
 
