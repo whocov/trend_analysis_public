@@ -812,7 +812,7 @@ We add the information above to `df_dynamics`:
 
 df_tpr_info <- df_tpr %>%
   left_join(df_r_tpr) %>%
-  select(report_country, r_tpr, lower_r_tpr, upper_r_tpr, change_tpr)
+  select(report_country, tpr, r_tpr, lower_r_tpr, upper_r_tpr, change_tpr)
 
 df_dynamics <- df_dynamics %>%
   left_join(df_tpr_info)
