@@ -81,9 +81,8 @@ Two metrics are used as proxy for the current levels of infection:
 
 ASMODEE (**A**utomated **S**election of **M**odels and **D**etection of
 **O**utliers for **E**pid**E**mics) is a new method for detecting recent
-changes of trend in case incidence data. The initial publication
-(Jombart et al. 2021 Phil Trans B) describing the method is currently in
-press, and will be linked as soon as available.
+changes of trend in case incidence data, described in 
+[Jombart et al. 2021 Phil Trans B](https://royalsocietypublishing.org/doi/full/10.1098/rstb.2020.0266).
 
 ## Inclusion criteria
 
