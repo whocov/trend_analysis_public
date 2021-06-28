@@ -756,16 +756,30 @@ plot_tadpole_peaks
 
 # Test positivity rates (TPR)
 
+Estimating TPR is not entirely trivial as some countries report testing *daily*,
+some *weekly*, some not at all. The variable `dat$positive_tests` provides a
+'naive' estimate of TPR, dividing daily cases by daily tests. Our strategy for
+handling TPR is:
+
+* for weekly estimates, re-calculate it from weekly counts of cases and tests
+  (rather than averages of daily values, which would grossly under-estimate TPR
+  in countries reporting tests weekly)
+* for estimates of change in TPR, use the 'naive' daily TPR and discard any
+  non-finite values (as days of non-reporting results in either `NA` or `0`
+  tests); we'll need to subset models with sufficient degrees of freedom to
+  filter out weak models
+
+
 ## Rate over the last week
 
-We calculate the mean TPR by country over the last week:
+We calculate the mean TPR by country over the last week.
 
 ```{r }
 
 df_tpr <- dat %>%
   filter(date >= (data_stamp - 7)) %>%
   group_by(report_country) %>%
-  summarise(tpr = mean(positive_tests, na.rm = TRUE)) %>%
+  summarise(tpr = sum(cases, na.rm = TRUE) / sum(tests, na.rm = TRUE)) %>%
   mutate(tpr = if_else(is.finite(tpr), tpr, NA_real_))
 
 ```
