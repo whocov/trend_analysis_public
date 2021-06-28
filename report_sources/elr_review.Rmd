@@ -250,11 +250,15 @@ We reformat the results into `out` and print the table with Low levels and above
 
 out <- x %>%
   arrange(desc(as.integer(classif))) %>%
-  select(report_country, classif, r, r_lower, r_upper, perc_peak, net_increases) %>%
+  select(report_country, classif,
+         r, r_lower, r_upper,
+         perc_peak, net_increases,
+         r_tpr, change_tpr) %>%
   mutate(r = round(r, 3),
          r_lower = round(r_lower, 3),
          r_upper = round(r_upper, 3),
-         perc_peak = paste(round(100 * perc_peak), "%")         
+         perc_peak = paste(round(100 * perc_peak), "%"),
+         r_tpr = round(r_tpr, 3)
          )
 
 out %>%
@@ -562,6 +566,8 @@ out_full <- out_full %>%
          relative_incidence = perc_peak,
          net_increases,
          epi_classification = classif,
+         last_week_tpr = tpr,
+         change_tpr,
          everything())
 
 ```
