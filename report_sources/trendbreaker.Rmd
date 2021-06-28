@@ -789,7 +789,8 @@ df_tpr <- dat %>%
 
 To avoid tons or errors due to data quality issue, we only attempt to estimate
 changes in TPR for countries for which a TPR could be estimated for the last
-week.
+week. We also filter out countries with less than 14 TPR estimates over the last
+21 days.
 
 ```{r }
 
@@ -802,7 +803,9 @@ df_r_tpr <- dat %>%
   filter(report_country %in% to_keep,
          date >= (data_stamp - 21)) %>%
   select(report_country, date, positive_tests) %>%
-  filter(is.finite(positive_tests)) %>% 
+  filter(is.finite(positive_tests)) %>%
+  group_by(report_country) %>%
+  filter(n() > 14) %>% 
   nest(data = c(date, positive_tests)) %>%
   mutate(model = map(data, ~ lm(positive_tests ~ date, data = .)),
          r_tpr = map_dbl(model, ~ coef(.)[2]),
