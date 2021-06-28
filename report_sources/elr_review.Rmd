@@ -568,6 +568,7 @@ out_full <- out_full %>%
          epi_classification = classif,
          last_week_tpr = tpr,
          change_tpr,
+         growth_rate_tpr = r_tpr,
          everything())
 
 ```
