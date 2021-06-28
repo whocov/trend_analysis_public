@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r eval = FALSE, echo = FALSE}
 
-rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "AFRO"))
+rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "EURO"))
 
 ```
 
@@ -748,6 +748,93 @@ plot_tadpole_peaks
 
 ```
 
+
+
+
+
+---------------------------
+
+# Test positivity rates (TPR)
+
+Estimating TPR is not entirely trivial as some countries report testing *daily*,
+some *weekly*, some not at all. The variable `dat$positive_tests` provides a
+'naive' estimate of TPR, dividing daily cases by daily tests. Our strategy for
+handling TPR is:
+
+* for weekly estimates, re-calculate it from weekly counts of cases and tests
+  (rather than averages of daily values, which would grossly under-estimate TPR
+  in countries reporting tests weekly)
+* for estimates of change in TPR, use the 'naive' daily TPR and discard any
+  non-finite values (as days of non-reporting results in either `NA` or `0`
+  tests); we'll need to subset models with sufficient degrees of freedom to
+  filter out weak models
+
+
+## Rate over the last week
+
+We calculate the mean TPR by country over the last week.
+
+```{r }
+
+df_tpr <- dat %>%
+  filter(date >= (data_stamp - 7)) %>%
+  group_by(report_country) %>%
+  summarise(tpr = sum(cases, na.rm = TRUE) / sum(tests, na.rm = TRUE)) %>%
+  mutate(tpr = if_else(is.finite(tpr), tpr, NA_real_))
+
+```
+
+
+## Changes in TPR
+
+To avoid tons or errors due to data quality issue, we only attempt to estimate
+changes in TPR for countries for which a TPR could be estimated for the last
+week. We also filter out countries with less than 14 TPR estimates over the last
+21 days.
+
+```{r }
+
+to_keep <- df_tpr %>%
+  filter(!is.na(tpr)) %>%
+  pull(report_country) %>%
+  unique()
+
+df_r_tpr <- dat %>%
+  filter(report_country %in% to_keep,
+         date >= (data_stamp - 21)) %>%
+  select(report_country, date, positive_tests) %>%
+  filter(is.finite(positive_tests)) %>%
+  group_by(report_country) %>%
+  filter(n() > 14) %>% 
+  nest(data = c(date, positive_tests)) %>%
+  mutate(model = map(data, ~ lm(positive_tests ~ date, data = .)),
+         r_tpr = map_dbl(model, ~ coef(.)[2]),
+         lower_r_tpr = map_dbl(model, ~ confint(.)[2, 1]), 
+         upper_r_tpr = map_dbl(model, ~ confint(.)[2, 2]),
+         change_tpr = case_when(lower_r_tpr > 0 ~ "increasing",
+                                upper_r_tpr < 0 ~ "decreasing",
+                                TRUE ~ "constant"),
+         change_tpr = factor(change_tpr,
+                             levels = c("increasing", "constant", "decreasing")))
+
+```
+
+
+
+## Adding TPR info to outputs
+
+We add the information above to `df_dynamics`:
+
+```{r }
+
+df_tpr_info <- df_tpr %>%
+  left_join(df_r_tpr) %>%
+  select(report_country, tpr, r_tpr, lower_r_tpr, upper_r_tpr, change_tpr)
+
+df_dynamics <- df_dynamics %>%
+  left_join(df_tpr_info)
+
+```
 
 
 
