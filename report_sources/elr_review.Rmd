@@ -541,7 +541,6 @@ ggplot(voi, aes(x = date)) +
 
 # Export table {.tabset .tabset-fade .tabset-pills}
 
-
 ## Add extra info
 
 We add the following info to the output table:
@@ -584,5 +583,50 @@ out_full <- out_full %>%
 
 ## export asmodee summary
 rio::export(out_full, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
+
+```
+
+
+
+
+
+----------------------------
+
+# Export notes {.tabset .tabset-fade .tabset-pills}
+
+## Compile all notes
+
+We read all the latest notes and compile them into a single character vector:
+
+```{r }
+
+# get file locations
+file_paths <- here::here("asmodee_outputs", "notes") %>%
+  list.files(pattern = "latest", full.names = TRUE)
+
+# get corresponding regions
+file_names <- here::here("asmodee_outputs", "notes") %>%
+  list.files(pattern = "latest")
+regions <- gsub("[^A-Z]", "", file_names)
+
+# read notes
+all_notes <- file_paths %>%
+  map(readLines)
+
+# concatenate notes
+notes <- lapply(all_notes, function(e) e[1]) %>% unlist()
+notes <- paste(regions, "----", notes, "\n", sep = "\n")
+notes <- gsub("<br>", "\n", notes)
+
+
+```
+
+
+## Export table to xlsx
+
+```{r }
+
+## export asmodee summary
+writeLines(notes, "notes.txt")
 
 ```
