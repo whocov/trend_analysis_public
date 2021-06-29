@@ -52,7 +52,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add README.md
           git commit -m "Automatic README refresh"
-	  git pull
+          git pull
       
       - name: Push files
         run: |
