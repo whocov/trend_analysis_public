@@ -258,6 +258,7 @@ out <- x %>%
          r_lower = round(r_lower, 3),
          r_upper = round(r_upper, 3),
          perc_peak = paste(round(100 * perc_peak), "%"),
+         tpr = round(tpr, 3),
          r_tpr = round(r_tpr, 3)
          )
 
