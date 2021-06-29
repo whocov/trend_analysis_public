@@ -198,10 +198,11 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Monday 28 June 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Gibraltar,
-Greenland, Guernsey, Holy See, Isle of Man, Monaco, San Marino <br>
+<br>Analyses were last updated **Tuesday 29 June
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Gibraltar, Greenland, Guernsey, Holy See, Isle of Man,
+Monaco, San Marino <br>
 
 ### Infection levels as % of historical incidence peak
 
