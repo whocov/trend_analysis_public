@@ -534,6 +534,9 @@ ggplot(voi, aes(x = date)) +
 
 ```
 
+
+
+
 ----------------------------
 
 # Export table {.tabset .tabset-fade .tabset-pills}
@@ -580,6 +583,6 @@ out_full <- out_full %>%
 ```{r }
 
 ## export asmodee summary
-rio::export(out_full, file = "dynamics_synthesis.xlsx")
+rio::export(out_full, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
 
 ```
