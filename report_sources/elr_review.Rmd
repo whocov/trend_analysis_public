@@ -626,7 +626,7 @@ notes <- gsub("<br>", "\n", notes)
 
 ```{r }
 
-## export asmodee summary
+## export notes to file
 writeLines(notes, "notes.txt")
 
 ```
