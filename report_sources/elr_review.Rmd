@@ -627,6 +627,6 @@ notes <- gsub("<br>", "\n", notes)
 ```{r }
 
 ## export notes to file
-writeLines(notes, "notes.txt")
+writeLines(notes, "excluded_countries.txt")
 
 ```

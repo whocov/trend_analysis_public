@@ -6,7 +6,9 @@ rmarkdown::render('elr_review.Rmd')
 
 # zip report
 zip_name <- sprintf( "elr_review_%s.zip", Sys.Date())
-zip(files = c("elr_review.html", "dynamics_synthesis.xlsx"),
+zip(files = c("elr_review.html",
+              "dynamics_synthesis.xlsx",
+              "excluded_countries.txt"),
     zipfile = zip_name)
 
 # get smtp password from environment
