@@ -51,9 +51,9 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add README.md
-          git commit -m "Automatic README refresh"
-          git pull
-      
+          git diff-index --quiet HEAD || git commit -m "Automatic README refresh"
+          git fetch --unshallow origin
+    
       - name: Push files
         run: |
           git push --force
