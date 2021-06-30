@@ -147,17 +147,18 @@ rate (*r*), current incidence (as % of previous peak) and signs of acceleration
 
 * if incid < 40%:
     + if r > high_r -> **M**
-	+ else -> No concern
+    + else if r > 0.02 -> **L**
+	+ else -> Minimal
 * if 40% <= incid <= 80%:
     + if r > high_r -> **H**
     + else if r > 0.02 -> **M**
 	+ else if r is not < 0 -> **L**
-    + else -> **No concern**
+    + else -> **Minimal**
 * if incid > 80%:
     + if r > high_r -> **VH**
     + else if r > 0 -> **H**
 	+ else if r is not < 0 -> **M**
-    + else -> **No concern**
+    + else -> **L**
 * if acceleration, upgrade by 1 step (bound at **VH**)
 
 with by default, *high_r* = 0.05, and at least 3 days of net increase to register as
@@ -173,7 +174,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
                          incid_tiers = c(0.4, 0.8)) {
 
   # The output will be stored as numbers first and converted at the end:
-  ## 0 = No concern
+  ## 0 = Minimal
   ## 1 = low
   ## 2 = mid
   ## 3 = high
@@ -187,6 +188,8 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
   if (incid < incid_tiers[1]) {
     if (r_lower > high_r) {
       out <- 2
+    } else if (r_lower > r_limit) {
+      out <- 1
     } else {
       out <- 0
     }
@@ -210,7 +213,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
       } else if (r_upper > 0) {
         out <- 2
       } else {
-        out <- 0
+        out <- 1
       }
   } 
 
@@ -219,7 +222,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
     out <- out + 1
   }
 
-  c("No concern", "Low", "Medium", "High", "Very High")[out + 1]
+  c("Minimal", "Low", "Medium", "High", "Very High")[out + 1]
 }
 
 
@@ -230,7 +233,7 @@ x <- x %>%
     classif = make_classif(incid = perc_peak,
                            r = r, r_lower = r_lower, r_upper = r_upper,
                            accel = net_increases),
-    classif = factor(classif, levels =  c("No concern", "Low", "Medium", "High", "Very High"))
+    classif = factor(classif, levels =  c("Minimal", "Low", "Medium", "High", "Very High"))
   )
 
 
@@ -267,7 +270,7 @@ out %>%
   mutate(
     perc_peak = paste(round(100 * perc_peak), "%"),
     tpr = if_else(is.na(tpr), "", paste(round(100 * tpr), "%"))) %>% 
-  filter(classif != "No concern") %>%
+  filter(classif != "Minimal") %>%
   DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
 
 ```
