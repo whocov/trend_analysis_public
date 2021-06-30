@@ -156,7 +156,7 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Tuesday 29 June
+<br>Analyses were last updated **Wednesday 30 June
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Burkina Faso, Chad, Comoros, Mayotte, Saint Helena, Sao
@@ -223,13 +223,13 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Tuesday 29 June
+<br>Analyses were last updated **Wednesday 30 June
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Antigua and Barbuda, Bermuda, Bonaire, Sint
-Eustatius and Saba, British Virgin Islands, Cayman Islands, Dominica,
-Falkland Islands (Malvinas), Grenada, Montserrat, Saint Barthélemy,
-Saint Pierre and Miquelon, Turks and Caicos Islands <br>
+Eustatius and Saba, British Virgin Islands, Cayman Islands, Curaçao,
+Dominica, Falkland Islands (Malvinas), Grenada, Montserrat, Saint
+Barthélemy, Saint Pierre and Miquelon, Turks and Caicos Islands <br>
 
 **Notes of geographic units**:
 
