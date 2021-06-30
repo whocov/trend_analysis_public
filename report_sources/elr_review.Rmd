@@ -265,7 +265,7 @@ out <- x %>%
 out %>%
   mutate(
     perc_peak = paste(round(100 * perc_peak), "%"),
-    tpr = paste(round(100 * tpr), "%")) %>% 
+    tpr = if_else(is.na(tpr), "", paste(round(100 * tpr), "%"))) %>% 
   filter(classif != "No concern") %>%
   DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
 
