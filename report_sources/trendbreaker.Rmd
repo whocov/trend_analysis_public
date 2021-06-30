@@ -946,7 +946,7 @@ Here we save the two key figures showing 'overall dynamics' to *png* files in
 
 # Pinplots
 ## Deaths PC as y axis
-fig_name <- sprintf("waffle_deaths_%s_%s.png",
+fig_name <- sprintf("pinplot_deaths_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     data_stamp)
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
@@ -956,7 +956,7 @@ print(plot_overall_deaths)
 dev.off()
 
 ## Make a copy as 'latest'
-latest_fig_name <- sprintf("waffle_deaths_%s_latest.png",
+latest_fig_name <- sprintf("pinplot_deaths_%s_latest.png",
                            paste(params$who_region, collapse = "_")
                            )
 latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
@@ -964,7 +964,7 @@ file.copy(from = fig_path, to = latest_fig_path, overwrite = TRUE)
 
 
 ## cases as % historical peak as y axis
-fig_name <- sprintf("waffle_peaks_%s_%s.png",
+fig_name <- sprintf("pinplot_peaks_%s_%s.png",
                     paste(params$who_region, collapse = "_"),
                     data_stamp)
 fig_path <- here::here("asmodee_outputs", "png", fig_name)
@@ -974,7 +974,7 @@ print(plot_overall_peaks)
 dev.off()
 
 ## Make a copy as 'latest'
-latest_fig_name <- sprintf("waffle_peaks_%s_latest.png",
+latest_fig_name <- sprintf("pinplot_peaks_%s_latest.png",
                            paste(params$who_region, collapse = "_")
                            )
 latest_fig_path <- here::here("asmodee_outputs", "png", latest_fig_name)
