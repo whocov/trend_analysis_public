@@ -225,7 +225,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
 
 ## apply classification algo to countries
 x <- x %>%
-  group_by(report_country) %>%
+  group_by(iso3) %>%
   mutate(
     classif = make_classif(incid = perc_peak,
                            r = r, r_lower = r_lower, r_upper = r_upper,
@@ -236,7 +236,7 @@ x <- x %>%
 
 ## add classification to x_all
 x_all <- x_all %>%
-  left_join(x %>% select(report_country, classif))
+  left_join(x %>% select(iso3, classif), by = "iso3")
 
 ```
 
@@ -250,7 +250,8 @@ We reformat the results into `out` and print the table with Low levels and above
 
 out <- x %>%
   arrange(desc(as.integer(classif))) %>%
-  select(report_country, classif,
+  select(report_country, iso3,
+         classif,
          r, r_lower, r_upper,
          perc_peak, net_increases,
          tpr, r_tpr, change_tpr) %>%
@@ -555,9 +556,17 @@ We also renamed columns for compatibility with the decision spreadsheets:
 
 ```{r }
 
-## add country info and order table
-out_full <- load_countries_data() %>%
-  left_join(out) %>%
+# load country info
+df_countries <- load_countries_data()
+
+# remove redundant country info in out
+out <- out %>%
+  ungroup() %>%
+  select(-report_country)
+
+# add country info and order table
+out_full <- df_countries %>%
+  left_join(out, by = "iso3") %>%
   arrange(who_region, report_country)
 
 ## add date and rename/reorder columns
@@ -567,6 +576,7 @@ out_full <- out_full %>%
            as.Date()) %>%
   select(assessment_week_begins,
          Country = report_country,
+         iso3, 
          who_region,
          growth_rate = r,
          relative_incidence = perc_peak,
