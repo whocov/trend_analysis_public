@@ -130,7 +130,9 @@ data.
 ```{r }
 
 cases_i <- dat %>%
-  incidence(date, counts = c(cases, tests, deaths), groups = report_country) %>%
+  incidence(date,
+            counts = c(cases, tests, deaths),
+            groups = c(report_country, iso3)) %>%
   mutate(weekend = day_of_week(date_index)) %>% # add weekday
   keep_last(7 * 7) %>%
   mutate(weekday = factor(weekdays(date_index)))
@@ -404,7 +406,7 @@ df_r  <- future.apply::future_lapply(
     fit_curve() %>%
     growth_rate() %>%
     mutate(last_day = d) %>% 
-    select(report_country, r, r_lower, r_upper, last_day),
+    select(report_country, iso3, r, r_lower, r_upper, last_day),
   future.seed = TRUE) %>%
   bind_rows() %>%
   mutate(type = case_when(r_lower > 0 ~ "growth",
@@ -473,7 +475,7 @@ df_r %>%
 
 # Population by country
 df_pop <- dat %>%
-  group_by(report_country) %>%
+  group_by(report_country, iso3) %>%
   summarise(population = mean(population, na.rm = TRUE))
 
 # Cumulative incidence over the last week (going back: w1) per 100k inhabitants
@@ -483,7 +485,7 @@ df_recent_incid <- future.apply::future_lapply(
     cases_i %>%
       keep_last(7 + d) %>%
       keep_first(7) %>% 
-      group_by(report_country) %>%
+      group_by(report_country, iso3) %>%
       summarise(n_cases = sum(cases),
                 n_deaths = sum(deaths)) %>%
       left_join(df_pop) %>%
@@ -510,7 +512,7 @@ df_peaks <- dat %>%
   filter(incid_peak >= minimum_peak)
 
 df_dynamics <- df_dynamics %>%
-  left_join(df_peaks) %>%
+  left_join(df_peaks, by = "report_country") %>%
   mutate(perc_peak = case_incid_last_week / incid_peak)
 
 # Add info on significance of r (> 0 or < 0)
@@ -855,10 +857,13 @@ We add the information above to `df_dynamics`:
 
 df_tpr_info <- df_tpr %>%
   left_join(df_r_tpr) %>%
-  select(report_country, tpr, r_tpr, lower_r_tpr, upper_r_tpr, change_tpr)
+  select(report_country,
+         tpr,
+         r_tpr, lower_r_tpr, upper_r_tpr,
+         change_tpr)
 
 df_dynamics <- df_dynamics %>%
-  left_join(df_tpr_info)
+  left_join(df_tpr_info, by = "report_country")
 
 ```
 
