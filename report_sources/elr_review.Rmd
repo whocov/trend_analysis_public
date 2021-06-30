@@ -570,24 +570,28 @@ out_full <- df_countries %>%
   arrange(who_region, report_country)
 
 ## add date and rename/reorder columns
-out_full <- out_full %>%
+out_final <- out_full %>%
   mutate(assessment_week_begins = Sys.Date() %>%
            grates::as_yearweek() %>%
            as.Date()) %>%
-  select(assessment_week_begins,
-         Country = report_country,
-         iso3, 
-         who_region,
-         growth_rate = r,
-         relative_incidence = perc_peak,
-         net_increases,
-         epi_classification = classif,
-         last_week_tpr = tpr,
-         change_tpr,
-         growth_rate_tpr = r_tpr,
-         everything())
+  select(
+    assessment_date = assessment_week_begins,
+    country = report_country,
+    iso3, 
+    region = who_region,
+    population = population,
+    growth_rate = r,
+    relative_incidence = perc_peak,
+    net_increases = net_increases,
+    last_week_tpr = tpr,
+    tpr_change = change_tpr,
+    epi_classification = classif,
+    growth_rate_lower = r_lower,
+    growth_rate_upper = r_upper,
+    growth_rate_tpr = r_tpr)
 
 ```
+
 
 
 ## Export table to xlsx
@@ -595,7 +599,7 @@ out_full <- out_full %>%
 ```{r }
 
 ## export asmodee summary
-rio::export(out_full, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
+rio::export(out_final, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
 
 ```
 
