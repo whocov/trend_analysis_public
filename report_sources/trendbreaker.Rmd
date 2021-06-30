@@ -904,6 +904,8 @@ called `asmodee_outputs`; all objects are stored in */asmodee_outputs/rds/*:
   incidence as percentage of historical peak on the y-axis
 * `df_dynamics`: a `data.frame` containing all the required info to recreate
   either global dynamics plots
+* `timestamp`: the timestamp corresponding to the date of the dataset used in
+  the analyses
 
 ```{r }
 
@@ -912,7 +914,8 @@ asmodee_outputs <- list(
   results = cases_res,
   plot_overall_deaths = plot_overall_deaths,
   plot_overall_peaks = plot_overall_peaks,
-  df_dynamics = df_dynamics
+  df_dynamics = df_dynamics,
+  timestamp = data_stamp
 )
 
 ## export asmodee summary
