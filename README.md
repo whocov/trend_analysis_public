@@ -318,6 +318,7 @@ Contributed ideas and feedback:
 
   - Brett Archer
   - Raquel Medialdea Carrera
+  - Laura Guzman (original idea of *Tadpole* plots)
   - Esther Hamblion
   - Orlagh Ingeborg
   - Zyleen Kassamali
