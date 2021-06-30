@@ -65,7 +65,8 @@ load_asmodee_results <- function(who_region = "EURO") {
 #' 
 #' @author Tibo
 load_countries_data <- function() {
-  file_path <-  here::here("data", "clean", "countries_info.rds")
-  rio::import(file_path)
+  phifunc::pull_pop_data() %>%
+    filter(iso3 != "BES") %>% # remove 'Bonaire, Sint Eustatius and Saba'
+    select(who_region, report_country, iso3, population)
 }
 
