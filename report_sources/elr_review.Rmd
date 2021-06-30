@@ -147,17 +147,17 @@ rate (*r*), current incidence (as % of previous peak) and signs of acceleration
 
 * if incid < 40%:
     + if r > high_r -> **M**
-	+ else -> NL
+	+ else -> No concern
 * if 40% <= incid <= 80%:
     + if r > high_r -> **H**
     + else if r > 0.02 -> **M**
 	+ else if r is not < 0 -> **L**
-    + else -> **NL**
+    + else -> **No concern**
 * if incid > 80%:
     + if r > high_r -> **VH**
     + else if r > 0 -> **H**
 	+ else if r is not < 0 -> **M**
-    + else -> **NL**
+    + else -> **No concern**
 * if acceleration, upgrade by 1 step (bound at **VH**)
 
 with by default, *high_r* = 0.05, and at least 3 days of net increase to register as
@@ -173,7 +173,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
                          incid_tiers = c(0.4, 0.8)) {
 
   # The output will be stored as numbers first and converted at the end:
-  ## 0 = NL
+  ## 0 = No concern
   ## 1 = low
   ## 2 = mid
   ## 3 = high
@@ -219,7 +219,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
     out <- out + 1
   }
 
-  c("NL", "Low", "Mid", "High", "Very High")[out + 1]
+  c("No concern", "Low", "Medium", "High", "Very High")[out + 1]
 }
 
 
@@ -230,7 +230,7 @@ x <- x %>%
     classif = make_classif(incid = perc_peak,
                            r = r, r_lower = r_lower, r_upper = r_upper,
                            accel = net_increases),
-    classif = factor(classif, levels =  c("NL", "Low", "Mid", "High", "Very High"))
+    classif = factor(classif, levels =  c("No concern", "Low", "Medium", "High", "Very High"))
   )
 
 
@@ -263,7 +263,7 @@ out <- x %>%
          )
 
 out %>%
-  filter(classif != "NL") %>%
+  filter(classif != "No concern") %>%
   DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
 
 ```
@@ -272,7 +272,7 @@ out %>%
 
 ## Pinplot
 
-These pinplots shows all countries classified as 'Mid' and above.
+These pinplots shows all countries classified as 'Medium' and above.
 
 ### By % incidence peak
 
@@ -292,7 +292,7 @@ scale_asmodee <- scale_colour_steps(
 
 
 plot_overall_peaks <- x %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
@@ -327,7 +327,7 @@ plot_overall_peaks
 
 # tadpole plot
 plot_overall_deaths <- x %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
@@ -364,7 +364,7 @@ plot_overall_deaths
 ```{r fig.height = 7, out.width = "100%"}
 
 plot_tadpole_peaks <- x_all %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   group_by(report_country) %>%
   arrange(last_day) %>% 
   ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
@@ -373,7 +373,7 @@ plot_tadpole_peaks <- x_all %>%
   geom_path(aes(group = report_country, alpha = last_day)) + 
   geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
   geom_text_repel(
-    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    data = filter(x, classif %in% c("Medium", "High", "Very High")),
     aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_y_continuous(labels = scales::percent) +
@@ -408,7 +408,7 @@ plot_tadpole_peaks
 
 # tadpole plot
 plot_tadpole_deaths <- x_all %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   group_by(report_country) %>%
   arrange(last_day) %>% 
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
@@ -417,7 +417,7 @@ plot_tadpole_deaths <- x_all %>%
   geom_path(aes(group = report_country, alpha = last_day)) + 
   geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
   geom_text_repel(
-    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    data = filter(x, classif %in% c("Medium", "High", "Very High")),
     aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_signif +
@@ -447,12 +447,12 @@ plot_tadpole_deaths
 
 ## ASMODEE plots
 
-We provide ASMODEE plots for countries classified as "Mid" and above.
+We provide ASMODEE plots for countries classified as "Medium" and above.
 
 ```{r }
 
 to_keep <- x %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>%
+  filter(classif %in% c("Medium", "High", "Very High")) %>%
   pull(report_country)
 
 asmodee_res <- map(all_content, list("results")) %>%
@@ -474,7 +474,7 @@ plot(asmodee_res, ncol = 3)
 
 ## VoC / VoI plots
 
-We plot VoC / VoI dynamics over time for the countries classified as 'Mid' and
+We plot VoC / VoI dynamics over time for the countries classified as 'Medium' and
 above, for the last 6 weeks:
 
 ```{r }
