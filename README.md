@@ -178,7 +178,7 @@ Tome and Principe, United Republic of Tanzania <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Wednesday 30 June
+<br>Analyses were last updated **Thursday 01 July
 2021**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
@@ -198,7 +198,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Wednesday 30 June
+<br>Analyses were last updated **Thursday 01 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Gibraltar, Greenland, Guernsey, Holy See, Isle of Man,
@@ -277,7 +277,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Wednesday 30 June
+<br>Analyses were last updated **Thursday 01 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
