@@ -147,17 +147,18 @@ rate (*r*), current incidence (as % of previous peak) and signs of acceleration
 
 * if incid < 40%:
     + if r > high_r -> **M**
-	+ else -> NL
+    + else if r > 0.02 -> **L**
+	+ else -> Minimal
 * if 40% <= incid <= 80%:
     + if r > high_r -> **H**
     + else if r > 0.02 -> **M**
 	+ else if r is not < 0 -> **L**
-    + else -> **NL**
+    + else -> **Minimal**
 * if incid > 80%:
     + if r > high_r -> **VH**
     + else if r > 0 -> **H**
 	+ else if r is not < 0 -> **M**
-    + else -> **NL**
+    + else -> **L**
 * if acceleration, upgrade by 1 step (bound at **VH**)
 
 with by default, *high_r* = 0.05, and at least 3 days of net increase to register as
@@ -173,7 +174,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
                          incid_tiers = c(0.4, 0.8)) {
 
   # The output will be stored as numbers first and converted at the end:
-  ## 0 = NL
+  ## 0 = Minimal
   ## 1 = low
   ## 2 = mid
   ## 3 = high
@@ -187,6 +188,8 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
   if (incid < incid_tiers[1]) {
     if (r_lower > high_r) {
       out <- 2
+    } else if (r_lower > r_limit) {
+      out <- 1
     } else {
       out <- 0
     }
@@ -210,7 +213,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
       } else if (r_upper > 0) {
         out <- 2
       } else {
-        out <- 0
+        out <- 1
       }
   } 
 
@@ -219,24 +222,24 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
     out <- out + 1
   }
 
-  c("NL", "Low", "Mid", "High", "Very High")[out + 1]
+  c("Minimal", "Low", "Medium", "High", "Very High")[out + 1]
 }
 
 
 ## apply classification algo to countries
 x <- x %>%
-  group_by(report_country) %>%
+  group_by(iso3) %>%
   mutate(
     classif = make_classif(incid = perc_peak,
                            r = r, r_lower = r_lower, r_upper = r_upper,
                            accel = net_increases),
-    classif = factor(classif, levels =  c("NL", "Low", "Mid", "High", "Very High"))
+    classif = factor(classif, levels =  c("Minimal", "Low", "Medium", "High", "Very High"))
   )
 
 
 ## add classification to x_all
 x_all <- x_all %>%
-  left_join(x %>% select(report_country, classif))
+  left_join(x %>% select(iso3, classif), by = "iso3")
 
 ```
 
@@ -250,20 +253,24 @@ We reformat the results into `out` and print the table with Low levels and above
 
 out <- x %>%
   arrange(desc(as.integer(classif))) %>%
-  select(report_country, classif,
+  select(report_country, iso3,
+         classif,
          r, r_lower, r_upper,
          perc_peak, net_increases,
          tpr, r_tpr, change_tpr) %>%
   mutate(r = round(r, 3),
          r_lower = round(r_lower, 3),
          r_upper = round(r_upper, 3),
-         perc_peak = paste(round(100 * perc_peak), "%"),
+         perc_peak = round(perc_peak, 3),
          tpr = round(tpr, 3),
          r_tpr = round(r_tpr, 3)
          )
 
 out %>%
-  filter(classif != "NL") %>%
+  mutate(
+    perc_peak = paste(round(100 * perc_peak), "%"),
+    tpr = if_else(is.na(tpr), "", paste(round(100 * tpr), "%"))) %>% 
+  filter(classif != "Minimal") %>%
   DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
 
 ```
@@ -272,7 +279,7 @@ out %>%
 
 ## Pinplot
 
-These pinplots shows all countries classified as 'Mid' and above.
+These pinplots shows all countries classified as 'Medium' and above.
 
 ### By % incidence peak
 
@@ -292,7 +299,7 @@ scale_asmodee <- scale_colour_steps(
 
 
 plot_overall_peaks <- x %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
@@ -327,7 +334,7 @@ plot_overall_peaks
 
 # tadpole plot
 plot_overall_deaths <- x %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
   theme_bw() +
   geom_vline(xintercept = 0, linetype = 2, color = "salmon") +
@@ -364,7 +371,7 @@ plot_overall_deaths
 ```{r fig.height = 7, out.width = "100%"}
 
 plot_tadpole_peaks <- x_all %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   group_by(report_country) %>%
   arrange(last_day) %>% 
   ggplot(aes(x = r, y = perc_peak, color = net_increases)) +
@@ -373,7 +380,7 @@ plot_tadpole_peaks <- x_all %>%
   geom_path(aes(group = report_country, alpha = last_day)) + 
   geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
   geom_text_repel(
-    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    data = filter(x, classif %in% c("Medium", "High", "Very High")),
     aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_y_continuous(labels = scales::percent) +
@@ -408,7 +415,7 @@ plot_tadpole_peaks
 
 # tadpole plot
 plot_tadpole_deaths <- x_all %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>% 
+  filter(classif %in% c("Medium", "High", "Very High")) %>% 
   group_by(report_country) %>%
   arrange(last_day) %>% 
   ggplot(aes(x = r, y = death_incid_last_week, color = net_increases)) +
@@ -417,7 +424,7 @@ plot_tadpole_deaths <- x_all %>%
   geom_path(aes(group = report_country, alpha = last_day)) + 
   geom_point(aes(size = last_day, alpha = last_day, shape = r_signif)) +
   geom_text_repel(
-    data = filter(x, classif %in% c("Mid", "High", "Very High")),
+    data = filter(x, classif %in% c("Medium", "High", "Very High")),
     aes(label = report_country), max.overlaps = 100,
                   max.time = 2, max.iter = 1e5) +
   scale_signif +
@@ -447,12 +454,12 @@ plot_tadpole_deaths
 
 ## ASMODEE plots
 
-We provide ASMODEE plots for countries classified as "Mid" and above.
+We provide ASMODEE plots for countries classified as "Medium" and above.
 
 ```{r }
 
 to_keep <- x %>%
-  filter(classif %in% c("Mid", "High", "Very High")) %>%
+  filter(classif %in% c("Medium", "High", "Very High")) %>%
   pull(report_country)
 
 asmodee_res <- map(all_content, list("results")) %>%
@@ -474,7 +481,7 @@ plot(asmodee_res, ncol = 3)
 
 ## VoC / VoI plots
 
-We plot VoC / VoI dynamics over time for the countries classified as 'Mid' and
+We plot VoC / VoI dynamics over time for the countries classified as 'Medium' and
 above, for the last 6 weeks:
 
 ```{r }
@@ -552,29 +559,42 @@ We also renamed columns for compatibility with the decision spreadsheets:
 
 ```{r }
 
-## add country info and order table
-out_full <- load_countries_data() %>%
-  left_join(out) %>%
+# load country info
+df_countries <- load_countries_data()
+
+# remove redundant country info in out
+out <- out %>%
+  ungroup() %>%
+  select(-report_country)
+
+# add country info and order table
+out_full <- df_countries %>%
+  left_join(out, by = "iso3") %>%
   arrange(who_region, report_country)
 
 ## add date and rename/reorder columns
-out_full <- out_full %>%
+out_final <- out_full %>%
   mutate(assessment_week_begins = Sys.Date() %>%
            grates::as_yearweek() %>%
            as.Date()) %>%
-  select(assessment_week_begins,
-         Country = report_country,
-         who_region,
-         growth_rate = r,
-         relative_incidence = perc_peak,
-         net_increases,
-         epi_classification = classif,
-         last_week_tpr = tpr,
-         change_tpr,
-         growth_rate_tpr = r_tpr,
-         everything())
+  select(
+    assessment_date = assessment_week_begins,
+    country = report_country,
+    iso3, 
+    region = who_region,
+    population = population,
+    growth_rate = r,
+    relative_incidence = perc_peak,
+    net_increases = net_increases,
+    last_week_tpr = tpr,
+    tpr_change = change_tpr,
+    epi_classification = classif,
+    growth_rate_lower = r_lower,
+    growth_rate_upper = r_upper,
+    growth_rate_tpr = r_tpr)
 
 ```
+
 
 
 ## Export table to xlsx
@@ -582,7 +602,7 @@ out_full <- out_full %>%
 ```{r }
 
 ## export asmodee summary
-rio::export(out_full, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
+rio::export(out_final, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
 
 ```
 

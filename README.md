@@ -164,11 +164,11 @@ Tome and Principe, United Republic of Tanzania <br>
 
 ### Infection levels as % of historical incidence peak
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_AFRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_peaks_AFRO_latest.png" width="85%">
 
 ### Infection levels as weekly deaths per 1M inhabitants
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_AFRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_AFRO_latest.png" width="85%">
 
 -----
 
@@ -184,11 +184,11 @@ successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EMRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_peaks_EMRO_latest.png" width="85%">
 
 ### Infection levels as weekly deaths per 1M inhabitants
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EMRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_EMRO_latest.png" width="85%">
 
 -----
 
@@ -206,11 +206,11 @@ Monaco, San Marino <br>
 
 ### Infection levels as % of historical incidence peak
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_EURO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_peaks_EURO_latest.png" width="85%">
 
 ### Infection levels as weekly deaths per 1M inhabitants
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_EURO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_EURO_latest.png" width="85%">
 
 † All references to Kosovo should be understood to be in the context of
 the United Nations Security Council resolution 1244 (1999).
@@ -242,11 +242,11 @@ Barthélemy, Saint Pierre and Miquelon, Turks and Caicos Islands <br>
 
 ### Infection levels as % of historical incidence peak
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_PAHO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_peaks_PAHO_latest.png" width="85%">
 
 ### Infection levels as weekly deaths per 1M inhabitants
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_PAHO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_PAHO_latest.png" width="85%">
 
 -----
 
@@ -263,11 +263,11 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 ### Infection levels as % of historical incidence peak
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_SEARO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_peaks_SEARO_latest.png" width="85%">
 
 ### Infection levels as weekly deaths per 1M inhabitants
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_SEARO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_SEARO_latest.png" width="85%">
 
 -----
 
@@ -287,11 +287,11 @@ Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br>
 
 ### Infection levels as % of historical incidence peak
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_peaks_WPRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_peaks_WPRO_latest.png" width="85%">
 
 ### Infection levels as weekly deaths per 1M inhabitants
 
-<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/waffle_deaths_WPRO_latest.png" width="85%">
+<img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_WPRO_latest.png" width="85%">
 
 -----
 
