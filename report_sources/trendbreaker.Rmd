@@ -763,8 +763,8 @@ daily cases by daily tests. However, estimating TPR accurately is not entirely
 trivial as there are several situations to cover:
 
 1. countries report testing *daily* with some lags resulting in varying numbers
-  trailing zeros or NAs in the most recent days
-2. countries reporting testing *weekly*, with zeros or NAs on all other days
+  trailing 0s in the most recent days
+2. countries reporting testing *weekly*, with 0s on all other days
 3. countries not reporting testing on a regular basis
 
 For situation 1, we could use the average of the naive estimates, or
@@ -772,19 +772,19 @@ re-calculate the ratio excluding the days reporting no tests. However, this
 strategy will not work for situation 2, as it would massively under-estimate the
 TPR (all weekly cases should be counted, but only one day would
 be). Unfortunately, there is no definitive way to disentangle situations 1 from
-2.
+2: we do not know when days with 0 test reported can be considered as missing
+data.
 
 Our strategy for handling TPR is:
 
-* filter out countries having reported tests for less than 2 days in the last
-  week; this will de facto exclude countries reporting tests weekly
-* for weekly estimates, re-calculate TPR from weekly counts of cases and tests,
-  excluding days where no tests were reported
-* for estimates of change in TPR, use the 'naive' daily TPR and discard any
-  non-finite values (as days of non-reporting results in either `NA` or `0`
-  tests); we'll need to subset models with sufficient degrees of freedom to
-  filter out weak models
-
+* treat 0s as missing data
+* for weekly estimates, only estimate TPR when tests have been reported for at
+  least 4 days during the last 3 weeks;
+* for estimates of change in TPR, fit a linear regression to the 'naive' daily
+  TPR over the last 3 weeks, discarding any non-finite values (resulting from
+  `0` test reported); only models with at least 14 data points will be used
+  
+  
 
 ## Rate over the last week
 
@@ -792,9 +792,23 @@ We calculate the mean TPR by country over the last week.
 
 ```{r }
 
-# keep only countries reporting tests at least 2 days in the last week
+## # temporary code to check how many TPR can be estimated using different time
+## # windows
+## days <- 7:30
+## n_countries <- lapply(days, function(i)
+##   dat %>%
+##     filter(date >= (data_stamp - i)) %>%
+##     group_by(report_country) %>%
+##     summarise(n_non_zero = sum(tests > 0, na.rm = TRUE)) %>% 
+##     filter(n_non_zero >= 4) %>%
+##     pull(report_country) %>%
+##     length()) %>%
+##   unlist()
+
+
+# keep only countries reporting tests at least 4 days in the last 3 weeks
 to_keep <- dat %>%
-  filter(date >= (data_stamp - 7)) %>%
+  filter(date >= (data_stamp - 21)) %>%
   group_by(report_country) %>%
   summarise(n_non_zero = sum(tests > 0, na.rm = TRUE)) %>% 
   filter(n_non_zero >= 2) %>%
@@ -803,7 +817,7 @@ to_keep <- dat %>%
 # calculate tpr
 df_tpr <- dat %>%
   group_by(report_country) %>%
-  filter(date >= (data_stamp - 7),
+  filter(date >= (data_stamp - 21),
          report_country %in% to_keep,
          tests > 0) %>%
   summarise(tpr = sum(cases, na.rm = TRUE) / sum(tests, na.rm = TRUE)) %>%
