@@ -597,12 +597,17 @@ out_final <- out_full %>%
     growth_rate = r,
     relative_incidence = perc_peak,
     net_increases = net_increases,
-    last_week_tpr = tpr,
-    tpr_change = change_tpr,
+    # remove old tpr for now
+    # last_week_tpr = tpr,
+    # tpr_change = change_tpr,
     epi_classification = classif,
     growth_rate_lower = r_lower,
-    growth_rate_upper = r_upper,
-    growth_rate_tpr = r_tpr)
+    growth_rate_upper = r_upper
+    # growth_rate_tpr = r_tpr
+    )
+
+out_final <- out_final %>% 
+     left_join(elr_extras_final, by = "iso3")
 
 ```
 
