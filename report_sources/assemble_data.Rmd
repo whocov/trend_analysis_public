@@ -110,6 +110,8 @@ phi <- all_dat$phi_data
 ```
 
 
+
+
 ## Country list
 
 ```{r}
@@ -470,6 +472,8 @@ final_dat <- final_dat %>%
 
 
 
+
+
 ## Add rolling 7-day case/death rates per 100k
 
 ```{r}
@@ -627,3 +631,106 @@ rio::export(final_dat, file_name)
 
 ```
 
+
+# Save additional dataset for ELR review
+
+
+## Adding Vaccination coverage  
+
+Columns added include:  
+
+* Number of vaccine doses administered (total numbers and per 100 people)
+* Persons receiving at least 1 dose of vaccine (total numbers and per 100 people)
+* Persons fully vaccinated (total numbers and per 100 people) 
+
+
+```{r}
+# pull in vaccine data from OWID
+vax_data <- phifunc::pull_owid_vax()
+
+vax_data <- vax_data %>%
+  group_by(iso3) %>%
+  filter(!is.na(total_vaccinations),
+         date == max(date)) %>% 
+  select(
+    iso3,
+    population,
+    as_of_vaccine = date,
+    vaccinations = total_vaccinations,
+    vac_oneplus_dose = people_vaccinated,
+    vac_full = people_fully_vaccinated,
+  ) %>%
+  mutate(
+    across(
+      starts_with("vac"),
+      list("per_100" = ~ . / population * 100) 
+    )
+  ) %>% 
+  select(-population) %>% 
+  ungroup()
+ 
+```
+
+## Adding weekly testing data
+
+Columns added include:  
+
+* Weekly (by ISO week tests, cases, and percent positivity with CIs)
+* The same measures, for one week prior
+
+```{r}
+# pull in vaccine data from OWID
+testing_data_final <- all_dat$testing_data2 %>% 
+  filter(!(last_updated < week_end_date)) %>% 
+  select(iso3,
+         week_end_date,
+         test_denom = tests,
+         test_num = cases) %>% 
+  group_by(iso3) %>% 
+  arrange(desc(week_end_date)) %>% 
+  slice(1:2) %>% 
+  mutate(time_frame = 1:n()) %>% 
+  ungroup() %>% 
+  pivot_wider(
+    names_from = time_frame, 
+    values_from = c(week_end_date, test_denom, test_num), 
+    names_glue = "{.value}_{case_when(time_frame == 1 ~ 'recent', time_frame == 2 ~ 'before')}"
+  ) %>% 
+  rename_with(
+    ~gsub("week_end_date", "tpr_last_date", .x)
+  ) %>% 
+  mutate(
+    tpr_recent = test_num_recent / test_denom_recent,
+    tpr_lower_recent = prop_ci(test_num_recent, test_denom_recent, result = "lower"),
+    tpr_upper_recent = prop_ci(test_num_recent, test_denom_recent, result = "upper"),
+    tpr_before = test_num_before / test_denom_before,
+    tpr_lower_before = prop_ci(test_num_before, test_denom_before, result = "lower"),
+    tpr_upper_before = prop_ci(test_num_recent, test_denom_before, result = "upper")
+  )
+
+```
+## Finalising extra dataset for ELR
+
+```{r}
+# merge datasets
+
+elr_extras_final <- full_join(
+  vax_data,
+  testing_data_final,
+  by = c("iso3")
+)
+
+file_name <- stringr::str_glue("elr_extra_data{Sys.Date()}.rds")
+path_export <- here::here("data",
+                          "clean",
+                          file_name)
+dir_export <- dirname(path_export)
+if (!dir.exists(dir_export)) dir.create(dir_export)
+rio::export(final_dat, path_export)
+
+
+## export data to rds file in current folder
+rio::export(final_dat, file_name)
+
+
+```
