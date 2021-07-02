@@ -726,11 +726,11 @@ path_export <- here::here("data",
                           file_name)
 dir_export <- dirname(path_export)
 if (!dir.exists(dir_export)) dir.create(dir_export)
-rio::export(final_dat, path_export)
+rio::export(elr_extras_final, path_export)
 
 
 ## export data to rds file in current folder
-rio::export(final_dat, file_name)
+rio::export(elr_extras_final, file_name)
 
 
 ```

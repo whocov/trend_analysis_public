@@ -122,6 +122,17 @@ dat_voi
 
 ```
 
+## Load Extra ELR data
+
+```{r }
+
+dat_elr_extra <- find_latest("elr_extra", where = here::here("data")) %>%
+  rio::import()
+
+dat_elr_extra
+
+
+```
 
 
 ------------------------------------
