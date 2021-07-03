@@ -224,15 +224,14 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Friday 02 July
+<br>Analyses were last updated **Saturday 03 July
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Antigua and Barbuda, Bermuda, Bonaire, Sint
-Eustatius and Saba, British Virgin Islands, Cayman Islands, Dominica,
-Falkland Islands (Malvinas), Grenada, Montserrat, Saint Barthélemy,
-Saint Pierre and Miquelon, Turks and Caicos Islands <br> Estimates of
-*r* could not be produced for the following countries:<br>Puerto Rico
-<br>
+Eustatius and Saba, Cayman Islands, Dominica, Falkland Islands
+(Malvinas), Grenada, Montserrat, Saint Barthélemy, Saint Pierre and
+Miquelon, Turks and Caicos Islands <br> Estimates of *r* could not be
+produced for the following countries:<br>Puerto Rico <br>
 
 **Notes of geographic units**:
 
