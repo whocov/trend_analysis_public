@@ -156,12 +156,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Friday 02 July 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Burkina Faso, Chad,
-Comoros, Mayotte, Saint Helena, Sao Tome and Principe, United Republic
-of Tanzania <br> Estimates of *r* could not be produced for the
-following countries:<br>Nigeria <br>
+<br>Analyses were last updated **Saturday 03 July
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Burkina Faso, Chad, Comoros, Mayotte, Saint Helena, Sao
+Tome and Principe, United Republic of Tanzania <br> Estimates of *r*
+could not be produced for the following countries:<br>Nigeria <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -179,9 +179,9 @@ following countries:<br>Nigeria <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Friday 02 July 2021**.<br><br>**Notes**
-<br>Nothing to report. All countries were successfully included in the
-analyses. <br>
+<br>Analyses were last updated **Saturday 03 July
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -199,10 +199,11 @@ analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Friday 02 July 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Gibraltar,
-Greenland, Guernsey, Holy See, Isle of Man, Monaco, San Marino <br>
+<br>Analyses were last updated **Saturday 03 July
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Gibraltar, Greenland, Guernsey, Holy See, Isle of Man,
+Monaco, San Marino <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -279,13 +280,13 @@ Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Friday 02 July 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>American Samoa,
-Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
-(Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn
-Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis
-and Futuna <br>
+<br>Analyses were last updated **Saturday 03 July
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
+Marshall Islands, Micronesia (Federated States of), Nauru, New
+Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
+Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br>
 
 ### Infection levels as % of historical incidence peak
 
