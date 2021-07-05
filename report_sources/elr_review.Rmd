@@ -122,6 +122,17 @@ dat_voi
 
 ```
 
+## Load Extra ELR data
+
+```{r }
+
+dat_elr_extra <- find_latest("elr_extra", where = here::here("data")) %>%
+  rio::import()
+
+dat_elr_extra
+
+
+```
 
 
 ------------------------------------
@@ -586,12 +597,18 @@ out_final <- out_full %>%
     growth_rate = r,
     relative_incidence = perc_peak,
     net_increases = net_increases,
-    last_week_tpr = tpr,
-    tpr_change = change_tpr,
+    # remove old tpr for now
+    # last_week_tpr = tpr,
+    # tpr_change = change_tpr,
     epi_classification = classif,
     growth_rate_lower = r_lower,
-    growth_rate_upper = r_upper,
-    growth_rate_tpr = r_tpr)
+    growth_rate_upper = r_upper
+    # growth_rate_tpr = r_tpr
+  )
+
+# join to vaccine coverage/tpr data
+out_final <- out_final %>% 
+     left_join(dat_elr_extra, by = "iso3")
 
 ```
 

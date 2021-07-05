@@ -23,6 +23,10 @@ prop_ci <- function(k, n,
                     perc = FALSE,
                     conf = 0.95,
                     dec = 2) {
+  if (is.na(n)) {
+    return(NA_integer_)
+  }
+  
   if(n == 0){
     out = c(0,1)
   } else{
