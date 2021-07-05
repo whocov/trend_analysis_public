@@ -606,8 +606,9 @@ out_final <- out_full %>%
     # growth_rate_tpr = r_tpr
   )
 
+# join to vaccine coverage/tpr data
 out_final <- out_final %>% 
-     left_join(elr_extras_final, by = "iso3")
+     left_join(dat_elr_extra, by = "iso3")
 
 ```
 
