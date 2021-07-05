@@ -94,8 +94,9 @@ plan("multisession", workers = params$n_cores)
 dat <- load_final_data()
 data_stamp <- get_timestamp(dat)
 data_stamp
+elr_extras <- dat$elr_extras
+dat <- dat$trendbreaker
 dat
-
 ```
 
 
@@ -108,6 +109,9 @@ We keep only the countries for the desired WHO region; defaults to EURO:
 
 params$who_region
 dat <- dat %>%
+  filter(who_region %in% params$who_region)
+
+elr_extras <- elr_extras %>% 
   filter(who_region %in% params$who_region)
 
 ```
@@ -929,6 +933,7 @@ asmodee_outputs <- list(
   plot_overall_deaths = plot_overall_deaths,
   plot_overall_peaks = plot_overall_peaks,
   df_dynamics = df_dynamics,
+  elr_extras = elr_extras,
   timestamp = data_stamp
 )
 
