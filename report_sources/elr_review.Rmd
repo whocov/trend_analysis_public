@@ -88,6 +88,10 @@ all_df <- all_content %>%
   map(list("df_dynamics")) %>%
   setNames(regions)
 
+all_elr_extras <- all_content %>%
+  map_df(list("elr_extras"))
+
+
 ```
 
 Add region data and assemble into a single `data.frame`, keeping only the
@@ -118,18 +122,6 @@ dat_voi <- find_latest("proportions_voi", where = here::here("data")) %>%
   pivot_wider(names_from = quantile, values_from = value)
 
 dat_voi
-
-
-```
-
-## Load Extra ELR data
-
-```{r }
-
-dat_elr_extra <- find_latest("elr_extra", where = here::here("data")) %>%
-  rio::import()
-
-dat_elr_extra
 
 
 ```
@@ -608,7 +600,7 @@ out_final <- out_full %>%
 
 # join to vaccine coverage/tpr data
 out_final <- out_final %>% 
-     left_join(dat_elr_extra, by = "iso3")
+     left_join(all_elr_extras %>% select(-who_region), by = "iso3")
 
 ```
 
