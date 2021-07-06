@@ -687,7 +687,7 @@ testing_data_final <- all_dat$testing_data2 %>%
     tpr_upper_recent = prop_ci(test_num_recent, test_denom_recent, result = "upper"),
     tpr_before = test_num_before / test_denom_before,
     tpr_lower_before = prop_ci(test_num_before, test_denom_before, result = "lower"),
-    tpr_upper_before = prop_ci(test_num_recent, test_denom_before, result = "upper")
+    tpr_upper_before = prop_ci(test_num_before, test_denom_before, result = "upper")
   )
 
 ```
