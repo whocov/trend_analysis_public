@@ -1,5 +1,4 @@
 
-## General disclaimer
 
 This repository contains work in progress. It implements an automated data
 pipeline for country-level surveillance of COVID-19 dynamics using publicly
