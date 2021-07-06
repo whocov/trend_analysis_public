@@ -32,6 +32,8 @@ insert_md <- function(x) {
 
 # Preamble
 
+## General disclaimer
+
 ```{r results = "asis"}
 
 path_to_md <- here::here("docs", "disclaimer.md")
