@@ -239,6 +239,9 @@ x <- x %>%
     classif = factor(classif, levels =  c("Minimal", "Low", "Medium", "High", "Very High"))
   )
 
+## add TPR info
+x <- x %>%
+  right_join(select(all_elr_extras, -who_region), by = "iso3")
 
 ## add classification to x_all
 x_all <- x_all %>%
@@ -260,20 +263,31 @@ out <- x %>%
          classif,
          r, r_lower, r_upper,
          perc_peak, net_increases,
-         tpr, r_tpr, change_tpr) %>%
+         tpr_recent, tpr_before, tpr_change) %>%
   mutate(r = round(r, 3),
          r_lower = round(r_lower, 3),
          r_upper = round(r_upper, 3),
          perc_peak = round(perc_peak, 3),
-         tpr = round(tpr, 3),
-         r_tpr = round(r_tpr, 3)
+         tpr_recent = round(tpr_recent, 3),
+         tpr_before = round(tpr_before, 3)
          )
 
 out %>%
+  ungroup() %>% 
   mutate(
     perc_peak = paste(round(100 * perc_peak), "%"),
-    tpr = if_else(is.na(tpr), "", paste(round(100 * tpr), "%"))) %>% 
-  filter(classif != "Minimal") %>%
+    tpr_recent = if_else(is.na(tpr_recent),
+                         "",
+                         paste(round(100 * tpr_recent), "%")),
+    tpr_before = if_else(is.na(tpr_before),
+                         "",
+                         paste(round(100 * tpr_before), "%"))) %>%
+  rename(Country = report_country,
+         "% peak" = perc_peak,
+         ELR = classif,
+         ) %>%
+  select(-iso3) %>% 
+  filter(ELR != "Minimal") %>%
   DT::datatable(rownames = FALSE, options = list(pageLength = nrow(.)))
 
 ```
@@ -501,12 +515,6 @@ voi <- voi %>%
   mutate(variant = factor(variant),
          variant = forcats::fct_relevel(variant, "Other", after = Inf))
 
-## ## simplify lineage voi/voc vs the rest
-## voi <- voi %>%
-##   mutate(lower = max(0, lower),
-##          upper = min(1, upper)
-##          )
-
 n_plots <- length(unique(voi$report_country))
 
 ```
@@ -589,18 +597,31 @@ out_final <- out_full %>%
     growth_rate = r,
     relative_incidence = perc_peak,
     net_increases = net_increases,
-    # remove old tpr for now
-    # last_week_tpr = tpr,
-    # tpr_change = change_tpr,
     epi_classification = classif,
     growth_rate_lower = r_lower,
     growth_rate_upper = r_upper
-    # growth_rate_tpr = r_tpr
   )
 
 # join to vaccine coverage/tpr data
+elr_extra_to_keep <- all_elr_extras %>%
+  select(
+    iso3,
+    tpr_recent,
+    tpr_before,
+    tpr_change,
+    tpr_last_date_recent,
+    tpr_last_date_before,
+    vaccinations_per_100,
+    vaccinations_date = as_of_vaccine
+         ) %>%
+  mutate(
+    tpr_recent = round(tpr_recent, 3),
+    tpr_before = round(tpr_before, 3),
+    vaccinations_per_100 = round(vaccinations_per_100, 3)
+    )
+
 out_final <- out_final %>% 
-     left_join(all_elr_extras %>% select(-who_region), by = "iso3")
+     left_join(elr_extra_to_keep, by = "iso3")
 
 ```
 
