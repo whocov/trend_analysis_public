@@ -1,0 +1,996 @@
+---
+title: "ELR_evaluation"
+author: "Neale Batra"
+date: "7/6/2021"
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: TRUE
+    toc_collapse: FALSE
+    number_sections: TRUE
+    highlight: pygments
+    theme: spacelab
+    code_folding: hide
+    <!-- df_print: paged -->
+    css: !expr here::here('css', 'style.css')
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Preparation {.tabset}
+
+## Packages
+
+```{r}
+pacman::p_load(here, rio, lubridate, janitor, tidyverse, flextable, 
+               DiagrammeR,     # for flow diagrams
+               networkD3)      # For alluvial/Sankey diagrams
+```
+
+## Import latest data
+
+Manual selection of data, so as to not store these data in the public-facing repository.
+```{r, message=F, warning=F}
+ELR_raw <- rio::import(file.choose(), sheet = "Data Entry")
+
+#ELR_raw <- rio::import(here::here("data", "ELR", "COVID19_hq_epi_level_risk_tracking_01-07-2021.xlsx"), sheet = "Data Entry")
+```
+
+
+## Data cleaning
+
+```{r, message=F, warning=F}
+ELR <- ELR_raw %>% 
+     rename(
+          week = assessment_week_begins,
+          dynamics = dynamics_classification,
+          context = context_classification,
+          final = final_classification) %>% 
+     mutate(week = ymd(week),
+            dynamics = recode(dynamics,
+                              "Very High" = "Very high"),
+            dynamics = fct_relevel(
+                 dynamics,
+                 "Very high", "High", "Medium", "Low", "Minimum", "Unknown"),
+            #dynamics = fct_explicit_na(dynamics),
+            # dynamics = fct_recode(dynamics,
+            #                       5 = "Very high",
+            #                       4 = "High",
+            #                       3 = "Medium",
+            #                       2 = "Low",
+            #                       1 = "Minimal",
+            #                       0 = "(Missing)"),
+            
+            ##############
+            context = recode(context,
+                             "possible" = "Possible",
+                             "present" = "Present"),
+
+            context = fct_relevel(context,
+                                   "Present",
+                                   "Possible",
+                                   "None",
+                                   "Unknown"),
+            #context = fct_explicit_na(context),
+            # context = fct_recode(context,
+            #      1 = "Present",
+            #      0 = "Possible",
+            #      0 = "None",
+            #      0 = "Unknown",
+            #      0 = "(Missing)"),
+
+            ###############
+            final = fct_explicit_na(final)) %>% 
+            #final = fct_relevel(final, "(Missing)", after = 6)) %>% 
+            # final = fct_recode(final, 
+            #      6 = "1 - Critical",
+            #      5 = "2 - Very high",
+            #      4 = "3 - High",
+            #      3 = "4 - Medium",
+            #      2 = "5 - Low",
+            #      1 = "6 - Minimal",
+            #      0 = "(Missing)")) 
+     
+     arrange(week) %>% 
+     drop_na(week) 
+
+
+levels(ELR$final)
+tabyl(ELR, final, dynamics)
+```
+
+
+```{r}
+# named vectors 
+alert <- c("1 - Critical", "2 - Very high")
+warning <- c("1 - Critical", "2 - Very high", "3 - High", "2 - Medium")
+```
+
+
+
+The latest date in the dataset is `r max(ELR$week, na.rm = T)`. There are `r nrow(ELR)` records.  
+
+
+# Global overview 
+
+## Alluvial links between dynamics-context-final ELR classifications (all time)
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+
+```{r}
+# counts by hospital and age category
+
+value1 = unique(ELR$week[[1]])
+value2 = unique(ELR$week[[2]])
+
+get_links <- function(value1, value2){
+  ELR %>% 
+    drop_na(week) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    filter(week %in% c(value1, value2)) %>% 
+    select(week, country, final)
+    
+             
+    
+}
+
+
+```
+
+
+
+
+
+# Regional ELR trends {.tabset}  
+
+
+```{r}
+ELR_long <- ELR %>% 
+  group_by(country) %>% 
+  arrange(country, week) %>% 
+  slice(1:3) %>% 
+  mutate(alert = ifelse(final %in% alert, 1, 0),
+         recent_alert_score = sum(alert, na.rm=T)) %>% 
+  #select(week, country, final, alert, recent_alert_score) %>% 
+  ungroup() %>% 
+  select(week, country, who_region, recent_alert_score, dynamics, context, final) %>% 
+  pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value")
+
+```
+
+
+
+## PAHO
+
+```{r}
+region <- "PAHO"
+```
+
+### Heat plot  
+
+```{r}
+ELR_long %>%
+     filter(metric == "final",
+            who_region == region) %>% 
+     ggplot()+
+     geom_tile(aes(x = week, y = fct_reorder(country, recent_alert_score, "mean"), fill = value)) +
+    scale_fill_brewer(direction = -1)+ 
+    #scale_fill_manual(values = c("White", "Red",  "Yellow",))
+     theme_minimal()+
+    theme(
+      legend.title = element_text(size=12, face="bold"),
+      legend.text  = element_text(size=10, face="bold"),
+      legend.key.height = grid::unit(1,"cm"),           # height of legend key
+      legend.key.width  = grid::unit(0.6,"cm"),         # width of legend key
+      
+      axis.text.x = element_text(size=12),              # axis text size
+      axis.text.y = element_text(vjust=0.2),            # axis text alignment
+      axis.ticks = element_line(size=0.4),               
+      axis.title = element_text(size=12, face="bold"),  # axis title size and bold
+      
+      plot.title = element_text(hjust=0,size=14,face="bold"),  # title right-aligned, large, bold
+      plot.caption = element_text(hjust = 0, face = "italic")  # caption right-aligned and italic
+      )+
+      labs(title = "ELR classifications by week",
+           y = "Country/territory/area",
+           x = "Date",
+           fill = "ELR final\nclassification")
+      
+
+```
+
+### Lines/points  
+
+```{r message = F}
+ ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+          #country == "Mozambique",
+          who_region == region,
+          value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+```
+
+
+### Alluvial  
+
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  filter(who_region == region) %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    filter(who_region == region) %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+
+## AFRO  
+
+
+```{r}
+region <- "AFRO"
+```
+
+### Heat plot  
+
+```{r}
+ELR_long %>%
+     filter(metric == "final",
+            who_region == region) %>% 
+     ggplot()+
+     geom_tile(aes(x = week, y = fct_reorder(country, recent_alert_score, "mean"), fill = value)) +
+    scale_fill_brewer(direction = -1)+ 
+    #scale_fill_manual(values = c("White", "Red",  "Yellow",))
+     theme_minimal()+
+    theme(
+      legend.title = element_text(size=12, face="bold"),
+      legend.text  = element_text(size=10, face="bold"),
+      legend.key.height = grid::unit(1,"cm"),           # height of legend key
+      legend.key.width  = grid::unit(0.6,"cm"),         # width of legend key
+      
+      axis.text.x = element_text(size=12),              # axis text size
+      axis.text.y = element_text(vjust=0.2),            # axis text alignment
+      axis.ticks = element_line(size=0.4),               
+      axis.title = element_text(size=12, face="bold"),  # axis title size and bold
+      
+      plot.title = element_text(hjust=0,size=14,face="bold"),  # title right-aligned, large, bold
+      plot.caption = element_text(hjust = 0, face = "italic")  # caption right-aligned and italic
+      )+
+      labs(title = "ELR classifications by week",
+           y = "Country/territory/area",
+           x = "Date",
+           fill = "ELR final\nclassification")
+      
+
+```
+
+### Lines/points  
+
+```{r message = F}
+ ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+          #country == "Mozambique",
+          who_region == region,
+          value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+```
+
+
+### Alluvial  
+
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  filter(who_region == region) %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    filter(who_region == region) %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+
+
+## EURO
+
+```{r}
+region <- "EURO"
+```
+
+### Heat plot  
+
+```{r}
+ELR_long %>%
+     filter(metric == "final",
+            who_region == region) %>% 
+     ggplot()+
+     geom_tile(aes(x = week, y = fct_reorder(country, recent_alert_score, "mean"), fill = value)) +
+    scale_fill_brewer(direction = -1)+ 
+    #scale_fill_manual(values = c("White", "Red",  "Yellow",))
+     theme_minimal()+
+    theme(
+      legend.title = element_text(size=12, face="bold"),
+      legend.text  = element_text(size=10, face="bold"),
+      legend.key.height = grid::unit(1,"cm"),           # height of legend key
+      legend.key.width  = grid::unit(0.6,"cm"),         # width of legend key
+      
+      axis.text.x = element_text(size=12),              # axis text size
+      axis.text.y = element_text(vjust=0.2),            # axis text alignment
+      axis.ticks = element_line(size=0.4),               
+      axis.title = element_text(size=12, face="bold"),  # axis title size and bold
+      
+      plot.title = element_text(hjust=0,size=14,face="bold"),  # title right-aligned, large, bold
+      plot.caption = element_text(hjust = 0, face = "italic")  # caption right-aligned and italic
+      )+
+      labs(title = "ELR classifications by week",
+           y = "Country/territory/area",
+           x = "Date",
+           fill = "ELR final\nclassification")
+      
+
+```
+
+### Lines/points  
+
+```{r message = F}
+ ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+          #country == "Mozambique",
+          who_region == region,
+          value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+```
+
+
+### Alluvial  
+
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  filter(who_region == region) %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    filter(who_region == region) %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+## EMRO  
+
+
+```{r}
+region <- "EMRO"
+```
+
+### Heat plot  
+
+```{r}
+ELR_long %>%
+     filter(metric == "final",
+            who_region == region) %>% 
+     ggplot()+
+     geom_tile(aes(x = week, y = fct_reorder(country, recent_alert_score, "mean"), fill = value)) +
+    scale_fill_brewer(direction = -1)+ 
+    #scale_fill_manual(values = c("White", "Red",  "Yellow",))
+     theme_minimal()+
+    theme(
+      legend.title = element_text(size=12, face="bold"),
+      legend.text  = element_text(size=10, face="bold"),
+      legend.key.height = grid::unit(1,"cm"),           # height of legend key
+      legend.key.width  = grid::unit(0.6,"cm"),         # width of legend key
+      
+      axis.text.x = element_text(size=12),              # axis text size
+      axis.text.y = element_text(vjust=0.2),            # axis text alignment
+      axis.ticks = element_line(size=0.4),               
+      axis.title = element_text(size=12, face="bold"),  # axis title size and bold
+      
+      plot.title = element_text(hjust=0,size=14,face="bold"),  # title right-aligned, large, bold
+      plot.caption = element_text(hjust = 0, face = "italic")  # caption right-aligned and italic
+      )+
+      labs(title = "ELR classifications by week",
+           y = "Country/territory/area",
+           x = "Date",
+           fill = "ELR final\nclassification")
+      
+
+```
+
+### Lines/points  
+
+```{r message = F}
+ ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+          #country == "Mozambique",
+          who_region == region,
+          value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+```
+
+
+### Alluvial  
+
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  filter(who_region == region) %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    filter(who_region == region) %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+
+
+
+
+## SEARO  
+
+
+```{r}
+region <- "SEARO"
+```
+
+### Heat plot  
+
+```{r}
+ELR_long %>%
+     filter(metric == "final",
+            who_region == region) %>% 
+     ggplot()+
+     geom_tile(aes(x = week, y = fct_reorder(country, recent_alert_score, "mean"), fill = value)) +
+    scale_fill_brewer(direction = -1)+ 
+    #scale_fill_manual(values = c("White", "Red",  "Yellow",))
+     theme_minimal()+
+    theme(
+      legend.title = element_text(size=12, face="bold"),
+      legend.text  = element_text(size=10, face="bold"),
+      legend.key.height = grid::unit(1,"cm"),           # height of legend key
+      legend.key.width  = grid::unit(0.6,"cm"),         # width of legend key
+      
+      axis.text.x = element_text(size=12),              # axis text size
+      axis.text.y = element_text(vjust=0.2),            # axis text alignment
+      axis.ticks = element_line(size=0.4),               
+      axis.title = element_text(size=12, face="bold"),  # axis title size and bold
+      
+      plot.title = element_text(hjust=0,size=14,face="bold"),  # title right-aligned, large, bold
+      plot.caption = element_text(hjust = 0, face = "italic")  # caption right-aligned and italic
+      )+
+      labs(title = "ELR classifications by week",
+           y = "Country/territory/area",
+           x = "Date",
+           fill = "ELR final\nclassification")
+      
+
+```
+
+### Lines/points  
+
+```{r message = F}
+ ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+          #country == "Mozambique",
+          who_region == region,
+          value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+```
+
+
+### Alluvial  
+
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  filter(who_region == region) %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    filter(who_region == region) %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+
+## WPRO  
+
+
+```{r}
+region <- "WPRO"
+```
+
+### Heat plot  
+
+```{r}
+ELR_long %>%
+     filter(metric == "final",
+            who_region == region) %>% 
+     ggplot()+
+     geom_tile(aes(x = week, y = fct_reorder(country, recent_alert_score, "mean"), fill = value)) +
+    scale_fill_brewer(direction = -1)+ 
+    #scale_fill_manual(values = c("White", "Red",  "Yellow",))
+     theme_minimal()+
+    theme(
+      legend.title = element_text(size=12, face="bold"),
+      legend.text  = element_text(size=10, face="bold"),
+      legend.key.height = grid::unit(1,"cm"),           # height of legend key
+      legend.key.width  = grid::unit(0.6,"cm"),         # width of legend key
+      
+      axis.text.x = element_text(size=12),              # axis text size
+      axis.text.y = element_text(vjust=0.2),            # axis text alignment
+      axis.ticks = element_line(size=0.4),               
+      axis.title = element_text(size=12, face="bold"),  # axis title size and bold
+      
+      plot.title = element_text(hjust=0,size=14,face="bold"),  # title right-aligned, large, bold
+      plot.caption = element_text(hjust = 0, face = "italic")  # caption right-aligned and italic
+      )+
+      labs(title = "ELR classifications by week",
+           y = "Country/territory/area",
+           x = "Date",
+           fill = "ELR final\nclassification")
+      
+
+```
+
+### Lines/points  
+
+```{r message = F}
+ ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+          #country == "Mozambique",
+          who_region == region,
+          value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+```
+
+
+### Alluvial  
+
+
+```{r}
+# counts by hospital and age category
+dyn_cont_links <- ELR %>% 
+  filter(who_region == region) %>% 
+  drop_na(dynamics, context, final) %>% 
+  filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+  select(dynamics, context) %>%
+  count(dynamics, context) %>% 
+  rename(source = dynamics,          # re-name
+         target = context)
+
+cont_final_links <- ELR %>% 
+    filter(who_region == region) %>% 
+    drop_na(dynamics, context, final) %>% 
+    filter(dynamics != "(Missing)",
+         context != "(Missing)",
+         final != "(Missing)") %>% 
+    select(context, final) %>% 
+    count(context, final) %>% 
+    rename(source = context,       # re-name
+           target = final)
+
+# combine links
+links <- bind_rows(dyn_cont_links, cont_final_links)
+
+# The unique node names
+nodes <- data.frame(
+  name=c(as.character(links$source), as.character(links$target)) %>% 
+    unique()
+  )
+
+# Create id numbers
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# plot
+######
+p <- sankeyNetwork(Links = links,
+                   Nodes = nodes,
+                   Source = "IDsource",
+                   Target = "IDtarget",
+                   Value = "n",
+                   NodeID = "name",
+                   units = "TWh",
+                   fontSize = 12,
+                   nodeWidth = 30,
+                   iterations = 0)
+p
+
+```
+
+
+
+
+# Internal consistency  
+
+
+We examine the proportion of countries in a given week that were "caught" by the ELR process prior to their becoming a hotspot. That is, countries classified as either `r alert`, where in the previous two weeks they were listed as either `r warning` 
+
+```{r}
+consistency <- ELR %>% 
+     group_by(country) %>% 
+     arrange(country, week) %>% 
+     mutate(
+          final_lag_1 = lag(final),
+          final_lag_2 = lag(final, 2)) %>% 
+     select(country, week, final, final_lag_1, final_lag_2) %>% 
+     mutate(premonition = case_when(
+          (!final %in% alert) ~ "Irrelevant",
+          (final %in% alert) & (final_lag_1 %in% warning) ~ "Caught",
+          TRUE ~ "Missed"))
+
+
+metrics <- consistency %>% 
+     group_by(week) %>% 
+     summarise(
+          records = n(),
+          alarming = sum(premonition != "Irrelevant"),
+          caught = sum(premonition == "Caught"),
+          missed = sum(premonition == "Missed"),
+          prop_caught = scales::percent(caught / alarming))
+
+missed_list <- consistency %>% 
+     group_by(week) %>% 
+     filter(premonition == "Missed") %>% 
+     summarise(
+          across(country, ~paste0(na.omit(.x), collapse = "; ")))
+
+missed_table <- left_join(metrics, missed_list, by = "week")
+
+```
+
+
+```{r}
+missed_table %>% 
+  flextable::qflextable() %>% 
+  width(j=1, width = 3) %>% 
+  width(j=3, width = 1) %>% 
+  flextable::set_header_labels(
+      week = "Week", 
+      records = "Records",
+      alarming = "Critical\nor Very high",
+      caught = "Caught",
+      missed = "Missed",
+      prop_caught = "%\nCaught",
+      country = "Countries missed") %>% 
+  flextable::set_caption(
+  "ELR internal consistency",
+  autonum = NULL,
+  style = "Table Caption",
+  html_escape = TRUE
+)
+  
+
+```
+
