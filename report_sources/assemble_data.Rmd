@@ -610,26 +610,6 @@ final_dat <- final_dat %>%
   select(who_region, report_country, iso3, population, report_date, date, everything())
 ```
 
-# Save final dataset
-
-The data is saved both in the *data/clean* folder and in the current folder.
-
-```{r }
-
-## export data to rds file in data/clean
-file_name <- stringr::str_glue("final_dat_{Sys.Date()}.rds")
-path_export <- here::here("data",
-                          "clean",
-                          file_name)
-dir_export <- dirname(path_export)
-if (!dir.exists(dir_export)) dir.create(dir_export)
-rio::export(final_dat, path_export)
-
-
-## export data to rds file in current folder
-rio::export(final_dat, file_name)
-
-```
 
 
 # Save additional dataset for ELR review
@@ -654,6 +634,7 @@ vax_data <- vax_data %>%
          date == max(date)) %>% 
   select(
     iso3,
+    who_region,
     population,
     as_of_vaccine = date,
     vaccinations = total_vaccinations,
@@ -683,6 +664,7 @@ Columns added include:
 testing_data_final <- all_dat$testing_data2 %>% 
   filter(!(last_updated < week_end_date)) %>% 
   select(iso3,
+         who_region,
          week_end_date,
          test_denom = tests,
          test_num = cases) %>% 
@@ -705,7 +687,7 @@ testing_data_final <- all_dat$testing_data2 %>%
     tpr_upper_recent = prop_ci(test_num_recent, test_denom_recent, result = "upper"),
     tpr_before = test_num_before / test_denom_before,
     tpr_lower_before = prop_ci(test_num_before, test_denom_before, result = "lower"),
-    tpr_upper_before = prop_ci(test_num_recent, test_denom_before, result = "upper")
+    tpr_upper_before = prop_ci(test_num_before, test_denom_before, result = "upper")
   )
 
 ```
@@ -717,20 +699,34 @@ testing_data_final <- all_dat$testing_data2 %>%
 elr_extras_final <- full_join(
   vax_data,
   testing_data_final,
-  by = c("iso3")
+  by = c("iso3", "who_region")
 )
 
-file_name <- stringr::str_glue("elr_extra_data{Sys.Date()}.rds")
+final_dat <- list(
+  "trendbreaker" = final_dat,
+  "elr_extras" = elr_extras_final
+)
+
+```
+
+
+# Save final dataset
+
+The data is saved both in the *data/clean* folder and in the current folder.
+
+```{r }
+
+## export data to rds file in data/clean
+file_name <- stringr::str_glue("final_dat_{Sys.Date()}.rds")
 path_export <- here::here("data",
                           "clean",
                           file_name)
 dir_export <- dirname(path_export)
 if (!dir.exists(dir_export)) dir.create(dir_export)
-rio::export(elr_extras_final, path_export)
+rio::export(final_dat, path_export)
 
 
 ## export data to rds file in current folder
-rio::export(elr_extras_final, file_name)
-
+rio::export(final_dat, file_name)
 
 ```
