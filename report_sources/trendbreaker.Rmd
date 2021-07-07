@@ -136,7 +136,7 @@ data.
 cases_i <- dat %>%
   incidence(date,
             counts = c(cases, tests, deaths),
-            groups = c(report_country, iso3)) %>%
+            groups = c(report_country)) %>%
   mutate(weekend = day_of_week(date_index)) %>% # add weekday
   keep_last(7 * 7) %>%
   mutate(weekday = factor(weekdays(date_index)))
@@ -304,10 +304,8 @@ threshold (here, 1/100 of the median). This is done separately for each country.
 
 # run asmodee
 cases_res <- cases_i %>%
-##  flag_low_counts(set_missing = TRUE, threshold = 0.001) %>%
   asmodee(cases_models, k = 7,
           simulate_pi = FALSE)
-
 
 # keep only successful runs
 to_keep <- vapply(cases_res$output, inherits, logical(1), "trendbreaker")
@@ -410,7 +408,7 @@ df_r  <- future.apply::future_lapply(
     fit_curve() %>%
     growth_rate() %>%
     mutate(last_day = d) %>% 
-    select(report_country, iso3, r, r_lower, r_upper, last_day),
+    select(report_country, r, r_lower, r_upper, last_day),
   future.seed = TRUE) %>%
   bind_rows() %>%
   mutate(type = case_when(r_lower > 0 ~ "growth",
@@ -489,7 +487,7 @@ df_recent_incid <- future.apply::future_lapply(
     cases_i %>%
       keep_last(7 + d) %>%
       keep_first(7) %>% 
-      group_by(report_country, iso3) %>%
+      group_by(report_country) %>%
       summarise(n_cases = sum(cases),
                 n_deaths = sum(deaths)) %>%
       left_join(df_pop) %>%
@@ -781,7 +779,7 @@ elr_extras <- elr_extras %>%
     tpr_change = case_when(
       is.na(tpr_recent) | is.na(tpr_before) ~ NA_character_,
       tpr_lower_recent >  tpr_upper_before ~ "increasing",
-      tpr_upper_recent >  tpr_lower_before ~ "decreasing",
+      tpr_upper_recent <  tpr_lower_before ~ "decreasing",
       TRUE ~ "constant"),
     tpr_change = factor(tpr_change,
                         levels = c("decreasing", "constant", "increasing")))
