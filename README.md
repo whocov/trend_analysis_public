@@ -180,7 +180,7 @@ Sudan <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Wednesday 07 July
+<br>Analyses were last updated **Thursday 08 July
 2021**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
@@ -280,13 +280,14 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Wednesday 07 July
+<br>Analyses were last updated **Thursday 08 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
 Marshall Islands, Micronesia (Federated States of), Nauru, New
 Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
-Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br>
+Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br> Estimates of *r*
+could not be produced for the following countries:<br>New Zealand <br>
 
 ### Infection levels as % of historical incidence peak
 
