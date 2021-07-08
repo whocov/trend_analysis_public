@@ -1,3 +1,1 @@
-# Literature
-
-Here is a review of existing methods.
+# Adapting this infrastructure to other settings {#adapting}

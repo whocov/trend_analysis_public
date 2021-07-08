@@ -1,21 +1,99 @@
+
 # Introduction {#intro}
 
-You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
+## Forewords
 
-Figures and tables with captions will be placed in `figure` and `table` environments, respectively.
+Welcome to this short handbook describing an outbreak dynamics surveillance
+system for COVID-19. This infrastructure was developed to provide weekly
+assessments of risk levels for different countries in relation to the countries'
+overall levels of infection, epidemic growth, and indications of trend
+acceleration.
 
-```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center'}
-par(mar = c(4, 4, .1, .1))
-plot(pressure, type = 'b', pch = 19)
+
+This infrastructure is written in **R**, and relies on the following key
+components:
+
+* [*Rmarkdown*](https://rmarkdown.rstudio.com/) (`.Rmd`) reports implementing
+  the data gathering, preparation, analysis, and producing synthesis reports
+  
+* the [*reportfactory*](https://www.reconverse.org/reportfactory/) providing the
+  backbone of the infrastructure
+
+* a public [*github*](https://github.com/whocov/trend_analysis_public)
+  repository used for hosting files, version control, and automation through
+  github actions
+  
+  
+
+## What does this infrastructure do?
+
+This infrastructure provides an automated data pipeline which gather publicly
+available data on COVID-19 cases, deaths, tests, as well as on Variants of
+Interest/Concerns (VoI / VoC) and vaccination by country, to provide weekly
+assessment of COVID-19 dynamics and levels of risks. The pipeline is implemented
+as a [reportfactory](https://www.reconverse.org/reportfactory/) which simplifies
+the handling of dependencies, data and scripts, and enables the compilation of
+analysis reports locally stored in dedicated, time-stamped folders.
+
+
+A series of `Rmd` reports performs data gathering, various analysis, and produce
+the following information products:
+
+* png figures (*pinplots* and *tadpoles*) summarising the dynamics per WHO
+  region, stored on github and visible on the
+  [README.md](https://github.com/whocov/trend_analysis_public) page (i.e. landing
+  page of the repository)
+
+  
+* `rds` files containing the results for each WHO region, also stored on github,
+  which can then be used for further investigation or for interactive dashboards
+  (e.g. shiny apps); some of these analyses are computer-intensive and would not
+  be readily available on dashboards otherwise
+  
+* automated emails to a specific list of recipients providing a detailed report
+  of countries classified into epidemiological risk levels based on incidence,
+  growth and trend changes; this latter part is not stored on github
+  
+  
+  
+## Content of this handbook
+
+This handbook is organised into the following chapters:
+
+* **Chapter \@ref(getting-started) - [Getting started](#getting-started)**. 
+  Instructions to run the infrastructure locally
+
+* **Chapter \@ref(reports) - [Reports overview](#reports)**: outline of the
+  `Rmd` reports and how they interact
+
+* **Chapter \@ref(asmodee) - [Implementing ASMODEE](#asmodee)**: methodological
+  and pracical considerations for implementing ASMODEE, a new method for trend
+  change detection
+
+*  **Chapter \@ref(automation) - [Automation](#automation)**: details on how
+   analyses are automated using github actions
+
+* **Chapter \@ref(adapting) - [Adapting this infrastructure](#adapting)**: a few
+  tips on how to adapt the infrastructure to other settings (e.g. sub-national
+  surveillance)
+
+
+
+## Disclaimer
+
+```{r results = "asis"}
+
+path_to_md <- here::here("disclaimer.md")
+insert_md(path_to_md)
+
 ```
 
-Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Figure \@ref(fig:nice-fig). Similarly, you can reference tables generated from `knitr::kable()`, e.g., see Table \@ref(tab:nice-tab).
 
-```{r nice-tab, tidy=FALSE}
-knitr::kable(
-  head(iris, 20), caption = 'Here is a nice table!',
-  booktabs = TRUE
-)
-```
 
-You can write citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].
+## Licensing
+
+This handbook is distributed under the creative-common attribution license
+(CC-BY). See [this page](https://creativecommons.org/licenses/by/2.0/) for more
+information on the license.
+
+Copyright holder: Thibaut Jombart, 2021

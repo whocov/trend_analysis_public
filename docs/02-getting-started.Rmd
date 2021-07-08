@@ -1,3 +1,3 @@
-# Literature
+# Getting started {#getting-started}
 
 Here is a review of existing methods.
