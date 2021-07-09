@@ -156,13 +156,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Thursday 08 July
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Burkina Faso, Chad, Comoros, Mayotte, Saint Helena, Sao
-Tome and Principe, United Republic of Tanzania <br> Estimates of *r*
-could not be produced for the following countries:<br>Nigeria, South
-Sudan <br>
+<br>Analyses were last updated **Friday 09 July 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Burkina Faso, Chad,
+Mayotte, Saint Helena, Sao Tome and Principe, United Republic of
+Tanzania <br> Estimates of *r* could not be produced for the following
+countries:<br>Nigeria, South Sudan <br>
 
 ### Infection levels as % of historical incidence peak
 
