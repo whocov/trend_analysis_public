@@ -11,47 +11,49 @@ The data infrastructure is a
 structure for storing data, auxiliary scripts, reports sources and their
 outputs. The main components are:
 
-* *data/*: a folder where raw and clean data are stored; the content of this
+* **data/**: a folder where raw and clean data are stored; the content of this
   folder is not stored on github to minimize the size of the git archive
 
-* *report_sources/*: a folder containing the sources of the `Rmd` reports doing
-  the data gathering and cleaning, and all analyses
+* **report_sources/**: a folder containing the sources of the `Rmd` reports doing
+  the data gathering and cleaning, and all analyses; see the [reports](#reports)
+  chapter for more information
 
-* *scripts/*: a folder containing `R` scripts used in the various reports; this
+* **scripts/**: a folder containing `R` scripts used in the various reports; this
   includes small helper functions to load the latest versions of the data, help
   with bits of analysis, and code for installing packages not on CRAN, which
   cannot be handled automatically by `reportfactory::install_deps()`
 
-* *outputs/*: a folder containing all compiled reports and associated outputs,
+* **outputs/**: a folder containing all compiled reports and associated outputs,
   in timestamped folders; this content is automatically generated when using
   `reportfactory::compile_reports()`, and is only stored locally (i.e. on your
   machine), and not on github (to keep the git archive to a minimal size)
   
-* *css/*: a folder containing styling for the reports
+* **css/**: a folder containing styling for the reports
 
-* *asmodee_outputs:* a folder containing outputs of the main analysis, shared on
+* **asmodee_outputs/**: a folder containing outputs of the main analysis, shared on
   github; this includes images (pinplots and tadpoles), **R** objects (`rds`
   files) containing re-usable analysis results (e.g. for inclusion in websites
   or dashboards), and analysis notes (indicating excluded countries, and reasons
   for their exclusions)
   
-* *docs/*: a folder containing the sources and compiled versions of this
+* **docs/**: a folder containing the sources and compiled versions of this
   handbook
 
-Other useful files to know of include:
+Other useful files and folders to know of include:
 
-* *README.Rmd*: the source of the `README.md` file, which is displayed on the
+* **README.Rmd**: the source of the `README.md` file, which is displayed on the
   landing package of the [github project](https://github.com/whocov/trend_analysis_public), 
   and shows the latest tadpoles figures by WHO region and also provides links to
   the corresponding `rds` files
 
-* *run_factory.R*: the main R script used in github actions to automate the
+* **run_factory.R**: the main R script used in github actions to automate the
   generation of analysis reports for every WHO regions
   
-* *run_synthesis.R*: an R script used in github actions to generate a synthesis
+* **run_synthesis.R**: an R script used in github actions to generate a synthesis
   report for all countries, including a classification into levels of risk based
   on incidence, growth and trend acceleration, and sending an email to list of
   recipients with these documents attached
   
-
+* **.github/workflows/**: a (hidden) folder storing the files used to define the
+  github actions; see the [automation](#automation) chapter for more information
 
