@@ -11,7 +11,7 @@ description: "This short handbook provides documentation for the Automated Outbr
 output:
   bookdown::gitbook:
     lib_dir: assets
-    split_by: section
+    split_by: chapter
     config:
       toolbar:
         position: static
@@ -46,3 +46,18 @@ insert_md <- function(x) {
 
 
 # Acknowledgements {-}
+
+The analysis pipeline described in this handbook is the result of the work of
+many colleagues at the WHO and beyond. This includes, in alphabetic order:
+
+* *Code contributors in the COVID-19 analytics team*: Neale Batra, Finlay
+  Campbell, Yuka Jinnai, Henry Laurenson-Schaffer
+  
+* *other code contributions*: Tim Taylor
+
+* *feedback and inputs*: Brett Archer, Raquel Medialdea Carrera, Laura Guzman,
+  Esther Hamblion, Orlagh Ingeborg, Zyleen Kassamali, Olivier le Polain,
+  Katelijn Vandemaele
+  
+* *supervision*: Olivier le Polain
+
