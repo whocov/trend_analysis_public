@@ -56,4 +56,88 @@ Other useful files and folders to know of include:
   
 * **.github/workflows/**: a (hidden) folder storing the files used to define the
   github actions; see the [automation](#automation) chapter for more information
+  
+* **factory_config**: a simple text file containing some information about the
+  name of key directories of the factory; normally will not need editing, unless
+  you rename the folder containing the factory (see below)
+
+
+
+## Installing the infrastructure
+
+The infrastructure can be installed locally by downloading the repository from
+github and installing dependencies. To run the full pipeline, the user will need
+an authentication token used to install the private (i.e. not publicly
+available) WHO package `phifunc`, which is used for collating data.
+
+### Downloading the repository
+
+You can download the repository from the **code** tab on the github page
+https://github.com/whocov/trend_analysis_public
+as illustrated in the figure below:
+
+```{r fig.align='center', echo=FALSE}
+knitr::include_graphics('images/download.png')
+```
+
+We recommend using *SSH* to clone the repository; using GIT from the command
+line in your favourite terminal, you will need to type:
+
+```{eval = FALSE}
+git clone git@github.com:whocov/trend_analysis_public.git
+```
+
+The advantage of cloning the repository rather than merely downloading a zip
+archive is that you will be able to update the infrastructure automatically
+using `git pull`.
+
+
+By default, your local copy of the repository will be called
+*trend_analysis_public*. It is possible to change this name, but you will need
+to update the name of the factory in the **factory_config** file. From now on,
+we will refer to this folder as **root folder**.
+
+
+
+### Getting the phifunc authentication token
+
+The tool we use to collate COVID-19 data is a package called `phifunc` developed
+at WHO. Because this package internally uses some non-public data API, it is
+currently not shared publicly, and an **authentication token** is needed to be
+able to install it in **R**. This token is a kind of *password*, stored in a
+file called `phifunc_token` in the root folder.
+
+The easiest way to add this file is ask for it from someone in the COVID-19
+analytics team, and add this file to the root of the project. Make sure you do
+not alter or rename it. Once `phifunc_token` is present in your infrastructure,
+the scripts installing dependencies will detect it automatically when run, and
+you will be able to run all analyses locally.
+
+
+
+### Installing dependencies
+
+To install the dependencies, open the reportfactory by double-clicking on
+`open.Rproj`, or otherwise starting an R session in the **root** folder
+(*trend_analysis_public* by default), and copy-paste the following commands:
+
+```{r eval = FALSE}
+
+# install basic packages
+pkg <- c("remotes", "reportfactory")
+install.packages(pkg)
+
+# install deps for the factory
+reportfactory::install_deps()
+source(here::here("scripts", "remote_packages.R"))
+
+```
+
+Note that the last operation will require the authentication token (file
+`phifunc_token`) for installing *phifunc*, which is used for data collection and
+formatting.
+
+
+
+## Running the infrastructure locally
 
