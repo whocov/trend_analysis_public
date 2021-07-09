@@ -8,6 +8,8 @@ bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 description: "This short handbook provides documentation for the Automated Outbreak Dynamics Surveillance Infrastructure developed by the WHO COVID-19 analytics team"
+cover-image: images/cover.png
+github-repo: whocov/trend_analysis_public
 output:
   bookdown::gitbook:
     lib_dir: assets
@@ -45,7 +47,12 @@ insert_md <- function(x) {
 ```
 
 
+
 # Acknowledgements {-}
+
+```{r fig.align='center', echo=FALSE}
+knitr::include_graphics('images/cover.png')
+```
 
 The analysis pipeline described in this handbook is the result of the work of
 many colleagues at the WHO and beyond. This includes, in alphabetic order:
