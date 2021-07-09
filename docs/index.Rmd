@@ -47,8 +47,7 @@ insert_md <- function(x) {
 ```
 
 
-
-# Acknowledgements {-}
+# Preface {-}
 
 ```{r fig.align='center', echo=FALSE}
 knitr::include_graphics('images/cover.png')

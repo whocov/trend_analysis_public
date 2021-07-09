@@ -46,8 +46,8 @@ Other useful files and folders to know of include:
   and shows the latest tadpoles figures by WHO region and also provides links to
   the corresponding `rds` files
 
-* **run_factory.R**: the main R script used in github actions to automate the
-  generation of analysis reports for every WHO regions
+* **run_factory.R**: the main R script for updating data, and running analysis
+  reports for every WHO regions; also used by github actions
   
 * **run_synthesis.R**: an R script used in github actions to generate a synthesis
   report for all countries, including a classification into levels of risk based
@@ -77,13 +77,13 @@ https://github.com/whocov/trend_analysis_public
 as illustrated in the figure below:
 
 ```{r fig.align='center', echo=FALSE}
-knitr::include_graphics('images/download.png')
+knitr::include_graphics('images/download.png', dpi = NA)
 ```
 
 We recommend using *SSH* to clone the repository; using GIT from the command
 line in your favourite terminal, you will need to type:
 
-```{eval = FALSE}
+```{eval = FALSE, echo = TRUE}
 git clone git@github.com:whocov/trend_analysis_public.git
 ```
 
@@ -135,9 +135,42 @@ source(here::here("scripts", "remote_packages.R"))
 
 Note that the last operation will require the authentication token (file
 `phifunc_token`) for installing *phifunc*, which is used for data collection and
-formatting.
+formatting. We will be working separately on a similar infrastructure using data
+that are directly publicly available.
 
 
 
 ## Running the infrastructure locally
 
+The data infrastructure can run in two modes:
+
+* **remotely**, through github actions; this happens at specific times but can also
+  be triggered manually
+  
+* **locally**, on your computer
+
+Here, we outline the *local* use. You will find more information about the
+github actions in the [automation](#automation) chapter. 
+
+
+### Updating all analyses
+
+The simplest way to update all analyses is run the script `run_factory.R` (using
+`source(run_factory.R)`, or step-by-step by opening the file in Rstudio), which
+will:
+
+* download, assemble and pre-process the most recent data
+* run a separate report for each WHO region, storing timestamped output in the
+  `outputs/` folder, as well as figures, notes, and *rds* files in the
+  `asmodee_outputs` folder
+* update the *README* file with the new analyses
+
+
+
+### Updating the data
+
+
+### Running analyses for a specific region
+
+
+### Generating the synthesis report
