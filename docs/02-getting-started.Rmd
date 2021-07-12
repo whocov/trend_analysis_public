@@ -6,10 +6,34 @@ infrastructure, and guidelines for using it locally.
 
 ## Overview of the infrastructure
 
-The data infrastructure is a
+The infrastructure implements data pipelines which download national COVID-19
+data from online sources, performs some analyses, classify countries by
+**epidemiological level of risk** (**ELR**) and produce synthesis reports which
+can be emailed to a pre-defined list of recipients. It is summarised in figure
+\@ref(fig:overview). The infrastructure itself is a
 [*reportfactory*](https://www.reconverse.org/reportfactory/), which provides a
 structure for storing data, auxiliary scripts, reports sources and their
-outputs. The main components are:
+outputs. Its key components include:
+
+* a set of **Rmarkdown reports** detailed in **chapter \@ref(reports)
+* a set of **github actions** implementing automated tasks on github servers, and
+  detailed in **chapter \@ref(automation)
+
+```{r echo = FALSE}
+
+cap <- "Overview of the infrastructure. This diagram represents the flow of information processed by the data pipelines. Data are gathered from the net by the WHO-private package *phifunc*, and processed by a series of *Rmd* reports. Some of the information products generated, indicated by a star, are not stored on github in order to reduce the size of the repository. Upon compilation, all reports outputs are stored in an /outputs/ folder (not shown on the diagram). The automated email (last step) can only be sent by github actions, as it requires SMTP credentials only stored as github secrets."
+
+```
+
+
+```{r overview, fig.align='center', echo=FALSE, fig.cap = cap}
+knitr::include_graphics('images/reports_structure.png', dpi = NA)
+```
+
+
+## Main folders and files
+
+ The main components are:
 
 * **data/**: a folder where raw and clean data are stored; the content of this
   folder is not stored on github to minimize the size of the git archive
