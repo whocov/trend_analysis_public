@@ -257,7 +257,7 @@ produced for the following countries:<br>Puerto Rico <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Sunday 11 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 12 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Democratic People’s
 Republic of Korea <br>
