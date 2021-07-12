@@ -71,7 +71,7 @@ library(trendbreaker)
 ## Load the data
 
 We load the `$df_dynamics` components of the list of results stored for each WHO
-region, output by `trendbreaker.Rmd`:
+region, output by `regional_analyses.Rmd`:
 
 ```{r }
 

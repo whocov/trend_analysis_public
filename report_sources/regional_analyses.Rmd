@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r eval = FALSE, echo = FALSE}
 
-rmarkdown::render('trendbreaker.Rmd', params = list(n_cores = 12, who_region = "EURO"))
+rmarkdown::render('regional_analyses.Rmd', params = list(n_cores = 12, who_region = "EURO"))
 
 ```
 
