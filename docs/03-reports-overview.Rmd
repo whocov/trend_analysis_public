@@ -1,2 +1,47 @@
 # Overview of the reports {#reports}
 
+This chapter provides some additional informations about the different
+*Rmarkdown* reports. For details of data processing and analyses, we refer to
+the respective documents, as we attempted to document all code in each
+report. We recommend compiling the reports first and looking at the *html*
+outputs generated as a more user-friendly alternative to inspecting the source
+code directly.
+
+Reports can be **compiled** by two ways:
+
+1. using `reportfactory::compile_reports(...)` where `...` is a character string
+  matching the name(s) of the reports to be processed (regular expression
+  accepted); outputs will be stored in time-stamped folders inside *outputs/*
+
+2. using the usual `rmarkdown::render(...)` where `...` is the path of the `Rmd`
+  document to process; outputs will be stored inside *report_sources/*
+
+Some reports accept **parameters**, i.e. variables set at compilation time which can
+impact the results generated. This is typically used, for instance, to indicate
+which WHO region the analyses are to be performed on, and is a more sustainable
+alternative to handling separate reports for every region. The way to specify
+parameters is the same in both methods of compilation, and are passed as a list
+called `param` when compiling documents. For instance:
+
+```{r eval = FALSE}
+
+library(reportfactory)
+compile_reports(report = "analyses",
+                params = list(who_region = "AFRO")
+
+```
+
+will compile the analysis report *regional_analyses.Rmd* (only match for the
+word `"analyses"`) for the AFRO region.
+
+**Default values of parameters** are set in the YAML headers of the respective
+reports.
+
+
+
+
+
+
+## Data preparation: *assemble_data.Rmd*
+
+This report download the data and pre-processes it to enable further analyses. 
