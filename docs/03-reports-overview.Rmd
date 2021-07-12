@@ -39,9 +39,6 @@ reports.
 
 
 
-
-
-
 ## Data preparation: *assemble_data.Rmd*
 
 This report downloads the data and pre-processes it to enable further analyses.
@@ -55,18 +52,207 @@ without exposing these APIs, which would be a security breach. As a result, the
 package can only be installed with an **authentication token**, which needs to be
 stored in a file called *phifunc_token* at the root of the project folder.
 
+
 ### Outputs
 
 The main output of the report is a clean data file containing data for all
-countries named *final_dat_[date].rds*, a copy of which will be stored in
-the *data/clean* folder.
+countries named *final_dat_[date].rds*, a copy of which will be stored in the
+*data/clean* folder. These files are ignored by *git*, and will not be added to
+the *github* repository to reduce the size of the archive.
+
 
 ### Parameters
 
 The report accepts the following parameters:
 
 * `import_data`: a `logical` indicating of the data should be downloaded
-  (`TRUE`, default), or if local copies of the last downloaded data should be
-  used (`FALSE`)
+  (`TRUE`, default), or if local copies of the last raw data downloaded should
+  be used (`FALSE`)
   
 
+### Example compilation
+
+The following instructions will compile the report:
+
+```{r eval = FALSE}
+
+library(reportfactory)
+compile_reports(report = "assemble")
+
+```
+
+
+
+
+
+
+
+## Analyses of COVID-19 dynamics: *regional_analyses.Rmd*
+
+This report uses the latest clean data performs a range of analyses for a
+specific WHO region. Analyses include estimation of the growth rate, detection
+of trend changes using ASMODEE, and figures summarising the overall dynamics of
+COVID-19 by country (pinplots and tadpoles).
+
+### Inputs
+
+The latest data are automatically detected and loaded by the auxiliary function
+`load_final_data()`, defined in *scripts/data_loaders.R*
+
+
+```{r echo = FALSE}
+
+cap <-
+"Example of pinplot. This figure summarises the dynamics of COVID-19 at a national level, using three complementary metrics: the daily growth rate *r* (*x* axis), the currentl weekly incidence (*y* axis), and the number of net increases showing trend acceleration detected by ASMODEE (colors). Another variant of this figure uses weekly incidence of deaths per capita on the *y* axis. Countries to the right show faster epidemic growth, and countries near the top experience high levels of incidence. Countries displayed in red show signs of acceleration, so that they may move further to the right in the coming days. This figure was generated for EMRO on 11th July 2021."
+
+```
+
+
+```{r pinplot, fig.align='center', echo=FALSE, fig.cap = cap}
+knitr::include_graphics('images/example_pinplot.png', dpi = NA)
+```
+
+
+### Outputs
+
+The main output of the report is a `list` exported as a file named
+*asmodee_outputs_[WHO region]_[data].rds* stored in */asmodee_outputs/rds/*, and
+containing the following elements:
+
+* `$summary`: summary of the ASMODEE results
+* `$results`: outputs of ASMODEE
+* `$plot_overall_deaths`: *ggplot2* object of the overall dynamics plot using
+  death per capita on the y-axis
+* `$plot_overall_peaks`: *ggplot2* object of the overall dynamics plot using
+  incidence as percentage of historical peak on the y-axis
+* `$df_dynamics`: a `data.frame` containing all the required info to recreate
+  either global dynamics plots
+* `$elr_extras`: a `data.frame` containing additional information for countries,
+  including TPR and vaccination coverage
+* `$timestamp`: the timestamp corresponding to the date of the dataset used in
+  the analyses 
+
+Other inputs include:
+
+* **pinplots** and **tadpoles** figures saved *asmodee_outputs/png/*; these
+  figures summarise the COVID-19 dynamics according to the *growth rate*, the
+  current weekly *incidence*, and the number of net accelerations identified by
+  ASMODEE; pinplots show the current situation (see example in Figure
+  \@ref(fig:pinplot), while tadpoles show the trajectories of countries over the
+  last few days
+  
+* **notes** listing countries what were excluded from the analyses alongside the
+  reason for their exclusion, stored in a markdown file named *analysis_notes_[WHO
+  region]_[data].md* stored in */asmodee_outputs/notes/*
+
+
+### Parameters
+
+The report accepts the following parameters:
+
+* `who_region`: the code of the WHO region used in the analyses; possible values
+are (keep the upper case): `AFRO`, `EMRO`, `EURO` (default), `PAHO`, `SEARO`,
+`WPRO`
+
+* `n_cores`: the number of cores/processors to be used for ASMODEE; as the
+  method supports parallelisation, more cores usually mean faster analyses;
+  defaults to 1 (no parallelisation)
+  
+* `tadpole_size`: the number of days to be considered when showing the
+  trajectories of the countries on tadpoles plots; defaults to 7
+  
+
+### Example compilation
+
+The following instructions will compile the report for EMRO, using 12 cores for
+the calculations; also note the use of `subfolder` which will ensure that
+results are stored in a timestamped folder in *outputs/EMRO/* (rather than in
+*outputs/*):
+
+```{r eval = FALSE}
+
+library(reportfactory)
+rmarkdown::render('regional_analyses',
+                  params = list(n_cores = 12, who_region = "EMRO"),
+                  subfolder = "EMRO")
+
+```
+
+The following loop will do the same but for every region:
+
+```{r eval = FALSE}
+
+library(reportfactory)
+regions <- c("AFRO", "EMRO", "EURO", "PAHO", "SEARO", "WPRO")
+
+for (reg in regions) {
+rmarkdown::render('regional_analyses',
+                  params = list(n_cores = 12, who_region = reg),
+                  subfolder = reg)
+}
+
+```
+
+
+
+
+
+
+
+## Synthesis: *elr_synthesis.Rmd*
+
+This report compiles results of all WHO regions, defines ELR for the countries,
+and compiles the main results into an *xlsx* file.
+
+### Inputs
+
+The report compiles the latest results obtained for the different WHO regions
+stored in `asmodee_outputs/rds/`.
+
+
+### Outputs
+
+Based on the metrics used in the pinplots, countries are assigned an ELR using
+the algorithm summarised in figure \@ref(fig:elr-algo). The report provides
+complementary informations including trend plots (ASMODEE results) for the
+countries with *Medium* risk or higher, and some additional information on
+Testing Positivity Rates (TPR) and vaccination coverage.
+
+
+```{r echo = FALSE}
+
+cap <-
+"Algorithm to define Epi Level of Risk (**ELR**). This diagram summarises the algorithm used to define a risk level (*Low* / *Medium* / *High* / *Very High*) based on values of the daily growth rates, weekly incidence, and signs of acceleration in transmission. Grey squares indicate *Minimal* risk. *Intel adjustments* represent the possibility for other sources of information (e.g. status of the healthcare system) to shift ELR by one level (or more in extreme cases) right or left."
+
+```
+
+```{r elr-algo, fig.align = 'center', echo = FALSE, fig.cap = cap, out.width = "75%"}
+knitr::include_graphics('images/elr_algo.png')
+```
+
+Besides the `html` version of the report, other outputs include:
+
+* `dynamics_synthesis.xlsx`: and Excel spreadsheet providing the ELR for each
+ country alongside the different metrics used in the algorithm as well as
+ additional information on TPR and vaccination coverage
+ 
+ * `excluded_countries.txt`: a text file listing all countries that were
+   excluded from the analysis alongside the reason for their exclusion
+   
+
+
+### Parameters
+
+The report does not accept parameters.
+  
+
+### Example compilation
+
+The following instructions will compile the report:
+
+```{r eval = FALSE}
+
+library(reportfactory)
+compile_reports(report = "synthesis")
+
+```

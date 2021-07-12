@@ -826,6 +826,8 @@ called `asmodee_outputs`; all objects are stored in */asmodee_outputs/rds/*:
   incidence as percentage of historical peak on the y-axis
 * `df_dynamics`: a `data.frame` containing all the required info to recreate
   either global dynamics plots
+* `elr_extras`: a `data.frame` containing additional information for countries,
+  including TPR and vaccination coverage
 * `timestamp`: the timestamp corresponding to the date of the dataset used in
   the analyses
 

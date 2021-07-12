@@ -14,8 +14,6 @@ output:
     code_folding: hide
     <!-- df_print: paged -->
     css: !expr here::here('css', 'style.css')
-params:
-  tadpole_size: 7
 ---
 
 ```{r setup, include=FALSE}
