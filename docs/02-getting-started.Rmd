@@ -1,7 +1,9 @@
 # Getting started {#getting-started}
 
-In this chapter, we provide an overview of the folders and files making up this
-infrastructure, and guidelines for using it locally.
+In this chapter, we provide an overview of the infrastructure and of how the
+data pipelines work. After outlining the main folders and files and their
+respective role, we provide installation guidelines and tips for using it
+locally (i.e. on your computer).
 
 
 ## Overview of the infrastructure

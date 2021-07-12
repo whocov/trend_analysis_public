@@ -1,8 +1,6 @@
 
 # Introduction {#intro}
 
-## Forewords
-
 Welcome to this short handbook describing an outbreak dynamics surveillance
 system for COVID-19. This infrastructure was developed to provide weekly
 assessments of risk levels for different countries in relation to the countries'
@@ -21,9 +19,9 @@ components:
 
 * a public [*github*](https://github.com/whocov/trend_analysis_public)
   repository used for hosting files, version control, and automation through
-  github actions
+  *github actions*
   
-  
+
 
 ## What does this infrastructure do?
 
