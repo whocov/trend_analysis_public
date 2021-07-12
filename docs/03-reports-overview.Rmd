@@ -44,4 +44,29 @@ reports.
 
 ## Data preparation: *assemble_data.Rmd*
 
-This report download the data and pre-processes it to enable further analyses. 
+This report downloads the data and pre-processes it to enable further analyses.
+
+### Inputs
+
+The package *phifunc* is used to download publicly-available, national COVID-19
+data, and to do some of the pre-processing. Unfortunately, this package uses WHO
+internal APIs for some of these tasks and cannot be made publicly available
+without exposing these APIs, which would be a security breach. As a result, the
+package can only be installed with an **authentication token**, which needs to be
+stored in a file called *phifunc_token* at the root of the project folder.
+
+### Outputs
+
+The main output of the report is a clean data file containing data for all
+countries named *final_dat_[date].rds*, a copy of which will be stored in
+the *data/clean* folder.
+
+### Parameters
+
+The report accepts the following parameters:
+
+* `import_data`: a `logical` indicating of the data should be downloaded
+  (`TRUE`, default), or if local copies of the last downloaded data should be
+  used (`FALSE`)
+  
+
