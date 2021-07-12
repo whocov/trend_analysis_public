@@ -2,11 +2,11 @@
 
 # compile report
 setwd(here::here("report_sources"))
-rmarkdown::render('elr_review.Rmd')
+rmarkdown::render('elr_synthesis.Rmd')
 
 # zip report
-zip_name <- sprintf( "elr_review_%s.zip", Sys.Date())
-zip(files = c("elr_review.html",
+zip_name <- sprintf( "elr_synthesis_%s.zip", Sys.Date())
+zip(files = c("elr_synthesis.html",
               "dynamics_synthesis.xlsx",
               "excluded_countries.txt"),
     zipfile = zip_name)

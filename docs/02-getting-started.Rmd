@@ -83,7 +83,7 @@ knitr::include_graphics('images/download.png', dpi = NA)
 We recommend using *SSH* to clone the repository; using GIT from the command
 line in your favourite terminal, you will need to type:
 
-```{eval = FALSE, echo = TRUE}
+```{bash eval = FALSE, echo = TRUE}
 git clone git@github.com:whocov/trend_analysis_public.git
 ```
 
@@ -214,7 +214,7 @@ where:
 
 ### Generating the synthesis report
 
-The report `elr_review` collates the latest results for all WHO regions,
+The report `elr_synthesis` collates the latest results for all WHO regions,
 classifies countries by level of risk, and produces a synthesis html report,
 alongside an .xlsx file `dynamics_summary.xlsx` summarising results and a list
 of excluded countries in the text file `excluded_countries.txt`.
@@ -225,6 +225,6 @@ To compile this report, use:
 ```{r eval = FALSE}
 
 library(reportfactory)
-compile_reports(report = "elr_review")
+compile_reports(report = "elr_synthesis")
 
 ```

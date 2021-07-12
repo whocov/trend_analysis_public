@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r eval = FALSE, echo = FALSE}
 
-rmarkdown::render('elr_review.Rmd')
+rmarkdown::render('elr_synthesis.Rmd')
 
 ```
 
