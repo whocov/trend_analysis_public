@@ -169,8 +169,62 @@ will:
 
 ### Updating the data
 
+The report `assemble_data.Rmd` performs the data download, gathering and
+preparation. To update the data, run the following command within the factory:
+
+```{r eval = FALSE}
+
+library(reportfactory)
+compile_reports(report = "assemble")
+
+```
+
 
 ### Running analyses for a specific region
 
+The report `trendbreaker.Rmd` performs all analyses for a given WHO region,
+including calculations of growth rates and trend change detection using
+ASMODEE. The report automatically uses the latest version of the clean data (so
+needs to be run after `assemble_data.Rmd` if the data need updating). The
+parameter `who_region` determines which WHO region is analysed. Possible values
+are: `AFRO`, `EMRO`, `EURO` (default), `PAHO`, `SEARO`, `WPRO`. To run the
+report, type:
+
+
+```{r eval = FALSE}
+
+library(reportfactory)
+reg <- "EURO" # replace as appropriate
+cores <- 4
+compile_reports(report = "trendbreaker",
+                params = list(who_region = reg, n_cores = cores),
+                subfolder = reg)
+
+```
+
+where:
+
+* `reg` is the letter code for the WHO region to use (in upper case)
+* `cores` is the number of cores to be used for the ASMODEE analyses, which
+  support parallelisation
+* `subfolder` indicates the name of the folder in `outputs` where the
+  timestamped results will be stored
+
+
 
 ### Generating the synthesis report
+
+The report `elr_review` collates the latest results for all WHO regions,
+classifies countries by level of risk, and produces a synthesis html report,
+alongside an .xlsx file `dynamics_summary.xlsx` summarising results and a list
+of excluded countries in the text file `excluded_countries.txt`.
+
+To compile this report, use:
+
+
+```{r eval = FALSE}
+
+library(reportfactory)
+compile_reports(report = "elr_review")
+
+```

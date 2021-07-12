@@ -15,7 +15,7 @@ output:
     <!-- df_print: paged -->
     css: !expr here::here('css', 'style.css')
 params:
-  import_data: FALSE
+  import_data: TRUE
 ---
 
 ```{r setup, include=FALSE}
