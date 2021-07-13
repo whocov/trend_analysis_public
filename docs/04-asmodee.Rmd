@@ -195,3 +195,78 @@ principle illustrated here.
 
 In this section, we highlight a few tricks used for capturing non-trivial
 temporal trends.
+
+### Periodic fluctuations
+
+Periodic changes are often observed due to either seasonality (over long time
+scales for seasonal diseases such as influenza), but are also frequent in the
+case of COVID-19 due to reporting artifacts (Figure \@ref(fig:asmodee_periodic). For instance, some countries report
+less cases over a weekend, followed by a spike on the following day (*backlog*
+effect).
+
+
+```{r echo = FALSE}
+
+cap <- "**Example of periodicity in COVID-19 data.** This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) cpatured by ASMODEE (grey dots and model envelope)."
+
+```
+
+```{r asmodee_periodic, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "50%"}
+knitr::include_graphics('images/asmodee.png', dpi = NA)
+```
+
+Such trends can be captured by different predictors: 
+
+1. a strict `weekend` effect, i.e. a categorical variable distinguishing weekends
+  from weekdays
+2. a `weekend` effect including a backlog effect, i.e. a categorical variable
+  distinguishing weekends, Mondays, and other weekdays
+3. a `weekday` effect, i.e. a categorical variable distinguishing each day in the week
+
+At the time of writing, only 2 and 3 are used in the data pipelines. Option 2)
+is implemented by the function `day_of_week()` in the *scripts/* folder, also
+provided below. Option 3) is implemented in base R by `weekdays`. Both functions
+generate categorical variables from a `Date` input; for instance:
+
+```{r }
+
+#' Convert dates to factors
+#'
+#' This will map a `Date' vector to weekdays, with the following distinction:
+#' weekden, monday, of the rest of the week
+#'
+#' @author Thibaut
+#'
+#' @param date a vector of `Date`
+#' 
+day_of_week <- function(date) {
+  day_of_week <- weekdays(date)
+  out <- vapply(
+    day_of_week,
+    function(x) {
+      if (x %in% c("Saturday", "Sunday")) {
+        "weekend"
+      } else if (x == "Monday") {
+        "monday"
+      } else {
+        "rest_of_week"
+      }
+    },
+    character(1)
+  )
+  factor(out, levels = c("rest_of_week", "monday", "weekend"))
+} 
+
+# generate some dates for the example
+some_dates <- as.Date("2021-02-04") + 0:9
+some_dates
+
+# build new variables using dplyr
+library(magrittr)
+library(dplyr)
+tibble(date = some_dates) %>%
+  mutate(weekend = day_of_week(date), weekday = weekdays(date))
+
+```
+
+
