@@ -103,9 +103,7 @@ added to the list of candidate models.
 
 
 
-## Generating candidate models
-
-### General principle 
+## Generating candidate models: general principle 
 
 The approach to generating many candidate models used in `regional_analysis.Rmd`
 is to generate `character` strings matching *trending* models definitions (see
@@ -144,5 +142,55 @@ models$linear # check one for example
 
 As the main thing that changes across models is the **model content**, the main
 task boils down to generating combinations of predictors to capture different
-trends in the data.
+trends in the data. To this end, we will use `expand.grid`, which creates all
+possible combinations of a given set of variables. For instance, to generate all
+models which:
 
+* include a `date` effect
+* may include a `test` effect
+* may include a `weekday` effect
+* may include a previous day's incidence as predictor (`cases_lag_1`),
+  i.e. autoregressive model
+  
+We can use:
+
+```{r }
+
+# generate all combinations
+mod_content_grid <- expand.grid(c("", "tests"),
+                                "date",
+                                c("", "weekday"),
+                                c("", "cases_lag_1"))
+mod_content_grid
+
+# concatenate the columns
+mod_content <- apply(mod_content_grid, 1, paste, collapse = " + ")
+mod_content
+
+```
+
+We see that `mod_content` contains the relevant model content, with some
+issues of additional `+` signs which will need removing. This can be done using
+simple regular expressions:
+
+```{r }
+
+## cleanup model content
+mod_content <- gsub("(\\+[ ]*)+[ ]*\\+", " + ", mod_content) # +... + -> +
+mod_content <- sub("^[ ]*\\+", "", mod_content) # heading +
+mod_content <- sub("\\+[ ]*$", "", mod_content) # trailing +
+mod_content <- sub("^[ ]+", "", mod_content) # heading spaces
+mod_content <- sub("[ ]+$", "", mod_content) # trailing spaces
+mod_content <- sub("[ ]+", " ", mod_content) # multiple spaces
+mod_content
+
+```
+
+We now have clean model content which can be turned into *trending* models using
+the approach illustrated before. In the following sections, we highlight tricks
+for capturing specific trends in the data, but all ultimately rely on the
+principle illustrated here.
+
+
+
+## 
