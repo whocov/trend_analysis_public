@@ -1,1 +1,61 @@
 # Automation {#automation}
+
+There are many ways to automate data infrastructures. Here, we use [github
+actions](https://docs.github.com/en/actions), which seemd like a natural choice
+given that the whole infrastructure is hosted on
+[github](https://github.com/whocov/trend_analysis_public). However, note that
+alternatives could be considered especially for group owning a dedicated server
+which they can administrate at will - this will likely be a more robust solution
+for achieving automation. In particular, it would make troubleshooting much
+easier, as github actions do not let the user directly interact with the server
+running the jobs.
+
+In this chapter, we provide a few insights into how github actions have been
+implemented.
+
+
+
+
+## Overview of the github actions
+
+Github actions permit to run parts of data pipelines automatically, as
+summarised in figure \@ref(fig:overview). The results of github action runs as
+well as the corresponding files are available on github under the 'actions'
+[tab](https://github.com/whocov/trend_analysis_public/actions). In particular,
+this page shows the current status of the different actions: 
+
+* running (yellow): the job is currently running
+* passed (green): the last job ran successfully
+* failed (red): the last job errored
+
+In every case, logs are available. These are particularly useful for
+troubleshooting issues.
+
+
+Each github action is defined by a YAML file stored in the hidden folder
+*.github/workflows/*, currently containing:
+
+```{r echo = FALSE, results = "markup"}
+
+sort(list.files(here::here("../", ".github", "workflows")))
+
+```
+
+* *auto_update_[region].yml*: analysis updates for a given region
+* *auto_update_all.yml*: same, but for all regions
+* *auto_synthesis.yml*: collects existing results for all regions, generate ELR
+  report and send information products by email to a list of recipients
+* *refresh_readme.yml*: update the *README.md* file 
+
+
+Sub-sections below provide more information on these actions.
+
+
+### Regional updates
+
+#### What 
+
+
+## Using secrets
+
+
