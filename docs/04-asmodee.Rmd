@@ -103,3 +103,46 @@ added to the list of candidate models.
 
 
 
+## Generating candidate models
+
+### General principle 
+
+The approach to generating many candidate models used in `regional_analysis.Rmd`
+is to generate `character` strings matching *trending* models definitions (see
+previous section) and then using the `eval(parse(text = my_text))` trick to turn
+these into actual models. The simplest approach is to:
+
+1. generate text matching the right-hand side of the formula of the different
+   models (we later refer to this as **model content**)
+   
+2. build `character` strings matching model calls using the terms in 1); `sprintf`
+   is particularly handy for this part
+   
+3. transform these `character` strings to actual model calls within a `lapply`
+
+
+
+Here is a toy example illustrating the approach:
+
+```{r }
+
+library(trending)
+
+# step 1
+mod_content <- c("1", "test", "date", "date + tests")
+
+# step 2
+model_txt <- sprintf("glm_model(cases ~ %s, family = poisson)", mod_content)
+
+# step 3
+models <- lapply(models_txt, function(e) eval(parse(text = e)))
+class(models) # this is a list
+names(models) # each component is a model
+models$linear # check one for example
+
+```
+
+As the main thing that changes across models is the **model content**, the main
+task boils down to generating combinations of predictors to capture different
+trends in the data.
+
