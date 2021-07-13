@@ -144,6 +144,25 @@ you are on the list of recipients and seem to have missed the email.
 
 
 
+### README updates
+
+#### Outline
+
+This action is implemented in the *refresh_readme.yml* and ensures that the
+*README.md* displaying results on the landing
+[page](https://github.com/whocov/trend_analysis_public) of the github project is
+updated every time new results are generated. The README is updated by
+recompiling the file *README.Rmd*.
+
+
+#### Schedule
+
+This action runs every time there is a push to the main branch resulting in a
+change of files, excluding: 
+
+* *README.md*
+* *run_synthesis.R*
+* *report_sources/elr_review.Rmd*
 
 
 
