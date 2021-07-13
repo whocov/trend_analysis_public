@@ -28,14 +28,14 @@ output:
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 pkg <- c("rmkardown", "reportfactory", "trending", "trendbreaker")
-knitr::write_bib(c(
-  .packages(), 
-), 'packages.bib')
+knitr::write_bib(
+  c(.packages(), pkg), 'packages.bib')
 
 # knitr options
 knitr::opts_chunk$set(
   echo = TRUE,
   eval = TRUE,
+  collapse = TRUE,
   include = TRUE,
   warning = FALSE,
   message = FALSE

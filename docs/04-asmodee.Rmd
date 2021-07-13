@@ -9,7 +9,6 @@ a week or two, ASMODEE tries to answer the question: "*Are the last few days
 matching what we would expect given the previous trend in the data?*".
 
 
-
 ```{r echo = FALSE}
 
 cap <- "**Rationale of ASMODEE.** This figure illustrates the key steps of ASMODEE for detecting recent changes in temporal trends."
@@ -19,8 +18,6 @@ cap <- "**Rationale of ASMODEE.** This figure illustrates the key steps of ASMOD
 ```{r asmodee, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "75%"}
 knitr::include_graphics('images/asmodee.png', dpi = NA)
 ```
-
-
 
 To answer this question, ASMODEE implements the following approach (Figure
 \@ref(fig:asmodee)):
@@ -51,7 +48,7 @@ adapted to other data streams.
 
 
 
-## A unified interface for linear models using *trending*
+## A unified interface for linear models
 
 In this section, we outline the general principle of model generation for
 ASMODEE.  All models used in ASMODEE use *trending* [@R-trending], which
@@ -80,7 +77,7 @@ implements different models of cases over time:
 * a log-linear temporal trend with Poisson distribution
 * a log-linear temporal trend with Negative Binomial distribution
 
-```{r eval = FALSE}
+```{r }
 
 library(trending)
 
@@ -122,7 +119,7 @@ these into actual models. The simplest approach is to:
 
 Here is a toy example illustrating the approach:
 
-```{r }
+```{r results = "markup"}
 
 library(trending)
 
@@ -130,13 +127,13 @@ library(trending)
 mod_content <- c("1", "test", "date", "date + tests")
 
 # step 2
-model_txt <- sprintf("glm_model(cases ~ %s, family = poisson)", mod_content)
+models_txt <- sprintf("glm_model(cases ~ %s, family = poisson)", mod_content)
 
 # step 3
 models <- lapply(models_txt, function(e) eval(parse(text = e)))
 class(models) # this is a list
-names(models) # each component is a model
-models$linear # check one for example
+length(models) # each component is a model
+lapply(models, class) # check classes of each model
 
 ```
 
@@ -154,7 +151,7 @@ models which:
   
 We can use:
 
-```{r }
+```{r results = "markup"}
 
 # generate all combinations
 mod_content_grid <- expand.grid(c("", "tests"),
@@ -173,7 +170,7 @@ We see that `mod_content` contains the relevant model content, with some
 issues of additional `+` signs which will need removing. This can be done using
 simple regular expressions:
 
-```{r }
+```{r results = "markup"}
 
 ## cleanup model content
 mod_content <- gsub("(\\+[ ]*)+[ ]*\\+", " + ", mod_content) # +... + -> +
@@ -193,4 +190,8 @@ principle illustrated here.
 
 
 
-## 
+
+## Capturing difficult trends
+
+In this section, we highlight a few tricks used for capturing non-trivial
+temporal trends.
