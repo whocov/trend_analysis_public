@@ -17,7 +17,7 @@ can be emailed to a pre-defined list of recipients. It is summarised in figure
 structure for storing data, auxiliary scripts, reports sources and their
 outputs. Its key components include:
 
-* a set of **Rmarkdown reports** detailed in **chapter \@ref(reports)
+* a set of **Rmarkdown reports** detailed in **chapter \@ref(reports)**
 * a set of **github actions** implementing automated tasks on github servers, and
   detailed in **chapter \@ref(automation)
 

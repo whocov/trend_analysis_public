@@ -53,7 +53,99 @@ Sub-sections below provide more information on these actions.
 
 ### Regional updates
 
-#### What 
+#### Outline
+
+This set of actions (one per WHO region) are implemented in the
+*auto_update_[region].yml* files. They automate the following workflow:
+
+* download and prepare the current data
+* run all analyses for the region under consideration
+* commit and push to github the resulting information products to the
+  *asmodee_outputs/* folder - see details on the regional analyses in the report
+  chapter \@ref(reports)
+* *notes*: neither the data nor the compiled report (usually stored in the
+  *outputs/* folder) are commited or pushed to github
+
+
+#### Schedule
+
+These actions run every day at 12:30, 14:30, and 18:30 GMT. It can also be
+triggered manually from the github action page (see figure
+\@(fig:action-trigger) below.
+
+
+```{r echo = FALSE}
+
+cap <- "Manual trigger of actions from the github action page."
+
+```
+
+```{r action-trigger, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "100%"}
+knitr::include_graphics('images/action_trigger.png', dpi = NA)
+```
+
+
+
+### Updates of all regions
+
+#### Outline
+
+This action is implemented in the *auto_update_all.yml* and automate the same
+workflow as the regional updates, but for all regions.
+
+
+#### Schedule
+
+This action runs every day at 16:00 and 22:00 GMT. It can also be triggered
+manually from the github action page (see figure \@(fig:action-trigger). As an
+option, the user can specify a single WHO region (using the upper case
+abbreviations) when manually triggering a run of this action.
+
+
+
+
+### ELR synthesis
+
+#### Outline
+
+This action is implemented in the *auto_synthesis* and automates the following
+workflow:
+
+* compile results of all regions using the latest analyses on github from the
+  *asmodee_outputs/* folder
+* generates an ELR report - see details on the ELR synthesis in the report
+  chapter \@ref(reports)
+* creates a zip archive of: 
+    + the ELR report as a self-contained *html* file
+    + an *xlsx* spreadsheet containing ELRs for all countries alongside key indicators
+    + a text file listing countries excluded from the analysis as well as the
+  rationale for their exclusion
+* sends an email to a list of recipients hard-coded in the script
+  *run_synthesis.R* (located in the root folder) with this zip attached
+* *notes*: this job does not commit anything to github; the only end-result
+  persisting after the job has run is the email and its attachments
+
+
+#### Schedule
+
+This action runs every Monday at 6:00 GMT. It can also be triggered
+manually from the github action page (see figure \@(fig:action-trigger).
+
+
+#### Automated emails
+
+Automated emails as currently implemented require SMTP authentication for the
+free SMTP provider [*sendinblue*](https://www.sendinblue.com/). This is
+currently done through Thibaut Jombart's account, linked to the gmail address
+*thibautjombart@gmail.com*.  While emails will look like they were sent from
+this email, they were actually sent by a different provider, which will often
+result in these emails being marked as SPAM. Double-check your SPAM folder if
+you are on the list of recipients and seem to have missed the email.
+
+
+
+
+
 
 
 ## Using secrets
