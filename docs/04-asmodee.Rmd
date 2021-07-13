@@ -15,7 +15,7 @@ cap <- "**Rationale of ASMODEE.** This figure illustrates the key steps of ASMOD
 
 ```
 
-```{r asmodee, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "75%"}
+```{r asmodee, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "60%"}
 knitr::include_graphics('images/asmodee.png', dpi = NA)
 ```
 
@@ -206,7 +206,7 @@ cap <- "**Example of periodicity in COVID-19 data.** This figure illustrates a c
 
 ```
 
-```{r asmodee-periodic, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "50%"}
+```{r asmodee-periodic, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "60%"}
 knitr::include_graphics('images/asmodee_periodic.png', dpi = NA)
 ```
 
@@ -281,7 +281,7 @@ cap <- "**Example of trend change in COVID-19 data.** This figure illustrates a 
 
 ```
 
-```{r asmodee-change, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "50%"}
+```{r asmodee-change, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "60%"}
 knitr::include_graphics('images/asmodee_change.png', dpi = NA)
 ```
 
@@ -352,6 +352,25 @@ models_txt <- sprintf("glm_model(cases ~ %s, family = poisson)", mod_content)
 models <- lapply(models_txt, function(e) eval(parse(text = e)))
 class(models) # this is a list
 length(models) # each component is a model
-models %>% lapply(get_formula) # check all formulas
+models %>%
+  head(8) %>% # only check for 8 models
+  lapply(get_formula) # check formulas
 
+```
+
+Note that of course, changes in trend may happen in conjunction with other
+processes, such as periodicity (e.g. Figure
+\@ref(fig:asmodee-periodic-change)). In such cases, the approach illustrated at
+the beginning of this chapter can be used to generate model contents
+with/without change and with/without periodic effect.
+
+
+```{r echo = FALSE}
+
+cap <- "**Example of trend change with periodicity in COVID-19 data.** This figure illustrates a case of change in temporal trends having occured during the *fitted* time period, combined with weekly periodicity in the raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
+
+```
+
+```{r asmodee-periodic-change, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "60%"}
+knitr::include_graphics('images/asmodee_periodic_change.png', dpi = NA)
 ```
