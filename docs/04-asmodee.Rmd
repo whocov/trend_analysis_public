@@ -374,3 +374,82 @@ cap <- "Example of trend change with periodicity in COVID-19 data. This figure i
 ```{r asmodee-periodic-change, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "60%"}
 knitr::include_graphics('images/asmodee_periodic_change.png', dpi = NA)
 ```
+
+
+
+
+## Final considerations
+
+The approaches illustrated in this chapter should help characterise a majority
+of temporal trends in other disease surveillance data. In this last section, we
+provide additional insights into implementing ASMODEE for other data:
+
+
+### Use AIC
+
+The original ASMODEE publication [@Jombart2021-ws] introduces different
+approaches for selecting the best model to characterise past trends. In this, we
+were suggesting that **repeated K-fold cross-validation** might lead to
+selecting models with better predictive power. However, we have since realised
+that while this approach indeed selects models with good average predictions, it
+ignores model variability, and might retain models which completely
+under-estimate the variation in the data. For instance, it may retain a Poisson
+model over a Negative Binomial GLM, both with similar average predictions, but
+the Poisson having a much too narrow prediction interval, resulting in most data
+points being classified as outliers.
+
+The alternative is to use **Akaike's Information Criterion** (AIC,
+[@Akaike1974-gm]). This approach is much faster, and as it tries to minimize the
+deviance not explained by the model, it is able to select models which better
+account for the variation in the data.
+
+
+
+### Negative Binomial: the good and the bad
+
+In many instances, the Negative Binomial (NegBin) GLM is the most appropriate
+model for case counts data, as it better accounts for the variation in the data
+than the Poisson GLM. So in principle, one would like to use this model for most
+data. Unfortunately, the NegBin GLM is also prone to convergence issues, in
+which case it merely issues a *warning* during the fitting phase. This is
+especially frequent when there are zeros in the data (e.g. backlog effect).
+
+By default, ASMODEE will ignore these models, treating them as failure (see
+argument `include_fitting_warnings` in `?asmodee`). We recommend keeping this
+behaviour, and ensuring as a 'backup' plan that all models formulated as a
+NegBin GLM also have at least one counterpart as another type of model, such as
+a Gaussian GLM or a linear regression.
+
+
+
+### Keep it simple
+
+ASMODEE performs best by using many simple models as candidates, rather than a
+few complex ones. Indeed, complex models are prone to over-fitting, and may have
+poor predictive value, so that they will not be useful to identify outliers in
+the recent days. In this infrastructure, the most complex model would be that of
+an exponential growth/decline (1 parameter) with a change point (2 parameters),
+and effect of testing (1 parameter), and weekly periodicity with a different
+offset for each day of the week (6 parameters). As our *fitting* dataset
+contains 6 weeks of data (42 data points), the most complex model still has 32
+degrees of freedom, which means we are unlikely to over-fit the data.
+
+
+It is also important to ensure that at least one model will work in any
+case. When analysing a range of locations (e.g. countries in this
+infrastructure), ASMODEE will attempt to fit all candidate models to a given
+country, and retain the best fitting one, ignoring models which errored or
+issued warnings. However, ASMODEE will generate an error if not a single model
+could be fitted to a given country. To avoid this situation, it is best to make
+sure at least one model will always work. This can be achieved by using a
+simple, constant model, e.g. by including the one of the following in the
+candidate models:
+
+```{r }
+
+library(trending)
+cst_lm <- lm_model(cases ~ 1)
+cst_gaussian <- glm_model(cases ~ 1, family = gaussian)
+
+```
+
