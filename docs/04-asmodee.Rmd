@@ -2,12 +2,11 @@
 
 ASMODEE is a new method for detecting recent changes in temporal trends
 introduced by Jombart et al. [@Jombart2021-ws] and implemented in the R package
-*trendbreaker* [@R-trendbreaker]. Rather than attempting to estimate significant
-changes in growth rates or reproduction numbers, which can usually only be done
-after changes have been taking place for a week or two, ASMODEE tries to answer
-the question: 
-"*Are the last few days matching what we would expect given the previous trend
-in the data?*".
+*trendbreaker* [@R-trendbreaker] as the function `asmodee`. Rather than
+attempting to estimate significant changes in growth rates or reproduction
+numbers, which can usually only be done after changes have been taking place for
+a week or two, ASMODEE tries to answer the question: "*Are the last few days
+matching what we would expect given the previous trend in the data?*".
 
 
 
@@ -43,14 +42,64 @@ To answer this question, ASMODEE implements the following approach (Figure
    sign of acceleration; *net increases* are defined as the number of outliers
    above the PI, minus the number of outliers below the PI, in the last 7 days.
 
-
-
-
-
 Step 2 is the crucial one to obtain good results. Defining the right set of
 **candidate models** to capture past trends is non-trivial, and is also the
 non-standard part of implementing ASMODEE, as model-generation is currently not
 implemented in *trendbreaker*, and requires *ad-hoc* code. In this chapter, we
 provide tips and explanations on how candidate models are generated, and can be
 adapted to other data streams.
+
+
+
+## A unified interface for linear models using *trending*
+
+In this section, we outline the general principle of model generation for
+ASMODEE.  All models used in ASMODEE use *trending* [@R-trending], which
+provides a general interface for different types of statistical models,
+including:
+
+* `lm_model`: linear regression, wrapper for `lm`
+* `glm_model`: generalized linear models (GLM), wrapper for `glm`
+* `glm_nb_model`: negative binomial GLM, wrapper for `MASS:glm.nb`
+
+The advantage of this interface is consitency of behaviours for various
+operations, e.g. fitting, predictions, confidence intervals and prediction
+intervals.
+
+The formula syntax of these models is the same as in regular models, so the user
+should not have new difficulties specifying models with *trending*.
+For more information on the package, see the dedicated 
+[website](https://www.repidemicsconsortium.org/trending/).
+
+To use `asmodee`, the user needs to provide a `list` of *trending* models. An
+example of such a list is provided by `models` in the code below, which
+implements different models of cases over time:
+
+* a constant model with Gaussian error
+* a linear temporal trend with Gaussian error
+* a log-linear temporal trend with Poisson distribution
+* a log-linear temporal trend with Negative Binomial distribution
+
+```{r eval = FALSE}
+
+library(trending)
+
+models <- list(
+  cst = lm_model(cases ~ 1),
+  linear = lm_model(cases ~ date),
+  poisson = glm_model(cases ~ date, family = poisson),
+  nb = glm_nb_model(cases ~ date)
+)
+
+```
+
+This assumes the data we will fit these models to will have a `cases` and a
+`date` column containing, respectively, the daily case incidence and the
+corresponding date as a `Date` object. However, these models would capture only
+simple trends (constant, linear, or exponential), and data are typically more
+complicated. The following sections illustrate how more flexible models can be
+added to the list of candidate models.
+
+
+
 

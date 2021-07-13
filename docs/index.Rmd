@@ -27,8 +27,9 @@ output:
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
+pkg <- c("rmkardown", "reportfactory", "trending", "trendbreaker")
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown', 'trendbreaker'
+  .packages(), 
 ), 'packages.bib')
 
 # knitr options
