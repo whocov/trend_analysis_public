@@ -11,7 +11,7 @@ matching what we would expect given the previous trend in the data?*".
 
 ```{r echo = FALSE}
 
-cap <- "**Rationale of ASMODEE.** This figure illustrates the key steps of ASMODEE for detecting recent changes in temporal trends."
+cap <- "Rationale of ASMODEE. This figure illustrates the key steps of ASMODEE for detecting recent changes in temporal trends."
 
 ```
 
@@ -202,7 +202,7 @@ a weekend, followed by a spike on the following day (*backlog* effect).
 
 ```{r echo = FALSE}
 
-cap <- "**Example of periodicity in COVID-19 data.** This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
+cap <- "Example of periodicity in COVID-19 data. This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
 
 ```
 
@@ -277,7 +277,7 @@ a change in trend, which then cannot be captured by a simple model (e.g. Figure
 
 ```{r echo = FALSE}
 
-cap <- "**Example of trend change in COVID-19 data.** This figure illustrates a case of change in temporal trends having occured during the *fitted* time period in the raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
+cap <- "Example of trend change in COVID-19 data. This figure illustrates a case of change in temporal trends having occured during the *fitted* time period in the raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
 
 ```
 
@@ -353,7 +353,7 @@ models <- lapply(models_txt, function(e) eval(parse(text = e)))
 class(models) # this is a list
 length(models) # each component is a model
 models %>%
-  head(8) %>% # only check for 8 models
+  head(4) %>% # only check for 4 models
   lapply(get_formula) # check formulas
 
 ```
@@ -367,7 +367,7 @@ with/without change and with/without periodic effect.
 
 ```{r echo = FALSE}
 
-cap <- "**Example of trend change with periodicity in COVID-19 data.** This figure illustrates a case of change in temporal trends having occured during the *fitted* time period, combined with weekly periodicity in the raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
+cap <- "Example of trend change with periodicity in COVID-19 data. This figure illustrates a case of change in temporal trends having occured during the *fitted* time period, combined with weekly periodicity in the raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
 
 ```
 
