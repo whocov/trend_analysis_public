@@ -191,28 +191,23 @@ principle illustrated here.
 
 
 
-## Capturing difficult trends
-
-In this section, we highlight a few tricks used for capturing non-trivial
-temporal trends.
-
-### Periodic fluctuations
+## Capturing periodicity
 
 Periodic changes are often observed due to either seasonality (over long time
 scales for seasonal diseases such as influenza), but are also frequent in the
-case of COVID-19 due to reporting artifacts (Figure \@ref(fig:asmodee_periodic). For instance, some countries report
-less cases over a weekend, followed by a spike on the following day (*backlog*
-effect).
+case of COVID-19 due to reporting artifacts (Figure
+\@ref(fig:asmodee-periodic). For instance, some countries report less cases over
+a weekend, followed by a spike on the following day (*backlog* effect).
 
 
 ```{r echo = FALSE}
 
-cap <- "**Example of periodicity in COVID-19 data.** This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) cpatured by ASMODEE (grey dots and model envelope)."
+cap <- "**Example of periodicity in COVID-19 data.** This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
 
 ```
 
-```{r asmodee_periodic, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "50%"}
-knitr::include_graphics('images/asmodee.png', dpi = NA)
+```{r asmodee-periodic, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "50%"}
+knitr::include_graphics('images/asmodee_periodic.png', dpi = NA)
 ```
 
 Such trends can be captured by different predictors: 
@@ -270,3 +265,93 @@ tibble(date = some_dates) %>%
 ```
 
 
+
+
+## Capturing trend changes in the past
+
+ASMODEE implicitly assumes that the **fitting** set can be used to capture a
+single trend. It frequently happens, however, that this time period actually saw
+a change in trend, which then cannot be captured by a simple model (e.g. Figure
+\@ref(fig:asmodee-change)).
+
+
+```{r echo = FALSE}
+
+cap <- "**Example of trend change in COVID-19 data.** This figure illustrates a case of change in temporal trends having occured during the *fitted* time period in the raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)."
+
+```
+
+```{r asmodee-change, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "50%"}
+knitr::include_graphics('images/asmodee_change.png', dpi = NA)
+```
+
+
+The strategy we employ to address this issue is to:
+
+1. define a breaking point date marking the change in trend
+2. building a categorical variable `period` marking dates `before` and `after`
+3. using an interaction term for the effect of time (variable `date`) combined
+   with `period` so that the model will fit a slope `before` and `after` the
+   changing point
+   
+In practice, we often ignore how to define 1). This can be addressed by
+generating many models, each with a different breaking point, and leaving to
+ASMODEE the task to select the best fitting model.
+
+This approach is not entirely straightforward to implement; we illustrate it
+below:
+
+```{r results = "markup"}
+
+# generate some dates for the example
+some_dates <- as.Date("2021-02-04") + 0:30
+some_dates
+
+# build a dummy dataset
+library(magrittr)
+library(dplyr)
+
+x <- tibble(date = some_dates) %>%
+  mutate(day = as.integer(date - min(date)))
+
+# build all changepoint variables between 10 and 20 days
+min_k <- 5
+max_k <- 25
+k_values <- min_k:max_k
+df_changepoints <- lapply(k_values,
+                       function(k)
+                         x %>%
+                         transmute(if_else(day <= k, "before", "after")) %>%
+                         pull(1)) %>%
+  data.frame() %>%
+  tibble() %>%
+  setNames(paste0("change_", k_values))
+
+# add changepoint variables to main data
+x <- x %>%
+  bind_cols(df_changepoints)
+x
+
+```
+
+Once these variables have been created, one can build the corresponding models
+using the same approach as before:
+
+```{r results = "markup"}
+
+library(trending)
+
+# step 1
+mod_content <- paste("date * change", k_values, sep = "_")
+mod_content
+
+# step 2
+models_txt <- sprintf("glm_model(cases ~ %s, family = poisson)", mod_content)
+
+# step 3
+models <- lapply(models_txt, function(e) eval(parse(text = e)))
+class(models) # this is a list
+length(models) # each component is a model
+models %>% lapply(get_formula) # check all formulas
+
+```
