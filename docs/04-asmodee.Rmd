@@ -1,1 +1,56 @@
 # Implementing ASMODEE {#asmodee}
+
+ASMODEE is a new method for detecting recent changes in temporal trends
+introduced by Jombart et al. [@Jombart2021-ws] and implemented in the R package
+*trendbreaker* [@R-trendbreaker]. Rather than attempting to estimate significant
+changes in growth rates or reproduction numbers, which can usually only be done
+after changes have been taking place for a week or two, ASMODEE tries to answer
+the question: 
+"*Are the last few days matching what we would expect given the previous trend
+in the data?*".
+
+
+
+```{r echo = FALSE}
+
+cap <- "**Rationale of ASMODEE.** This figure illustrates the key steps of ASMODEE for detecting recent changes in temporal trends."
+
+```
+
+```{r asmodee, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "75%"}
+knitr::include_graphics('images/asmodee.png', dpi = NA)
+```
+
+
+
+To answer this question, ASMODEE implements the following approach (Figure
+\@ref(fig:asmodee)):
+
+1. Split the data in two sets: a **testing** set formed by the most 'recent'
+   data (typically the last week), and a **fitting** set one used for
+   charactering trends on the past few weeks (typically 6 - 10 weeks) prior to
+   the testing set.
+   
+2. Define a range of **candidate models** to characterise temporal trends in the
+   **fitting set**.
+
+3. Extrapolate past trends to derive a **95% prediction interval** (**PI**) for the last
+   week of data.
+   
+4. Identify data outside the PI as outliers, suggesting either a slow-down
+   (below the PI), or an acceleration (above the PI). In our algorithm for
+   defining ELR for countries, we use a criteria of **3 net increases** as a
+   sign of acceleration; *net increases* are defined as the number of outliers
+   above the PI, minus the number of outliers below the PI, in the last 7 days.
+
+
+
+
+
+Step 2 is the crucial one to obtain good results. Defining the right set of
+**candidate models** to capture past trends is non-trivial, and is also the
+non-standard part of implementing ASMODEE, as model-generation is currently not
+implemented in *trendbreaker*, and requires *ad-hoc* code. In this chapter, we
+provide tips and explanations on how candidate models are generated, and can be
+adapted to other data streams.
+

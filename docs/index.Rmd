@@ -14,6 +14,7 @@ output:
   bookdown::gitbook:
     lib_dir: assets
     split_by: section
+    split_bib: FALSE
     config:
       toolbar:
         position: static
@@ -27,7 +28,7 @@ output:
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+  .packages(), 'bookdown', 'knitr', 'rmarkdown', 'trendbreaker'
 ), 'packages.bib')
 
 # knitr options
