@@ -180,9 +180,9 @@ Sudan <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Monday 12 July 2021**.<br><br>**Notes**
-<br>Nothing to report. All countries were successfully included in the
-analyses. <br>
+<br>Analyses were last updated **Tuesday 13 July
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
