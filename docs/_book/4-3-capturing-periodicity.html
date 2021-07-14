@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="4.3 Capturing periodicity | Outbreak Dynamics Surveillance Infrastructure" />
+<meta property="og:type" content="book" />
+
+<meta property="og:image" content="/images/cover.png" />
+<meta property="og:description" content="This short handbook provides documentation for the Automated Outbreak Dynamics Surveillance Infrastructure developed by the WHO COVID-19 analytics team" />
+<meta name="github-repo" content="whocov/trend_analysis_public" />
+
+<meta name="author" content="Thibaut Jombart" />
+
+<meta name="date" content="2021-07-14" />
+
+
+<meta name="description" content="This short handbook provides documentation for the Automated Outbreak Dynamics Surveillance Infrastructure developed by the WHO COVID-19 analytics team">
+
+<title>4.3 Capturing periodicity | Outbreak Dynamics Surveillance Infrastructure</title>
+
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="toc.css" type="text/css" />
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+/* show arrow before summary tag as in bootstrap
+TODO: remove if boostrap in updated in html_document (rmarkdown#1485) */
+details > summary {
+  display: list-item;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container-fluid main-container">
+
+
+<div class="row">
+<div class="col-sm-12">
+<div id="TOC">
+<ul>
+<li><a href="index.html#preface">Preface</a></li>
+<li class="has-sub"><a href="1-intro.html#intro"><span class="toc-section-number">1</span> Introduction</a><ul>
+<li><a href="1-1-what-does-this-infrastructure-do.html#what-does-this-infrastructure-do"><span class="toc-section-number">1.1</span> What does this infrastructure do?</a></li>
+<li><a href="1-2-content-of-this-handbook.html#content-of-this-handbook"><span class="toc-section-number">1.2</span> Content of this handbook</a></li>
+<li><a href="1-3-disclaimer.html#disclaimer"><span class="toc-section-number">1.3</span> Disclaimer</a></li>
+<li><a href="1-4-licensing.html#licensing"><span class="toc-section-number">1.4</span> Licensing</a></li>
+</ul></li>
+<li class="has-sub"><a href="2-getting-started.html#getting-started"><span class="toc-section-number">2</span> Getting started</a><ul>
+<li><a href="2-1-overview-of-the-infrastructure.html#overview-of-the-infrastructure"><span class="toc-section-number">2.1</span> Overview of the infrastructure</a></li>
+<li><a href="2-2-main-folders-and-files.html#main-folders-and-files"><span class="toc-section-number">2.2</span> Main folders and files</a></li>
+<li class="has-sub"><a href="2-3-installing-the-infrastructure.html#installing-the-infrastructure"><span class="toc-section-number">2.3</span> Installing the infrastructure</a><ul>
+<li><a href="2-3-installing-the-infrastructure.html#downloading-the-repository"><span class="toc-section-number">2.3.1</span> Downloading the repository</a></li>
+<li><a href="2-3-installing-the-infrastructure.html#getting-the-phifunc-authentication-token"><span class="toc-section-number">2.3.2</span> Getting the phifunc authentication token</a></li>
+<li><a href="2-3-installing-the-infrastructure.html#installing-dependencies"><span class="toc-section-number">2.3.3</span> Installing dependencies</a></li>
+</ul></li>
+<li class="has-sub"><a href="2-4-running-the-infrastructure-locally.html#running-the-infrastructure-locally"><span class="toc-section-number">2.4</span> Running the infrastructure locally</a><ul>
+<li><a href="2-4-running-the-infrastructure-locally.html#updating-all-analyses"><span class="toc-section-number">2.4.1</span> Updating all analyses</a></li>
+<li><a href="2-4-running-the-infrastructure-locally.html#updating-the-data"><span class="toc-section-number">2.4.2</span> Updating the data</a></li>
+<li><a href="2-4-running-the-infrastructure-locally.html#running-analyses-for-a-specific-region"><span class="toc-section-number">2.4.3</span> Running analyses for a specific region</a></li>
+<li><a href="2-4-running-the-infrastructure-locally.html#generating-the-synthesis-report"><span class="toc-section-number">2.4.4</span> Generating the synthesis report</a></li>
+</ul></li>
+</ul></li>
+<li class="has-sub"><a href="3-reports.html#reports"><span class="toc-section-number">3</span> Overview of the reports</a><ul>
+<li class="has-sub"><a href="3-1-data-preparation-assemble-data-rmd.html#data-preparation-assemble_data.rmd"><span class="toc-section-number">3.1</span> Data preparation: <em>assemble_data.Rmd</em></a><ul>
+<li><a href="3-1-data-preparation-assemble-data-rmd.html#inputs"><span class="toc-section-number">3.1.1</span> Inputs</a></li>
+<li><a href="3-1-data-preparation-assemble-data-rmd.html#outputs"><span class="toc-section-number">3.1.2</span> Outputs</a></li>
+<li><a href="3-1-data-preparation-assemble-data-rmd.html#parameters"><span class="toc-section-number">3.1.3</span> Parameters</a></li>
+<li><a href="3-1-data-preparation-assemble-data-rmd.html#example-compilation"><span class="toc-section-number">3.1.4</span> Example compilation</a></li>
+</ul></li>
+<li class="has-sub"><a href="3-2-analyses-of-covid-19-dynamics-regional-analyses-rmd.html#analyses-of-covid-19-dynamics-regional_analyses.rmd"><span class="toc-section-number">3.2</span> Analyses of COVID-19 dynamics: <em>regional_analyses.Rmd</em></a><ul>
+<li><a href="3-2-analyses-of-covid-19-dynamics-regional-analyses-rmd.html#inputs-1"><span class="toc-section-number">3.2.1</span> Inputs</a></li>
+<li><a href="3-2-analyses-of-covid-19-dynamics-regional-analyses-rmd.html#outputs-1"><span class="toc-section-number">3.2.2</span> Outputs</a></li>
+<li><a href="3-2-analyses-of-covid-19-dynamics-regional-analyses-rmd.html#parameters-1"><span class="toc-section-number">3.2.3</span> Parameters</a></li>
+<li><a href="3-2-analyses-of-covid-19-dynamics-regional-analyses-rmd.html#example-compilation-1"><span class="toc-section-number">3.2.4</span> Example compilation</a></li>
+</ul></li>
+<li class="has-sub"><a href="3-3-synthesis-elr-synthesis-rmd.html#synthesis-elr_synthesis.rmd"><span class="toc-section-number">3.3</span> Synthesis: <em>elr_synthesis.Rmd</em></a><ul>
+<li><a href="3-3-synthesis-elr-synthesis-rmd.html#inputs-2"><span class="toc-section-number">3.3.1</span> Inputs</a></li>
+<li><a href="3-3-synthesis-elr-synthesis-rmd.html#outputs-2"><span class="toc-section-number">3.3.2</span> Outputs</a></li>
+<li><a href="3-3-synthesis-elr-synthesis-rmd.html#parameters-2"><span class="toc-section-number">3.3.3</span> Parameters</a></li>
+<li><a href="3-3-synthesis-elr-synthesis-rmd.html#example-compilation-2"><span class="toc-section-number">3.3.4</span> Example compilation</a></li>
+</ul></li>
+</ul></li>
+<li class="has-sub"><a href="4-asmodee.html#asmodee"><span class="toc-section-number">4</span> Implementing ASMODEE</a><ul>
+<li><a href="4-1-a-unified-interface-for-linear-models.html#a-unified-interface-for-linear-models"><span class="toc-section-number">4.1</span> A unified interface for linear models</a></li>
+<li><a href="4-2-generating-candidate-models-general-principle.html#generating-candidate-models-general-principle"><span class="toc-section-number">4.2</span> Generating candidate models: general principle</a></li>
+<li><a href="4-3-capturing-periodicity.html#capturing-periodicity"><span class="toc-section-number">4.3</span> Capturing periodicity</a></li>
+<li><a href="4-4-capturing-trend-changes-in-the-past.html#capturing-trend-changes-in-the-past"><span class="toc-section-number">4.4</span> Capturing trend changes in the past</a></li>
+<li class="has-sub"><a href="4-5-final-considerations.html#final-considerations"><span class="toc-section-number">4.5</span> Final considerations</a><ul>
+<li><a href="4-5-final-considerations.html#use-aic"><span class="toc-section-number">4.5.1</span> Use AIC</a></li>
+<li><a href="4-5-final-considerations.html#negative-binomial-the-good-and-the-bad"><span class="toc-section-number">4.5.2</span> Negative Binomial: the good and the bad</a></li>
+<li><a href="4-5-final-considerations.html#keep-it-simple"><span class="toc-section-number">4.5.3</span> Keep it simple</a></li>
+</ul></li>
+</ul></li>
+<li class="has-sub"><a href="5-automation.html#automation"><span class="toc-section-number">5</span> Automation</a><ul>
+<li class="has-sub"><a href="5-1-overview-of-the-github-actions.html#overview-of-the-github-actions"><span class="toc-section-number">5.1</span> Overview of the github actions</a><ul>
+<li><a href="5-1-overview-of-the-github-actions.html#regional-updates"><span class="toc-section-number">5.1.1</span> Regional updates</a></li>
+<li><a href="5-1-overview-of-the-github-actions.html#updates-of-all-regions"><span class="toc-section-number">5.1.2</span> Updates of all regions</a></li>
+<li><a href="5-1-overview-of-the-github-actions.html#elr-synthesis"><span class="toc-section-number">5.1.3</span> ELR synthesis</a></li>
+<li><a href="5-1-overview-of-the-github-actions.html#readme-updates"><span class="toc-section-number">5.1.4</span> README updates</a></li>
+</ul></li>
+<li class="has-sub"><a href="5-2-using-secrets.html#using-secrets"><span class="toc-section-number">5.2</span> Using secrets</a><ul>
+<li><a href="5-2-using-secrets.html#github-secrets-in-a-nutshell"><span class="toc-section-number">5.2.1</span> Github secrets in a nutshell</a></li>
+<li><a href="5-2-using-secrets.html#using-secrets-in-r-workflows"><span class="toc-section-number">5.2.2</span> Using secrets in R workflows</a></li>
+</ul></li>
+</ul></li>
+<li><a href="references.html#references">References</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12">
+<div id="capturing-periodicity" class="section level2">
+<h2><span class="header-section-number">4.3</span> Capturing periodicity</h2>
+<p>Periodic changes are often observed due to either seasonality (over long time
+scales for seasonal diseases such as influenza), but are also frequent in the
+case of COVID-19 due to reporting artifacts (Figure
+<a href="4-3-capturing-periodicity.html#fig:asmodee-periodic">4.2</a>. For instance, some countries report less cases over
+a weekend, followed by a spike on the following day (<em>backlog</em> effect).</p>
+<div class="figure" style="text-align: center"><span id="fig:asmodee-periodic"></span>
+<img src="images/asmodee_periodic.png" alt="Example of periodicity in COVID-19 data. This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope)." width="60%" />
+<p class="caption">
+Figure 4.2: Example of periodicity in COVID-19 data. This figure illustrates a case of weekly periodicity in raw data (red dots and plain black line) captured by ASMODEE (grey dots and model envelope).
+</p>
+</div>
+<p>Such trends can be captured by different predictors:</p>
+<ol style="list-style-type: decimal">
+<li>a strict <code>weekend</code> effect, i.e. a categorical variable distinguishing weekends
+from weekdays</li>
+<li>a <code>weekend</code> effect including a backlog effect, i.e. a categorical variable
+distinguishing weekends, Mondays, and other weekdays</li>
+<li>a <code>weekday</code> effect, i.e. a categorical variable distinguishing each day in the week</li>
+</ol>
+<p>At the time of writing, only 2 and 3 are used in the data pipelines. Option 2)
+is implemented by the function <code>day_of_week()</code> in the <em>scripts/</em> folder, also
+provided below. Option 3) is implemented in base R by <code>weekdays</code>. Both functions
+generate categorical variables from a <code>Date</code> input; for instance:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="co">#&#39; Convert dates to factors</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="co">#&#39;</span></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="co">#&#39; This will map a `Date&#39; vector to weekdays, with the following distinction:</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="co">#&#39; weekden, monday, of the rest of the week</span></a>
+<a class="sourceLine" id="cb15-6" title="6"><span class="co">#&#39;</span></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="co">#&#39; @author Thibaut</span></a>
+<a class="sourceLine" id="cb15-8" title="8"><span class="co">#&#39;</span></a>
+<a class="sourceLine" id="cb15-9" title="9"><span class="co">#&#39; @param date a vector of `Date`</span></a>
+<a class="sourceLine" id="cb15-10" title="10"><span class="co">#&#39; </span></a>
+<a class="sourceLine" id="cb15-11" title="11">day_of_week &lt;-<span class="st"> </span><span class="cf">function</span>(date) {</a>
+<a class="sourceLine" id="cb15-12" title="12">  day_of_week &lt;-<span class="st"> </span><span class="kw">weekdays</span>(date)</a>
+<a class="sourceLine" id="cb15-13" title="13">  out &lt;-<span class="st"> </span><span class="kw">vapply</span>(</a>
+<a class="sourceLine" id="cb15-14" title="14">    day_of_week,</a>
+<a class="sourceLine" id="cb15-15" title="15">    <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb15-16" title="16">      <span class="cf">if</span> (x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Saturday&quot;</span>, <span class="st">&quot;Sunday&quot;</span>)) {</a>
+<a class="sourceLine" id="cb15-17" title="17">        <span class="st">&quot;weekend&quot;</span></a>
+<a class="sourceLine" id="cb15-18" title="18">      } <span class="cf">else</span> <span class="cf">if</span> (x <span class="op">==</span><span class="st"> &quot;Monday&quot;</span>) {</a>
+<a class="sourceLine" id="cb15-19" title="19">        <span class="st">&quot;monday&quot;</span></a>
+<a class="sourceLine" id="cb15-20" title="20">      } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb15-21" title="21">        <span class="st">&quot;rest_of_week&quot;</span></a>
+<a class="sourceLine" id="cb15-22" title="22">      }</a>
+<a class="sourceLine" id="cb15-23" title="23">    },</a>
+<a class="sourceLine" id="cb15-24" title="24">    <span class="kw">character</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-25" title="25">  )</a>
+<a class="sourceLine" id="cb15-26" title="26">  <span class="kw">factor</span>(out, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;rest_of_week&quot;</span>, <span class="st">&quot;monday&quot;</span>, <span class="st">&quot;weekend&quot;</span>))</a>
+<a class="sourceLine" id="cb15-27" title="27">} </a>
+<a class="sourceLine" id="cb15-28" title="28"></a>
+<a class="sourceLine" id="cb15-29" title="29"><span class="co"># generate some dates for the example</span></a>
+<a class="sourceLine" id="cb15-30" title="30">some_dates &lt;-<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2021-02-04&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">9</span></a>
+<a class="sourceLine" id="cb15-31" title="31">some_dates</a>
+<a class="sourceLine" id="cb15-32" title="32"><span class="co">##  [1] &quot;2021-02-04&quot; &quot;2021-02-05&quot; &quot;2021-02-06&quot; &quot;2021-02-07&quot; &quot;2021-02-08&quot;</span></a>
+<a class="sourceLine" id="cb15-33" title="33"><span class="co">##  [6] &quot;2021-02-09&quot; &quot;2021-02-10&quot; &quot;2021-02-11&quot; &quot;2021-02-12&quot; &quot;2021-02-13&quot;</span></a>
+<a class="sourceLine" id="cb15-34" title="34"></a>
+<a class="sourceLine" id="cb15-35" title="35"><span class="co"># build new variables using dplyr</span></a>
+<a class="sourceLine" id="cb15-36" title="36"><span class="kw">library</span>(magrittr)</a>
+<a class="sourceLine" id="cb15-37" title="37"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb15-38" title="38"><span class="kw">tibble</span>(<span class="dt">date =</span> some_dates) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-39" title="39"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">weekend =</span> <span class="kw">day_of_week</span>(date), <span class="dt">weekday =</span> <span class="kw">weekdays</span>(date))</a>
+<a class="sourceLine" id="cb15-40" title="40"><span class="co">## # A tibble: 10 x 3</span></a>
+<a class="sourceLine" id="cb15-41" title="41"><span class="co">##    date       weekend      weekday  </span></a>
+<a class="sourceLine" id="cb15-42" title="42"><span class="co">##    &lt;date&gt;     &lt;fct&gt;        &lt;chr&gt;    </span></a>
+<a class="sourceLine" id="cb15-43" title="43"><span class="co">##  1 2021-02-04 rest_of_week Thursday </span></a>
+<a class="sourceLine" id="cb15-44" title="44"><span class="co">##  2 2021-02-05 rest_of_week Friday   </span></a>
+<a class="sourceLine" id="cb15-45" title="45"><span class="co">##  3 2021-02-06 weekend      Saturday </span></a>
+<a class="sourceLine" id="cb15-46" title="46"><span class="co">##  4 2021-02-07 weekend      Sunday   </span></a>
+<a class="sourceLine" id="cb15-47" title="47"><span class="co">##  5 2021-02-08 monday       Monday   </span></a>
+<a class="sourceLine" id="cb15-48" title="48"><span class="co">##  6 2021-02-09 rest_of_week Tuesday  </span></a>
+<a class="sourceLine" id="cb15-49" title="49"><span class="co">##  7 2021-02-10 rest_of_week Wednesday</span></a>
+<a class="sourceLine" id="cb15-50" title="50"><span class="co">##  8 2021-02-11 rest_of_week Thursday </span></a>
+<a class="sourceLine" id="cb15-51" title="51"><span class="co">##  9 2021-02-12 rest_of_week Friday   </span></a>
+<a class="sourceLine" id="cb15-52" title="52"><span class="co">## 10 2021-02-13 weekend      Saturday</span></a></code></pre></div>
+</div>
+<p style="text-align: center;">
+<a href="4-2-generating-candidate-models-general-principle.html"><button class="btn btn-default">Previous</button></a>
+<a href="4-4-capturing-trend-changes-in-the-past.html"><button class="btn btn-default">Next</button></a>
+</p>
+</div>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+</body>
+</html>
