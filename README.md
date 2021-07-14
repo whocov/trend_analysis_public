@@ -158,13 +158,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Tuesday 13 July
+<br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Burkina Faso, Central African Republic, Chad, Saint Helena,
-Sao Tome and Principe, United Republic of Tanzania <br> Estimates of *r*
-could not be produced for the following countries:<br>Nigeria, South
-Sudan <br>
+analyses:<br>Central African Republic, Chad, Saint Helena, Sao Tome and
+Principe, United Republic of Tanzania <br> Estimates of *r* could not be
+produced for the following countries:<br>Nigeria, South Sudan <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -182,7 +181,7 @@ Sudan <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Tuesday 13 July
+<br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
@@ -202,7 +201,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Tuesday 13 July
+<br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Greenland, Guernsey, Holy See, Isle of Man, San Marino <br>
@@ -226,11 +225,11 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Tuesday 13 July
+<br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Antigua and Barbuda, Bermuda, Bonaire, Sint
-Eustatius and Saba, Cayman Islands, Curaçao, Dominica, Falkland Islands
+Eustatius and Saba, Cayman Islands, Dominica, Falkland Islands
 (Malvinas), Grenada, Montserrat, Saint Barthélemy, Saint Pierre and
 Miquelon, Turks and Caicos Islands <br> Estimates of *r* could not be
 produced for the following countries:<br>Puerto Rico <br>
@@ -260,7 +259,7 @@ produced for the following countries:<br>Puerto Rico <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Tuesday 13 July
+<br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
@@ -281,7 +280,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Tuesday 13 July
+<br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
