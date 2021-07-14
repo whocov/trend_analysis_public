@@ -204,7 +204,7 @@ successfully included in the analyses. <br>
 <br>Analyses were last updated **Wednesday 14 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Greenland, Guernsey, Holy See, Isle of Man, San Marino <br>
+analyses:<br>Greenland, Guernsey, Holy See, San Marino <br>
 
 ### Infection levels as % of historical incidence peak
 
