@@ -1,5 +1,5 @@
 --- 
-title: "Outbreak Dynamics Surveillance Infrastructure"
+title: "Outbreak Monitoring using ASMODEE: an example of automated data infrastructure"
 author: "Thibaut Jombart"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -51,7 +51,7 @@ insert_md <- function(x) {
 
 # Preface {-}
 
-```{r fig.align = 'center', echo = FALSE}
+```{r fig.align = 'center', echo = FALSE, out.width = "40%"}
 knitr::include_graphics('images/cover.png')
 ```
 

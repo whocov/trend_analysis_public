@@ -71,9 +71,6 @@ This handbook is organised into the following chapters:
 *  **Chapter \@ref(automation) - [Automation](#automation)**: details on how
    analyses are automated using github actions
 
-* **Chapter \@ref(adapting) - [Adapting this infrastructure](#adapting)**: a few
-  tips on how to adapt the infrastructure to other settings (e.g. sub-national
-  surveillance)
 
 
 
