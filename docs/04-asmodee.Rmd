@@ -15,7 +15,7 @@ cap <- "Rationale of ASMODEE. This figure illustrates the key steps of ASMODEE f
 
 ```
 
-```{r asmodee, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "60%"}
+```{r asmodee, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "100%"}
 knitr::include_graphics('images/asmodee.png', dpi = NA)
 ```
 
@@ -127,7 +127,9 @@ library(trending)
 mod_content <- c("1", "test", "date", "date + tests")
 
 # step 2
-models_txt <- sprintf("glm_model(cases ~ %s, family = poisson)", mod_content)
+models_txt <- sprintf(
+  "glm_model(cases ~ %s, family = poisson)",
+  mod_content)
 
 # step 3
 models <- lapply(models_txt, function(e) eval(parse(text = e)))
@@ -227,7 +229,8 @@ generate categorical variables from a `Date` input; for instance:
 
 #' Convert dates to factors
 #'
-#' This will map a `Date' vector to weekdays, with the following distinction:
+#' This will map a `Date' vector to weekdays, with the following
+#' distinction:
 #' weekden, monday, of the rest of the week
 #'
 #' @author Thibaut

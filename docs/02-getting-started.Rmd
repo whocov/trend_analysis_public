@@ -98,16 +98,28 @@ available) WHO package `phifunc`, which is used for collating data.
 
 ### Downloading the repository
 
-You can download the repository from the **code** tab on the github page
-https://github.com/whocov/trend_analysis_public
-as illustrated in the figure below:
+You can download the repository from the **code** tab on the 
+[github page](https://github.com/whocov/trend_analysis_public)
+as illustrated in the figure \@ref(fig:download).
 
-```{r fig.align='center', echo=FALSE}
+
+```{r echo = FALSE}
+
+cap <- "Downloading or cloning the repository. The repository containing the data infrastructure can be downloaded as a zip archive or cloned using github."
+
+```
+
+```{r download, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "100%"}
 knitr::include_graphics('images/download.png', dpi = NA)
 ```
 
-We recommend using *SSH* to clone the repository; using GIT from the command
-line in your favourite terminal, you will need to type:
+We recommend using *SSH* to clone the repository. For more information on
+setting up an SSH access to github, see this 
+[webpage](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh).
+
+
+Once you are set up to access github using SSH, you can clone the repository
+using GIT from the command line in your favourite terminal, by typing:
 
 ```{bash eval = FALSE, echo = TRUE}
 git clone git@github.com:whocov/trend_analysis_public.git
