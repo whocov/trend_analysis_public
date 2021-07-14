@@ -51,7 +51,7 @@ jobs:
         run: |
           library(reportfactory)
           compile_reports(report = "assemble", params = list(import_data = TRUE))
-          compile_reports(report = "trendbreaker.Rmd", params = list(who_region = "AFRO"))
+          compile_reports(report = "regional_analyses.Rmd", params = list(who_region = "AFRO"))
         shell: Rscript {0}
                
       - name: Commit files
@@ -59,7 +59,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add asmodee_outputs
-          git commit -m "Automatic update of trendbreaker results - AFRO"
+          git commit -m "Automatic update of regional_analyses results - AFRO"
           git pull
       
       - name: Push changes
