@@ -1,1 +1,0 @@
-# Adapting this infrastructure to other settings {#adapting}

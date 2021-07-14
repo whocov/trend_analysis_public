@@ -169,4 +169,96 @@ change of files, excluding:
 
 ## Using secrets
 
+### Github secrets in a nutshell
 
+The automation process may require inputs such as passwords and authentication
+tokens which cannot be stored on a public github repository for obvious security
+reasons. Github actions provide a workaround for such issues through github
+[secrets](https://docs.github.com/en/actions/reference/encrypted-secrets). Secrets
+are essentially small bits of data stored encrypted on github, which are tied to
+a specific repository (figure \@ref(fig:secrets)). Once set up, a secret cannot
+be viewed again, but it can be modified or deleted.
+
+```{r echo = FALSE}
+
+cap <- "Github secret page. This screenshot shows the location of github secrets on the infrastructure's page, underthe *Settings* tab. New secrets can be added there, and old secrets can be modified, but not visualised."
+
+```
+
+```{r secrets, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "100%"}
+knitr::include_graphics('images/secrets.png', dpi = NA)
+```
+
+
+### Using secrets in R workflows
+
+The data stored in a secret can be used inside *github actions* by referring the
+their value as `${{ secrets.SECRET_NAME }}` where `SECRET_NAME` is the name of
+the secret. The approach to use this in an R workflow is then:
+
+1. set the secret value (e.g. a password) as an environment variable
+2. retrieve the value of the environment variable from R via `Sys.getenv()`
+3. use the value in the R workflow, making sure that it is never output to the
+   console, a file, or a persistent object, as these could then become public
+   (e.g. in logs of actions)
+   
+At the time of writing, secrets are used for two purposes:
+
+* to store the **phifunc_token** required to install the *phifunc* package; this
+  enables github actions to use *phifunc* to download and process data
+* to store the **SMTP password** used to send automated emails
+
+
+Outside of R workflows, we also use another secret, a **Personal Authentication
+Token** (**PAT**), to enable pushing to different branches of the github
+repository. Figure \@ref(fig:secrets-use) shows how secrets can be used in the
+configuration file of a github action.
+
+```{r echo = FALSE}
+
+cap <- "Sample of the *auto-synthesis* github action using github secrets. This screenshot was taken from the github action configation file *.github/workflows/auto_synthesis.yml*. Secrets are outlined in red. The first two (*PHIFUNC_TOKEN* and *SENDINBLUE_SMTP_PASSWORD*) are set up as environment variables, while the last one (*PAT_TIBO*) is passed directly as an input to the *checkout* action."
+
+```
+
+```{r secrets-use, fig.align='center', echo=FALSE, fig.cap = cap, out.width = "100%"}
+knitr::include_graphics('images/secrets_use.png', dpi = NA)
+```
+
+Note that in the case of *phifunc_token*, we need to handle a non-trivial
+situation as the token could be available in two different ways:
+
+* **stored locally** in the root folder, in the case of a person's computer who was
+  granted access and given the token file; this file is git-ignored and so
+  should never end up on github
+* available as an **environment variable**, in the case of github actions
+
+This explains the circumvoluted code handling the installation of *phifunc* in
+*scripts/remote_packages.R*: 
+
+```{r echo = TRUE, eval = FALSE}
+
+# Here we handle the phifunc install token as follows, by order of decreasing
+# priority:
+
+## 1. Grab the token from a local 'phifunc_token' file if it exists
+## 2. Grab the token the environment variable 'PHIFUNC_TOKEN'
+## 3. If the above is empty, set the value to NULL
+
+phifunc_token_file <- here::here("phifunc_token")
+if (file.exists(phifunc_token_file)) {
+  phifunc_token <- scan(phifunc_token_file, what = "character")
+} else {
+  phifunc_token <- Sys.getenv("PHIFUNC_TOKEN")
+  if (phifunc_token == "") phifunc_token <- NULL
+}
+
+# Install phifunc
+if (!is.null(phifunc_token) & !require("phifunc")) {
+  remotes::install_github(
+    "whocov/phifunc",
+    auth_token = phifunc_token,
+    subdir = "phifunc", upgrade = "never")
+}
+
+
+```
