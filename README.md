@@ -8,6 +8,8 @@ Welcome to the WHO COVID-19 trend analysis repository
 
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5106335.svg)](https://doi.org/10.5281/zenodo.5106335)
+
 # Preamble
 
 ## Forewords
