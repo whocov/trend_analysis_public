@@ -1,7 +1,7 @@
 # Automation {#automation}
 
 There are many ways to automate data infrastructures. Here, we use [github
-actions](https://docs.github.com/en/actions), which seemd like a natural choice
+actions](https://docs.github.com/en/actions), which seem like a natural choice
 given that the whole infrastructure is hosted on
 [github](https://github.com/whocov/trend_analysis_public). However, note that
 alternatives could be considered especially for group owning a dedicated server
@@ -60,11 +60,12 @@ This set of actions (one per WHO region) are implemented in the
 
 * download and prepare the current data
 * run all analyses for the region under consideration
-* commit and push to github the resulting information products to the
-  *asmodee_outputs/* folder - see details on the regional analyses in the report
+* commit and push to github the resulting information products (i.e. the
+  *asmodee_outputs/* folder) - see details on the regional analyses in the report
   chapter \@ref(reports)
-* *notes*: neither the data nor the compiled report (usually stored in the
-  *outputs/* folder) are commited or pushed to github
+
+**note**: Neither the data nor the compiled report (usually stored in the
+  *outputs/* folder) are commited or pushed to github.
 
 
 #### Schedule
@@ -90,14 +91,14 @@ knitr::include_graphics('images/action_trigger.png', dpi = NA)
 
 #### Outline
 
-This action is implemented in the *auto_update_all.yml* and automate the same
+This action is implemented in the *auto_update_all.yml* and automates the same
 workflow as the regional updates, but for all regions.
 
 
 #### Schedule
 
 This action runs every day at 16:00 and 22:00 GMT. It can also be triggered
-manually from the github action page (see figure \@(fig:action-trigger). As an
+manually from the github action page (see figure \@ref(fig:action-trigger). As an
 option, the user can specify a single WHO region (using the upper case
 abbreviations) when manually triggering a run of this action.
 
@@ -108,7 +109,7 @@ abbreviations) when manually triggering a run of this action.
 
 #### Outline
 
-This action is implemented in the *auto_synthesis* and automates the following
+This action is implemented in the *auto_synthesis.yml* and automates the following
 workflow:
 
 * compile results of all regions using the latest analyses on github from the
@@ -122,19 +123,20 @@ workflow:
   rationale for their exclusion
 * sends an email to a list of recipients hard-coded in the script
   *run_synthesis.R* (located in the root folder) with this zip attached
-* *notes*: this job does not commit anything to github; the only end-result
-  persisting after the job has run is the email and its attachments
+
+**note**: this job does not commit anything to github; the only end-result
+  persisting after the job has run is the email and its attachments.
 
 
 #### Schedule
 
 This action runs every Monday at 6:00 GMT. It can also be triggered
-manually from the github action page (see figure \@(fig:action-trigger).
+manually from the github action page (see figure \@ref(fig:action-trigger).
 
 
 #### Automated emails
 
-Automated emails as currently implemented require SMTP authentication for the
+Automated emails, as currently implemented, require SMTP authentication for the
 free SMTP provider [*sendinblue*](https://www.sendinblue.com/). This is
 currently done through Thibaut Jombart's account, linked to the gmail address
 *thibautjombart@gmail.com*.  While emails will look like they were sent from
