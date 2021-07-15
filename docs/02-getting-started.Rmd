@@ -2,13 +2,13 @@
 
 In this chapter, we provide an overview of the infrastructure and of how the
 data pipelines work. After outlining the main folders and files and their
-respective role, we provide installation guidelines and tips for using it
+respective roles, we provide installation guidelines and tips for using it
 locally (i.e. on your computer).
 
 
 ## Overview of the infrastructure
 
-The infrastructure implements data pipelines which download national COVID-19
+The infrastructure implements data pipelines that download national COVID-19
 data from online sources, performs some analyses, classify countries by
 **epidemiological level of risk** (**ELR**) and produce synthesis reports which
 can be emailed to a pre-defined list of recipients. It is summarised in figure
@@ -19,7 +19,7 @@ outputs. Its key components include:
 
 * a set of **Rmarkdown reports** detailed in **chapter \@ref(reports)**
 * a set of **github actions** implementing automated tasks on github servers, and
-  detailed in **chapter \@ref(automation)
+  detailed in **chapter \@ref(automation)**
 
 ```{r echo = FALSE}
 
@@ -77,7 +77,7 @@ Other useful files and folders to know of include:
   
 * **run_synthesis.R**: an R script used in github actions to generate a synthesis
   report for all countries, including a classification into levels of risk based
-  on incidence, growth and trend acceleration, and sending an email to list of
+  on incidence, growth and trend acceleration, and for sending an email to a list of
   recipients with these documents attached
   
 * **.github/workflows/**: a (hidden) folder storing the files used to define the
@@ -85,7 +85,7 @@ Other useful files and folders to know of include:
   
 * **factory_config**: a simple text file containing some information about the
   name of key directories of the factory; normally will not need editing, unless
-  you rename the folder containing the factory (see below)
+  you rename the folder containing the factory (see \@ref(downloading))
 
 
 
@@ -96,7 +96,7 @@ github and installing dependencies. To run the full pipeline, the user will need
 an authentication token used to install the private (i.e. not publicly
 available) WHO package `phifunc`, which is used for collating data.
 
-### Downloading the repository
+### Downloading the repository {#downloading}
 
 You can download the repository from the **code** tab on the 
 [github page](https://github.com/whocov/trend_analysis_public)
@@ -172,9 +172,8 @@ source(here::here("scripts", "remote_packages.R"))
 ```
 
 Note that the last operation will require the authentication token (file
-`phifunc_token`) for installing *phifunc*, which is used for data collection and
-formatting. We will be working separately on a similar infrastructure using data
-that are directly publicly available.
+`phifunc_token`) for installing *phifunc*. We will be working separately on a
+similar infrastructure using data that are directly publicly available.
 
 
 
@@ -194,7 +193,7 @@ github actions in the [automation](#automation) chapter.
 ### Updating all analyses
 
 The simplest way to update all analyses is run the script `run_factory.R` (using
-`source(run_factory.R)`, or step-by-step by opening the file in Rstudio), which
+`source(run_factory.R)`, or step-by-step by opening the file in Rstudio). This
 will:
 
 * download, assemble and pre-process the most recent data
