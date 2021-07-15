@@ -24,7 +24,7 @@
 <meta name="author" content="Thibaut Jombart" />
 
 
-<meta name="date" content="2021-07-14" />
+<meta name="date" content="2021-07-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="overview-of-the-infrastructure.html"><a href="overview-of-the-infrastructure.html"><i class="fa fa-check"></i><b>2.1</b> Overview of the infrastructure</a></li>
 <li class="chapter" data-level="2.2" data-path="main-folders-and-files.html"><a href="main-folders-and-files.html"><i class="fa fa-check"></i><b>2.2</b> Main folders and files</a></li>
 <li class="chapter" data-level="2.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html"><i class="fa fa-check"></i><b>2.3</b> Installing the infrastructure</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading-the-repository"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
+<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
 <li class="chapter" data-level="2.3.2" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#getting-the-phifunc-authentication-token"><i class="fa fa-check"></i><b>2.3.2</b> Getting the phifunc authentication token</a></li>
 <li class="chapter" data-level="2.3.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#installing-dependencies"><i class="fa fa-check"></i><b>2.3.3</b> Installing dependencies</a></li>
 </ul></li>
@@ -250,12 +250,12 @@ report and send information products by email to a list of recipients</li>
 <ul>
 <li>download and prepare the current data</li>
 <li>run all analyses for the region under consideration</li>
-<li>commit and push to github the resulting information products to the
-<em>asmodee_outputs/</em> folder - see details on the regional analyses in the report
+<li>commit and push to github the resulting information products (i.e. the
+<em>asmodee_outputs/</em> folder) - see details on the regional analyses in the report
 chapter <a href="reports.html#reports">3</a></li>
-<li><em>notes</em>: neither the data nor the compiled report (usually stored in the
-<em>outputs/</em> folder) are commited or pushed to github</li>
 </ul>
+<p><strong>note</strong>: Neither the data nor the compiled report (usually stored in the
+<em>outputs/</em> folder) are commited or pushed to github.</p>
 </div>
 <div id="schedule" class="section level4">
 <h4><span class="header-section-number">5.1.1.2</span> Schedule</h4>
@@ -274,13 +274,13 @@ Figure 5.1: Manual trigger of actions from the github action page.
 <h3><span class="header-section-number">5.1.2</span> Updates of all regions</h3>
 <div id="outline-1" class="section level4">
 <h4><span class="header-section-number">5.1.2.1</span> Outline</h4>
-<p>This action is implemented in the <em>auto_update_all.yml</em> and automate the same
+<p>This action is implemented in the <em>auto_update_all.yml</em> and automates the same
 workflow as the regional updates, but for all regions.</p>
 </div>
 <div id="schedule-1" class="section level4">
 <h4><span class="header-section-number">5.1.2.2</span> Schedule</h4>
 <p>This action runs every day at 16:00 and 22:00 GMT. It can also be triggered
-manually from the github action page (see figure @(fig:action-trigger). As an
+manually from the github action page (see figure <a href="overview-of-the-github-actions.html#fig:action-trigger">5.1</a>. As an
 option, the user can specify a single WHO region (using the upper case
 abbreviations) when manually triggering a run of this action.</p>
 </div>
@@ -289,7 +289,7 @@ abbreviations) when manually triggering a run of this action.</p>
 <h3><span class="header-section-number">5.1.3</span> ELR synthesis</h3>
 <div id="outline-2" class="section level4">
 <h4><span class="header-section-number">5.1.3.1</span> Outline</h4>
-<p>This action is implemented in the <em>auto_synthesis</em> and automates the following
+<p>This action is implemented in the <em>auto_synthesis.yml</em> and automates the following
 workflow:</p>
 <ul>
 <li>compile results of all regions using the latest analyses on github from the
@@ -305,18 +305,18 @@ rationale for their exclusion</li>
 </ul></li>
 <li>sends an email to a list of recipients hard-coded in the script
 <em>run_synthesis.R</em> (located in the root folder) with this zip attached</li>
-<li><em>notes</em>: this job does not commit anything to github; the only end-result
-persisting after the job has run is the email and its attachments</li>
 </ul>
+<p><strong>note</strong>: this job does not commit anything to github; the only end-result
+persisting after the job has run is the email and its attachments.</p>
 </div>
 <div id="schedule-2" class="section level4">
 <h4><span class="header-section-number">5.1.3.2</span> Schedule</h4>
 <p>This action runs every Monday at 6:00 GMT. It can also be triggered
-manually from the github action page (see figure @(fig:action-trigger).</p>
+manually from the github action page (see figure <a href="overview-of-the-github-actions.html#fig:action-trigger">5.1</a>.</p>
 </div>
 <div id="automated-emails" class="section level4">
 <h4><span class="header-section-number">5.1.3.3</span> Automated emails</h4>
-<p>Automated emails as currently implemented require SMTP authentication for the
+<p>Automated emails, as currently implemented, require SMTP authentication for the
 free SMTP provider <a href="https://www.sendinblue.com/"><em>sendinblue</em></a>. This is
 currently done through Thibaut Jombart’s account, linked to the gmail address
 <em><a href="mailto:thibautjombart@gmail.com" class="email">thibautjombart@gmail.com</a></em>. While emails will look like they were sent from
