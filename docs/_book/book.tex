@@ -111,7 +111,7 @@
 
 \title{Outbreak Monitoring using ASMODEE: an example of automated data infrastructure}
 \author{Thibaut Jombart}
-\date{2021-07-14}
+\date{2021-07-15}
 
 \begin{document}
 \maketitle
@@ -171,13 +171,13 @@ components:
 \hypertarget{what-does-this-infrastructure-do}{%
 \section{What does this infrastructure do?}\label{what-does-this-infrastructure-do}}
 
-This infrastructure provides an automated data pipeline which gather publicly
+This infrastructure provides an automated data pipeline that gathers publicly
 available data on COVID-19 cases, deaths, tests, as well as on Variants of
-Interest/Concerns (VoI / VoC) and vaccination by country, to provide weekly
+Interest/Concerns (VoI / VoC) and vaccination by country, and provides a weekly
 assessment of COVID-19 dynamics and levels of risks. The pipeline is implemented
 as a \href{https://www.reconverse.org/reportfactory/}{reportfactory} which simplifies
 the handling of dependencies, data and scripts, and enables the compilation of
-analysis reports locally stored in dedicated, time-stamped folders.
+analysis reports stored locally in dedicated, time-stamped folders.
 
 A series of \texttt{Rmd} reports performs data gathering, various analysis, and produce
 the following information products:
@@ -206,14 +206,14 @@ This handbook is organised into the following chapters:
 
 \begin{itemize}
 \item
-  \textbf{Chapter \ref{getting-started} - \protect\hyperlink{getting-started}{Getting started}}.
-  Instructions to run the infrastructure locally
+  \textbf{Chapter \ref{getting-started} - \protect\hyperlink{getting-started}{Getting started}}:
+  instructions to run the infrastructure locally
 \item
   \textbf{Chapter \ref{reports} - \protect\hyperlink{reports}{Reports overview}}: outline of the
   \texttt{Rmd} reports and how they interact
 \item
   \textbf{Chapter \ref{asmodee} - \protect\hyperlink{asmodee}{Implementing ASMODEE}}: methodological
-  and pracical considerations for implementing ASMODEE, a new method for trend
+  and practical considerations for implementing ASMODEE, a new method for trend
   change detection
 \item
   \textbf{Chapter \ref{automation} - \protect\hyperlink{automation}{Automation}}: details on how
@@ -239,13 +239,13 @@ Copyright holder: Thibaut Jombart, 2021
 
 In this chapter, we provide an overview of the infrastructure and of how the
 data pipelines work. After outlining the main folders and files and their
-respective role, we provide installation guidelines and tips for using it
+respective roles, we provide installation guidelines and tips for using it
 locally (i.e.~on your computer).
 
 \hypertarget{overview-of-the-infrastructure}{%
 \section{Overview of the infrastructure}\label{overview-of-the-infrastructure}}
 
-The infrastructure implements data pipelines which download national COVID-19
+The infrastructure implements data pipelines that download national COVID-19
 data from online sources, performs some analyses, classify countries by
 \textbf{epidemiological level of risk} (\textbf{ELR}) and produce synthesis reports which
 can be emailed to a pre-defined list of recipients. It is summarised in figure
@@ -260,7 +260,7 @@ outputs. Its key components include:
   a set of \textbf{Rmarkdown reports} detailed in \textbf{chapter \ref{reports}}
 \item
   a set of \textbf{github actions} implementing automated tasks on github servers, and
-  detailed in **chapter \ref{automation}
+  detailed in \textbf{chapter \ref{automation}}
 \end{itemize}
 
 \begin{figure}
@@ -322,7 +322,7 @@ Other useful files and folders to know of include:
 \item
   \textbf{run\_synthesis.R}: an R script used in github actions to generate a synthesis
   report for all countries, including a classification into levels of risk based
-  on incidence, growth and trend acceleration, and sending an email to list of
+  on incidence, growth and trend acceleration, and for sending an email to a list of
   recipients with these documents attached
 \item
   \textbf{.github/workflows/}: a (hidden) folder storing the files used to define the
@@ -330,7 +330,7 @@ Other useful files and folders to know of include:
 \item
   \textbf{factory\_config}: a simple text file containing some information about the
   name of key directories of the factory; normally will not need editing, unless
-  you rename the folder containing the factory (see below)
+  you rename the folder containing the factory (see \ref{downloading})
 \end{itemize}
 
 \hypertarget{installing-the-infrastructure}{%
@@ -341,8 +341,8 @@ github and installing dependencies. To run the full pipeline, the user will need
 an authentication token used to install the private (i.e.~not publicly
 available) WHO package \texttt{phifunc}, which is used for collating data.
 
-\hypertarget{downloading-the-repository}{%
-\subsection{Downloading the repository}\label{downloading-the-repository}}
+\hypertarget{downloading}{%
+\subsection{Downloading the repository}\label{downloading}}
 
 You can download the repository from the \textbf{code} tab on the
 \href{https://github.com/whocov/trend_analysis_public}{github page}
@@ -415,9 +415,8 @@ To install the dependencies, open the reportfactory by double-clicking on
 \end{Shaded}
 
 Note that the last operation will require the authentication token (file
-\texttt{phifunc\_token}) for installing \emph{phifunc}, which is used for data collection and
-formatting. We will be working separately on a similar infrastructure using data
-that are directly publicly available.
+\texttt{phifunc\_token}) for installing \emph{phifunc}. We will be working separately on a
+similar infrastructure using data that are directly publicly available.
 
 \hypertarget{running-the-infrastructure-locally}{%
 \section{Running the infrastructure locally}\label{running-the-infrastructure-locally}}
@@ -439,7 +438,7 @@ github actions in the \protect\hyperlink{automation}{automation} chapter.
 \subsection{Updating all analyses}\label{updating-all-analyses}}
 
 The simplest way to update all analyses is run the script \texttt{run\_factory.R} (using
-\texttt{source(run\_factory.R)}, or step-by-step by opening the file in Rstudio), which
+\texttt{source(run\_factory.R)}, or step-by-step by opening the file in Rstudio). This
 will:
 
 \begin{itemize}
@@ -549,13 +548,12 @@ Reports can be \textbf{compiled} by two ways:
 Some reports accept \textbf{parameters}, i.e.~variables set at compilation time which can
 impact the results generated. This is typically used, for instance, to indicate
 which WHO region the analyses are to be performed on, and is a more sustainable
-alternative to handling separate reports for every region. The way to specify
-parameters is the same in both methods of compilation, and are passed as a list
+alternative to handling separate reports for every region. For both compilation
+methods the way to specify parameters to a report is the same; passing a list
 called \texttt{param} when compiling documents. For instance:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-
 \KeywordTok{library}\NormalTok{(reportfactory)}
 \KeywordTok{compile_reports}\NormalTok{(}\DataTypeTok{report =} \StringTok{"analyses"}\NormalTok{,}
                 \DataTypeTok{params =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{who_region =} \StringTok{"AFRO"}\NormalTok{)}
@@ -599,7 +597,7 @@ The report accepts the following parameters:
 \begin{itemize}
 \tightlist
 \item
-  \texttt{import\_data}: a \texttt{logical} indicating of the data should be downloaded
+  \texttt{import\_data}: a \texttt{logical} indicating if the data should be downloaded
   (\texttt{TRUE}, default), or if local copies of the last raw data downloaded should
   be used (\texttt{FALSE})
 \end{itemize}
@@ -611,7 +609,6 @@ The following instructions will compile the report:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-
 \KeywordTok{library}\NormalTok{(reportfactory)}
 \KeywordTok{compile_reports}\NormalTok{(}\DataTypeTok{report =} \StringTok{"assemble"}\NormalTok{)}
 \end{Highlighting}
@@ -620,7 +617,7 @@ The following instructions will compile the report:
 \hypertarget{analyses-of-covid-19-dynamics-regional_analyses.rmd}{%
 \section{\texorpdfstring{Analyses of COVID-19 dynamics: \emph{regional\_analyses.Rmd}}{Analyses of COVID-19 dynamics: regional\_analyses.Rmd}}\label{analyses-of-covid-19-dynamics-regional_analyses.rmd}}
 
-This report uses the latest clean data performs a range of analyses for a
+This report uses the latest clean data to perform a range of analyses for a
 specific WHO region. Analyses include estimation of the growth rate, detection
 of trend changes using ASMODEE, and figures summarising the overall dynamics of
 COVID-19 by country (pinplots and tadpoles).
@@ -644,7 +641,7 @@ The latest data are automatically detected and loaded by the auxiliary function
 \subsection{Outputs}\label{outputs-1}}
 
 The main output of the report is a \texttt{list} exported as a file named
-*asmodee\_outputs\_{[}WHO region{]}\_{[}data{]}.rds* stored in \emph{/asmodee\_outputs/rds/}, and
+\emph{asmodee\_outputs}{[}WHO region{]}\emph{{[}data{]}.rds} stored in \emph{/asmodee\_outputs/rds/}, and
 containing the following elements:
 
 \begin{itemize}
@@ -670,7 +667,7 @@ containing the following elements:
   the analyses
 \end{itemize}
 
-Other inputs include:
+Other outputs include:
 
 \begin{itemize}
 \item
@@ -682,8 +679,8 @@ Other inputs include:
   last few days
 \item
   \textbf{notes} listing countries what were excluded from the analyses alongside the
-  reason for their exclusion, stored in a markdown file named *analysis\_notes\_{[}WHO
-  region{]}\_{[}data{]}.md* stored in \emph{/asmodee\_outputs/notes/}
+  reason for their exclusion, stored in a markdown file named \emph{analysis\_notes}{[}WHO
+  region{]}\emph{{[}data{]}.md} stored in \emph{/asmodee\_outputs/notes/}
 \end{itemize}
 
 \hypertarget{parameters-1}{%
@@ -743,7 +740,7 @@ The following loop will do the same but for every region:
 \section{\texorpdfstring{Synthesis: \emph{elr\_synthesis.Rmd}}{Synthesis: elr\_synthesis.Rmd}}\label{synthesis-elr_synthesis.rmd}}
 
 This report compiles results of all WHO regions, defines ELR for the countries,
-and compiles the main results into an \emph{xlsx} file.
+and stores the main results into an \emph{xlsx} file.
 
 \hypertarget{inputs-2}{%
 \subsection{Inputs}\label{inputs-2}}
@@ -793,7 +790,6 @@ The following instructions will compile the report:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-
 \KeywordTok{library}\NormalTok{(reportfactory)}
 \KeywordTok{compile_reports}\NormalTok{(}\DataTypeTok{report =} \StringTok{"synthesis"}\NormalTok{)}
 \end{Highlighting}
@@ -1031,20 +1027,47 @@ simple regular expressions:
 \begin{Shaded}
 \begin{Highlighting}[]
 
-\CommentTok{## cleanup model content}
-\NormalTok{mod_content <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"(}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{+[ ]*)+[ ]*}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{+"}\NormalTok{, }\StringTok{" + "}\NormalTok{, mod_content) }\CommentTok{# +... + -> +}
-\NormalTok{mod_content <-}\StringTok{ }\KeywordTok{sub}\NormalTok{(}\StringTok{"^[ ]*}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{+"}\NormalTok{, }\StringTok{""}\NormalTok{, mod_content) }\CommentTok{# heading +}
-\NormalTok{mod_content <-}\StringTok{ }\KeywordTok{sub}\NormalTok{(}\StringTok{"}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{+[ ]*$"}\NormalTok{, }\StringTok{""}\NormalTok{, mod_content) }\CommentTok{# trailing +}
-\NormalTok{mod_content <-}\StringTok{ }\KeywordTok{sub}\NormalTok{(}\StringTok{"^[ ]+"}\NormalTok{, }\StringTok{""}\NormalTok{, mod_content) }\CommentTok{# heading spaces}
-\NormalTok{mod_content <-}\StringTok{ }\KeywordTok{sub}\NormalTok{(}\StringTok{"[ ]+$"}\NormalTok{, }\StringTok{""}\NormalTok{, mod_content) }\CommentTok{# trailing spaces}
-\NormalTok{mod_content <-}\StringTok{ }\KeywordTok{sub}\NormalTok{(}\StringTok{"[ ]+"}\NormalTok{, }\StringTok{" "}\NormalTok{, mod_content) }\CommentTok{# multiple spaces}
+\CommentTok{# load packages}
+\NormalTok{pacman}\OperatorTok{::}\KeywordTok{p_load}\NormalTok{(tidyverse)}
+
+\CommentTok{# comine effects to generate all possible models}
+\CommentTok{# note the use of 'NA' to have models with/without effects}
+\NormalTok{mod_content_grid <-}\StringTok{ }\KeywordTok{expand.grid}\NormalTok{(}
+  \KeywordTok{c}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\StringTok{"tests"}\NormalTok{),}
+  \StringTok{"date"}\NormalTok{,}
+  \KeywordTok{c}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\StringTok{"weekday"}\NormalTok{),}
+  \KeywordTok{c}\NormalTok{(}\OtherTok{NA}\NormalTok{, }\StringTok{"cases_lag_1"}\NormalTok{))}
+
+\NormalTok{mod_content_grid}
+\CommentTok{##    Var1 Var2    Var3        Var4}
+\CommentTok{## 1  <NA> date    <NA>        <NA>}
+\CommentTok{## 2 tests date    <NA>        <NA>}
+\CommentTok{## 3  <NA> date weekday        <NA>}
+\CommentTok{## 4 tests date weekday        <NA>}
+\CommentTok{## 5  <NA> date    <NA> cases_lag_1}
+\CommentTok{## 6 tests date    <NA> cases_lag_1}
+\CommentTok{## 7  <NA> date weekday cases_lag_1}
+\CommentTok{## 8 tests date weekday cases_lag_1}
+
+\CommentTok{# Use unite() to combine all columns, with sep = " + " and na.rm = TRUE}
+\NormalTok{mod_content <-}\StringTok{ }\NormalTok{mod_content_grid }\OperatorTok{%>%}\StringTok{ }
+\StringTok{     }\KeywordTok{unite}\NormalTok{(}
+          \DataTypeTok{col =} \StringTok{"models"}\NormalTok{,            }\CommentTok{# name of the new united column}
+          \DecValTok{1}\OperatorTok{:}\KeywordTok{ncol}\NormalTok{(mod_content_grid),  }\CommentTok{# columns to unite}
+          \DataTypeTok{sep =} \StringTok{" + "}\NormalTok{,               }\CommentTok{# separator to use in united column}
+          \DataTypeTok{remove =} \OtherTok{TRUE}\NormalTok{,             }\CommentTok{# if TRUE, removes input cols from the data frame}
+          \DataTypeTok{na.rm =} \OtherTok{TRUE}               \CommentTok{# if TRUE, missing values are removed before uniting}
+\NormalTok{     ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{pull}\NormalTok{(models) }\CommentTok{# extract column into a character vector}
+
+\CommentTok{# Check results}
 \NormalTok{mod_content}
 \CommentTok{## [1] "date"                                }
 \CommentTok{## [2] "tests + date"                        }
 \CommentTok{## [3] "date + weekday"                      }
 \CommentTok{## [4] "tests + date + weekday"              }
-\CommentTok{## [5] "date +  cases_lag_1"                 }
-\CommentTok{## [6] "tests + date  +  cases_lag_1"        }
+\CommentTok{## [5] "date + cases_lag_1"                  }
+\CommentTok{## [6] "tests + date + cases_lag_1"          }
 \CommentTok{## [7] "date + weekday + cases_lag_1"        }
 \CommentTok{## [8] "tests + date + weekday + cases_lag_1"}
 \end{Highlighting}
@@ -1281,19 +1304,19 @@ using the same approach as before:
 \StringTok{  }\KeywordTok{lapply}\NormalTok{(get_formula) }\CommentTok{# check formulas}
 \CommentTok{## [[1]]}
 \CommentTok{## cases ~ date * change_5}
-\CommentTok{## <environment: 0x55629c9f5cc8>}
+\CommentTok{## <environment: 0x56247597e3a8>}
 \CommentTok{## }
 \CommentTok{## [[2]]}
 \CommentTok{## cases ~ date * change_6}
-\CommentTok{## <environment: 0x55629c6caac0>}
+\CommentTok{## <environment: 0x56247598d570>}
 \CommentTok{## }
 \CommentTok{## [[3]]}
 \CommentTok{## cases ~ date * change_7}
-\CommentTok{## <environment: 0x55629f6a5e80>}
+\CommentTok{## <environment: 0x562475aabcd8>}
 \CommentTok{## }
 \CommentTok{## [[4]]}
 \CommentTok{## cases ~ date * change_8}
-\CommentTok{## <environment: 0x55629f6c7480>}
+\CommentTok{## <environment: 0x562475abc900>}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1390,7 +1413,7 @@ candidate models:
 \chapter{Automation}\label{automation}}
 
 There are many ways to automate data infrastructures. Here, we use \href{https://docs.github.com/en/actions}{github
-actions}, which seemd like a natural choice
+actions}, which seem like a natural choice
 given that the whole infrastructure is hosted on
 \href{https://github.com/whocov/trend_analysis_public}{github}. However, note that
 alternatives could be considered especially for group owning a dedicated server
@@ -1464,13 +1487,13 @@ This set of actions (one per WHO region) are implemented in the
 \item
   run all analyses for the region under consideration
 \item
-  commit and push to github the resulting information products to the
-  \emph{asmodee\_outputs/} folder - see details on the regional analyses in the report
+  commit and push to github the resulting information products (i.e.~the
+  \emph{asmodee\_outputs/} folder) - see details on the regional analyses in the report
   chapter \ref{reports}
-\item
-  \emph{notes}: neither the data nor the compiled report (usually stored in the
-  \emph{outputs/} folder) are commited or pushed to github
 \end{itemize}
+
+\textbf{note}: Neither the data nor the compiled report (usually stored in the
+\emph{outputs/} folder) are commited or pushed to github.
 
 \hypertarget{schedule}{%
 \subsubsection{Schedule}\label{schedule}}
@@ -1494,14 +1517,14 @@ triggered manually from the github action page (see figure
 \hypertarget{outline-1}{%
 \subsubsection{Outline}\label{outline-1}}
 
-This action is implemented in the \emph{auto\_update\_all.yml} and automate the same
+This action is implemented in the \emph{auto\_update\_all.yml} and automates the same
 workflow as the regional updates, but for all regions.
 
 \hypertarget{schedule-1}{%
 \subsubsection{Schedule}\label{schedule-1}}
 
 This action runs every day at 16:00 and 22:00 GMT. It can also be triggered
-manually from the github action page (see figure @(fig:action-trigger). As an
+manually from the github action page (see figure \ref{fig:action-trigger}. As an
 option, the user can specify a single WHO region (using the upper case
 abbreviations) when manually triggering a run of this action.
 
@@ -1511,7 +1534,7 @@ abbreviations) when manually triggering a run of this action.
 \hypertarget{outline-2}{%
 \subsubsection{Outline}\label{outline-2}}
 
-This action is implemented in the \emph{auto\_synthesis} and automates the following
+This action is implemented in the \emph{auto\_synthesis.yml} and automates the following
 workflow:
 
 \begin{itemize}
@@ -1538,21 +1561,21 @@ workflow:
 \item
   sends an email to a list of recipients hard-coded in the script
   \emph{run\_synthesis.R} (located in the root folder) with this zip attached
-\item
-  \emph{notes}: this job does not commit anything to github; the only end-result
-  persisting after the job has run is the email and its attachments
 \end{itemize}
+
+\textbf{note}: this job does not commit anything to github; the only end-result
+persisting after the job has run is the email and its attachments.
 
 \hypertarget{schedule-2}{%
 \subsubsection{Schedule}\label{schedule-2}}
 
 This action runs every Monday at 6:00 GMT. It can also be triggered
-manually from the github action page (see figure @(fig:action-trigger).
+manually from the github action page (see figure \ref{fig:action-trigger}.
 
 \hypertarget{automated-emails}{%
 \subsubsection{Automated emails}\label{automated-emails}}
 
-Automated emails as currently implemented require SMTP authentication for the
+Automated emails, as currently implemented, require SMTP authentication for the
 free SMTP provider \href{https://www.sendinblue.com/}{\emph{sendinblue}}. This is
 currently done through Thibaut Jombart's account, linked to the gmail address
 \emph{\href{mailto:thibautjombart@gmail.com}{\nolinkurl{thibautjombart@gmail.com}}}. While emails will look like they were sent from
