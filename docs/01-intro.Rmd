@@ -25,13 +25,13 @@ components:
 
 ## What does this infrastructure do?
 
-This infrastructure provides an automated data pipeline which gather publicly
+This infrastructure provides an automated data pipeline that gathers publicly
 available data on COVID-19 cases, deaths, tests, as well as on Variants of
-Interest/Concerns (VoI / VoC) and vaccination by country, to provide weekly
+Interest/Concerns (VoI / VoC) and vaccination by country, and provides a weekly
 assessment of COVID-19 dynamics and levels of risks. The pipeline is implemented
 as a [reportfactory](https://www.reconverse.org/reportfactory/) which simplifies
 the handling of dependencies, data and scripts, and enables the compilation of
-analysis reports locally stored in dedicated, time-stamped folders.
+analysis reports stored locally in dedicated, time-stamped folders.
 
 
 A series of `Rmd` reports performs data gathering, various analysis, and produce
@@ -58,14 +58,14 @@ the following information products:
 
 This handbook is organised into the following chapters:
 
-* **Chapter \@ref(getting-started) - [Getting started](#getting-started)**. 
-  Instructions to run the infrastructure locally
+* **Chapter \@ref(getting-started) - [Getting started](#getting-started)**: 
+  instructions to run the infrastructure locally
 
 * **Chapter \@ref(reports) - [Reports overview](#reports)**: outline of the
   `Rmd` reports and how they interact
 
 * **Chapter \@ref(asmodee) - [Implementing ASMODEE](#asmodee)**: methodological
-  and pracical considerations for implementing ASMODEE, a new method for trend
+  and practical considerations for implementing ASMODEE, a new method for trend
   change detection
 
 *  **Chapter \@ref(automation) - [Automation](#automation)**: details on how
