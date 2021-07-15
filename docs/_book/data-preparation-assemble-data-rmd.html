@@ -24,7 +24,7 @@
 <meta name="author" content="Thibaut Jombart" />
 
 
-<meta name="date" content="2021-07-14" />
+<meta name="date" content="2021-07-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="overview-of-the-infrastructure.html"><a href="overview-of-the-infrastructure.html"><i class="fa fa-check"></i><b>2.1</b> Overview of the infrastructure</a></li>
 <li class="chapter" data-level="2.2" data-path="main-folders-and-files.html"><a href="main-folders-and-files.html"><i class="fa fa-check"></i><b>2.2</b> Main folders and files</a></li>
 <li class="chapter" data-level="2.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html"><i class="fa fa-check"></i><b>2.3</b> Installing the infrastructure</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading-the-repository"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
+<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
 <li class="chapter" data-level="2.3.2" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#getting-the-phifunc-authentication-token"><i class="fa fa-check"></i><b>2.3.2</b> Getting the phifunc authentication token</a></li>
 <li class="chapter" data-level="2.3.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#installing-dependencies"><i class="fa fa-check"></i><b>2.3.3</b> Installing dependencies</a></li>
 </ul></li>
@@ -237,7 +237,7 @@ the <em>github</em> repository to reduce the size of the archive.</p>
 <h3><span class="header-section-number">3.1.3</span> Parameters</h3>
 <p>The report accepts the following parameters:</p>
 <ul>
-<li><code>import_data</code>: a <code>logical</code> indicating of the data should be downloaded
+<li><code>import_data</code>: a <code>logical</code> indicating if the data should be downloaded
 (<code>TRUE</code>, default), or if local copies of the last raw data downloaded should
 be used (<code>FALSE</code>)</li>
 </ul>
@@ -245,9 +245,8 @@ be used (<code>FALSE</code>)</li>
 <div id="example-compilation" class="section level3">
 <h3><span class="header-section-number">3.1.4</span> Example compilation</h3>
 <p>The following instructions will compile the report:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw">library</span>(reportfactory)</a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="kw">compile_reports</span>(<span class="dt">report =</span> <span class="st">&quot;assemble&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">library</span>(reportfactory)</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">compile_reports</span>(<span class="dt">report =</span> <span class="st">&quot;assemble&quot;</span>)</a></code></pre></div>
 </div>
 </div>
             </section>
