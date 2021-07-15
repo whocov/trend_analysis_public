@@ -8,6 +8,8 @@ Welcome to the WHO COVID-19 trend analysis repository
 
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5106335.svg)](https://doi.org/10.5281/zenodo.5106335)
+
 # Preamble
 
 ## Forewords
@@ -15,7 +17,7 @@ Welcome to the WHO COVID-19 trend analysis repository
 Welcome to the repository implementing the COVID-19 surveillance
 pipelines developed by the WHO COVID-19 Analytics Team. For more
 information on the infrastructure, check the [dedicated
-website](https://asmodee-infrastructure-hanbook.netlify.app/).
+website](https://asmodee-infrastructure-handbook.netlify.app/).
 
 ## General disclaimer
 
@@ -158,12 +160,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Wednesday 14 July
+<br>Analyses were last updated **Thursday 15 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Central African Republic, Chad, Saint Helena, Sao Tome and
 Principe, United Republic of Tanzania <br> Estimates of *r* could not be
-produced for the following countries:<br>Nigeria, South Sudan <br>
+produced for the following countries:<br>South Sudan <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -181,7 +183,7 @@ produced for the following countries:<br>Nigeria, South Sudan <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Wednesday 14 July
+<br>Analyses were last updated **Thursday 15 July
 2021**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
@@ -225,7 +227,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Wednesday 14 July
+<br>Analyses were last updated **Thursday 15 July
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Antigua and Barbuda, Bermuda, Bonaire, Sint
@@ -280,7 +282,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Wednesday 14 July
+<br>Analyses were last updated **Thursday 15 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,

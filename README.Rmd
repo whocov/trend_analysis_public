@@ -28,6 +28,7 @@ insert_md <- function(x) {
 
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5106335.svg)](https://doi.org/10.5281/zenodo.5106335)
 
 
 # Preamble
@@ -36,7 +37,7 @@ insert_md <- function(x) {
 
 Welcome to the repository implementing the COVID-19 surveillance pipelines
 developed by the WHO COVID-19 Analytics Team. For more information on the
-infrastructure, check the [dedicated website](https://asmodee-infrastructure-hanbook.netlify.app/).
+infrastructure, check the [dedicated website](https://asmodee-infrastructure-handbook.netlify.app/).
 
 
 ## General disclaimer

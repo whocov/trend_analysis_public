@@ -24,7 +24,7 @@
 <meta name="author" content="Thibaut Jombart" />
 
 
-<meta name="date" content="2021-07-14" />
+<meta name="date" content="2021-07-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="overview-of-the-infrastructure.html"><a href="overview-of-the-infrastructure.html"><i class="fa fa-check"></i><b>2.1</b> Overview of the infrastructure</a></li>
 <li class="chapter" data-level="2.2" data-path="main-folders-and-files.html"><a href="main-folders-and-files.html"><i class="fa fa-check"></i><b>2.2</b> Main folders and files</a></li>
 <li class="chapter" data-level="2.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html"><i class="fa fa-check"></i><b>2.3</b> Installing the infrastructure</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading-the-repository"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
+<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
 <li class="chapter" data-level="2.3.2" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#getting-the-phifunc-authentication-token"><i class="fa fa-check"></i><b>2.3.2</b> Getting the phifunc authentication token</a></li>
 <li class="chapter" data-level="2.3.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#installing-dependencies"><i class="fa fa-check"></i><b>2.3.3</b> Installing dependencies</a></li>
 </ul></li>
@@ -216,13 +216,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="what-does-this-infrastructure-do" class="section level2">
 <h2><span class="header-section-number">1.1</span> What does this infrastructure do?</h2>
-<p>This infrastructure provides an automated data pipeline which gather publicly
+<p>This infrastructure provides an automated data pipeline that gathers publicly
 available data on COVID-19 cases, deaths, tests, as well as on Variants of
-Interest/Concerns (VoI / VoC) and vaccination by country, to provide weekly
+Interest/Concerns (VoI / VoC) and vaccination by country, and provides a weekly
 assessment of COVID-19 dynamics and levels of risks. The pipeline is implemented
 as a <a href="https://www.reconverse.org/reportfactory/">reportfactory</a> which simplifies
 the handling of dependencies, data and scripts, and enables the compilation of
-analysis reports locally stored in dedicated, time-stamped folders.</p>
+analysis reports stored locally in dedicated, time-stamped folders.</p>
 <p>A series of <code>Rmd</code> reports performs data gathering, various analysis, and produce
 the following information products:</p>
 <ul>

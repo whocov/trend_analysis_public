@@ -131,7 +131,7 @@ dat_voi
 
 ## Classification algorithm
 
-<img src="https://github.com/thibautjombart/misc_figures/raw/master/diagrams/decision_CoC.png" width = "70%">
+<img src = "https://raw.githubusercontent.com/whocov/trend_analysis_public/main/docs/images/decision_CoC.png" width = "70%">
 
 We define the following classes for levels of concerns:
 

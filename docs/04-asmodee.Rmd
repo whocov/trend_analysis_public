@@ -174,13 +174,31 @@ simple regular expressions:
 
 ```{r results = "markup"}
 
-## cleanup model content
-mod_content <- gsub("(\\+[ ]*)+[ ]*\\+", " + ", mod_content) # +... + -> +
-mod_content <- sub("^[ ]*\\+", "", mod_content) # heading +
-mod_content <- sub("\\+[ ]*$", "", mod_content) # trailing +
-mod_content <- sub("^[ ]+", "", mod_content) # heading spaces
-mod_content <- sub("[ ]+$", "", mod_content) # trailing spaces
-mod_content <- sub("[ ]+", " ", mod_content) # multiple spaces
+# load packages
+pacman::p_load(tidyverse)
+
+# comine effects to generate all possible models
+# note the use of 'NA' to have models with/without effects
+mod_content_grid <- expand.grid(
+  c(NA, "tests"),
+  "date",
+  c(NA, "weekday"),
+  c(NA, "cases_lag_1"))
+
+mod_content_grid
+
+# Use unite() to combine all columns, with sep = " + " and na.rm = TRUE
+mod_content <- mod_content_grid %>% 
+     unite(
+          col = "models",            # name of the new united column
+          1:ncol(mod_content_grid),  # columns to unite
+          sep = " + ",               # separator to use in united column
+          remove = TRUE,             # if TRUE, removes input cols from the data frame
+          na.rm = TRUE               # if TRUE, missing values are removed before uniting
+     ) %>%
+  pull(models) # extract column into a character vector
+
+# Check results
 mod_content
 
 ```

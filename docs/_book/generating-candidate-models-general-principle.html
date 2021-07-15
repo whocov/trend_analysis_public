@@ -24,7 +24,7 @@
 <meta name="author" content="Thibaut Jombart" />
 
 
-<meta name="date" content="2021-07-14" />
+<meta name="date" content="2021-07-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="overview-of-the-infrastructure.html"><a href="overview-of-the-infrastructure.html"><i class="fa fa-check"></i><b>2.1</b> Overview of the infrastructure</a></li>
 <li class="chapter" data-level="2.2" data-path="main-folders-and-files.html"><a href="main-folders-and-files.html"><i class="fa fa-check"></i><b>2.2</b> Main folders and files</a></li>
 <li class="chapter" data-level="2.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html"><i class="fa fa-check"></i><b>2.3</b> Installing the infrastructure</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading-the-repository"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
+<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
 <li class="chapter" data-level="2.3.2" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#getting-the-phifunc-authentication-token"><i class="fa fa-check"></i><b>2.3.2</b> Getting the phifunc authentication token</a></li>
 <li class="chapter" data-level="2.3.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#installing-dependencies"><i class="fa fa-check"></i><b>2.3.3</b> Installing dependencies</a></li>
 </ul></li>
@@ -302,22 +302,49 @@ i.e. autoregressive model</li>
 issues of additional <code>+</code> signs which will need removing. This can be done using
 simple regular expressions:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="co">## cleanup model content</span></a>
-<a class="sourceLine" id="cb14-3" title="3">mod_content &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;(</span><span class="ch">\\</span><span class="st">+[ ]*)+[ ]*</span><span class="ch">\\</span><span class="st">+&quot;</span>, <span class="st">&quot; + &quot;</span>, mod_content) <span class="co"># +... + -&gt; +</span></a>
-<a class="sourceLine" id="cb14-4" title="4">mod_content &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;^[ ]*</span><span class="ch">\\</span><span class="st">+&quot;</span>, <span class="st">&quot;&quot;</span>, mod_content) <span class="co"># heading +</span></a>
-<a class="sourceLine" id="cb14-5" title="5">mod_content &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">+[ ]*$&quot;</span>, <span class="st">&quot;&quot;</span>, mod_content) <span class="co"># trailing +</span></a>
-<a class="sourceLine" id="cb14-6" title="6">mod_content &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;^[ ]+&quot;</span>, <span class="st">&quot;&quot;</span>, mod_content) <span class="co"># heading spaces</span></a>
-<a class="sourceLine" id="cb14-7" title="7">mod_content &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;[ ]+$&quot;</span>, <span class="st">&quot;&quot;</span>, mod_content) <span class="co"># trailing spaces</span></a>
-<a class="sourceLine" id="cb14-8" title="8">mod_content &lt;-<span class="st"> </span><span class="kw">sub</span>(<span class="st">&quot;[ ]+&quot;</span>, <span class="st">&quot; &quot;</span>, mod_content) <span class="co"># multiple spaces</span></a>
-<a class="sourceLine" id="cb14-9" title="9">mod_content</a>
-<a class="sourceLine" id="cb14-10" title="10"><span class="co">## [1] &quot;date&quot;                                </span></a>
-<a class="sourceLine" id="cb14-11" title="11"><span class="co">## [2] &quot;tests + date&quot;                        </span></a>
-<a class="sourceLine" id="cb14-12" title="12"><span class="co">## [3] &quot;date + weekday&quot;                      </span></a>
-<a class="sourceLine" id="cb14-13" title="13"><span class="co">## [4] &quot;tests + date + weekday&quot;              </span></a>
-<a class="sourceLine" id="cb14-14" title="14"><span class="co">## [5] &quot;date +  cases_lag_1&quot;                 </span></a>
-<a class="sourceLine" id="cb14-15" title="15"><span class="co">## [6] &quot;tests + date  +  cases_lag_1&quot;        </span></a>
-<a class="sourceLine" id="cb14-16" title="16"><span class="co">## [7] &quot;date + weekday + cases_lag_1&quot;        </span></a>
-<a class="sourceLine" id="cb14-17" title="17"><span class="co">## [8] &quot;tests + date + weekday + cases_lag_1&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb14-2" title="2"><span class="co"># load packages</span></a>
+<a class="sourceLine" id="cb14-3" title="3">pacman<span class="op">::</span><span class="kw">p_load</span>(tidyverse)</a>
+<a class="sourceLine" id="cb14-4" title="4"></a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="co"># comine effects to generate all possible models</span></a>
+<a class="sourceLine" id="cb14-6" title="6"><span class="co"># note the use of &#39;NA&#39; to have models with/without effects</span></a>
+<a class="sourceLine" id="cb14-7" title="7">mod_content_grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(</a>
+<a class="sourceLine" id="cb14-8" title="8">  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="st">&quot;tests&quot;</span>),</a>
+<a class="sourceLine" id="cb14-9" title="9">  <span class="st">&quot;date&quot;</span>,</a>
+<a class="sourceLine" id="cb14-10" title="10">  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="st">&quot;weekday&quot;</span>),</a>
+<a class="sourceLine" id="cb14-11" title="11">  <span class="kw">c</span>(<span class="ot">NA</span>, <span class="st">&quot;cases_lag_1&quot;</span>))</a>
+<a class="sourceLine" id="cb14-12" title="12"></a>
+<a class="sourceLine" id="cb14-13" title="13">mod_content_grid</a>
+<a class="sourceLine" id="cb14-14" title="14"><span class="co">##    Var1 Var2    Var3        Var4</span></a>
+<a class="sourceLine" id="cb14-15" title="15"><span class="co">## 1  &lt;NA&gt; date    &lt;NA&gt;        &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb14-16" title="16"><span class="co">## 2 tests date    &lt;NA&gt;        &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb14-17" title="17"><span class="co">## 3  &lt;NA&gt; date weekday        &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb14-18" title="18"><span class="co">## 4 tests date weekday        &lt;NA&gt;</span></a>
+<a class="sourceLine" id="cb14-19" title="19"><span class="co">## 5  &lt;NA&gt; date    &lt;NA&gt; cases_lag_1</span></a>
+<a class="sourceLine" id="cb14-20" title="20"><span class="co">## 6 tests date    &lt;NA&gt; cases_lag_1</span></a>
+<a class="sourceLine" id="cb14-21" title="21"><span class="co">## 7  &lt;NA&gt; date weekday cases_lag_1</span></a>
+<a class="sourceLine" id="cb14-22" title="22"><span class="co">## 8 tests date weekday cases_lag_1</span></a>
+<a class="sourceLine" id="cb14-23" title="23"></a>
+<a class="sourceLine" id="cb14-24" title="24"><span class="co"># Use unite() to combine all columns, with sep = &quot; + &quot; and na.rm = TRUE</span></a>
+<a class="sourceLine" id="cb14-25" title="25">mod_content &lt;-<span class="st"> </span>mod_content_grid <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-26" title="26"><span class="st">     </span><span class="kw">unite</span>(</a>
+<a class="sourceLine" id="cb14-27" title="27">          <span class="dt">col =</span> <span class="st">&quot;models&quot;</span>,            <span class="co"># name of the new united column</span></a>
+<a class="sourceLine" id="cb14-28" title="28">          <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(mod_content_grid),  <span class="co"># columns to unite</span></a>
+<a class="sourceLine" id="cb14-29" title="29">          <span class="dt">sep =</span> <span class="st">&quot; + &quot;</span>,               <span class="co"># separator to use in united column</span></a>
+<a class="sourceLine" id="cb14-30" title="30">          <span class="dt">remove =</span> <span class="ot">TRUE</span>,             <span class="co"># if TRUE, removes input cols from the data frame</span></a>
+<a class="sourceLine" id="cb14-31" title="31">          <span class="dt">na.rm =</span> <span class="ot">TRUE</span>               <span class="co"># if TRUE, missing values are removed before uniting</span></a>
+<a class="sourceLine" id="cb14-32" title="32">     ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-33" title="33"><span class="st">  </span><span class="kw">pull</span>(models) <span class="co"># extract column into a character vector</span></a>
+<a class="sourceLine" id="cb14-34" title="34"></a>
+<a class="sourceLine" id="cb14-35" title="35"><span class="co"># Check results</span></a>
+<a class="sourceLine" id="cb14-36" title="36">mod_content</a>
+<a class="sourceLine" id="cb14-37" title="37"><span class="co">## [1] &quot;date&quot;                                </span></a>
+<a class="sourceLine" id="cb14-38" title="38"><span class="co">## [2] &quot;tests + date&quot;                        </span></a>
+<a class="sourceLine" id="cb14-39" title="39"><span class="co">## [3] &quot;date + weekday&quot;                      </span></a>
+<a class="sourceLine" id="cb14-40" title="40"><span class="co">## [4] &quot;tests + date + weekday&quot;              </span></a>
+<a class="sourceLine" id="cb14-41" title="41"><span class="co">## [5] &quot;date + cases_lag_1&quot;                  </span></a>
+<a class="sourceLine" id="cb14-42" title="42"><span class="co">## [6] &quot;tests + date + cases_lag_1&quot;          </span></a>
+<a class="sourceLine" id="cb14-43" title="43"><span class="co">## [7] &quot;date + weekday + cases_lag_1&quot;        </span></a>
+<a class="sourceLine" id="cb14-44" title="44"><span class="co">## [8] &quot;tests + date + weekday + cases_lag_1&quot;</span></a></code></pre></div>
 <p>We now have clean model content which can be turned into <em>trending</em> models using
 the approach illustrated before. In the following sections, we highlight tricks
 for capturing specific trends in the data, but all ultimately rely on the
