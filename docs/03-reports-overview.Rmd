@@ -19,12 +19,11 @@ Reports can be **compiled** by two ways:
 Some reports accept **parameters**, i.e. variables set at compilation time which can
 impact the results generated. This is typically used, for instance, to indicate
 which WHO region the analyses are to be performed on, and is a more sustainable
-alternative to handling separate reports for every region. The way to specify
-parameters is the same in both methods of compilation, and are passed as a list
+alternative to handling separate reports for every region. For both compilation
+methods the way to specify parameters to a report is the same; passing a list
 called `param` when compiling documents. For instance:
 
 ```{r eval = FALSE}
-
 library(reportfactory)
 compile_reports(report = "analyses",
                 params = list(who_region = "AFRO")
@@ -65,7 +64,7 @@ the *github* repository to reduce the size of the archive.
 
 The report accepts the following parameters:
 
-* `import_data`: a `logical` indicating of the data should be downloaded
+* `import_data`: a `logical` indicating if the data should be downloaded
   (`TRUE`, default), or if local copies of the last raw data downloaded should
   be used (`FALSE`)
   
@@ -75,7 +74,6 @@ The report accepts the following parameters:
 The following instructions will compile the report:
 
 ```{r eval = FALSE}
-
 library(reportfactory)
 compile_reports(report = "assemble")
 
@@ -89,7 +87,7 @@ compile_reports(report = "assemble")
 
 ## Analyses of COVID-19 dynamics: *regional_analyses.Rmd*
 
-This report uses the latest clean data performs a range of analyses for a
+This report uses the latest clean data to perform a range of analyses for a
 specific WHO region. Analyses include estimation of the growth rate, detection
 of trend changes using ASMODEE, and figures summarising the overall dynamics of
 COVID-19 by country (pinplots and tadpoles).
@@ -116,7 +114,7 @@ knitr::include_graphics('images/example_pinplot.png', dpi = NA)
 ### Outputs
 
 The main output of the report is a `list` exported as a file named
-*asmodee_outputs_[WHO region]_[data].rds* stored in */asmodee_outputs/rds/*, and
+_asmodee_outputs_[WHO region]_[data].rds_ stored in */asmodee_outputs/rds/*, and
 containing the following elements:
 
 * `$summary`: summary of the ASMODEE results
@@ -132,7 +130,7 @@ containing the following elements:
 * `$timestamp`: the timestamp corresponding to the date of the dataset used in
   the analyses 
 
-Other inputs include:
+Other outputs include:
 
 * **pinplots** and **tadpoles** figures saved *asmodee_outputs/png/*; these
   figures summarise the COVID-19 dynamics according to the *growth rate*, the
@@ -142,8 +140,8 @@ Other inputs include:
   last few days
   
 * **notes** listing countries what were excluded from the analyses alongside the
-  reason for their exclusion, stored in a markdown file named *analysis_notes_[WHO
-  region]_[data].md* stored in */asmodee_outputs/notes/*
+  reason for their exclusion, stored in a markdown file named _analysis_notes_[WHO
+  region]_[data].md_ stored in */asmodee_outputs/notes/*
 
 
 ### Parameters
@@ -202,7 +200,7 @@ rmarkdown::render('regional_analyses',
 ## Synthesis: *elr_synthesis.Rmd*
 
 This report compiles results of all WHO regions, defines ELR for the countries,
-and compiles the main results into an *xlsx* file.
+and stores the main results into an *xlsx* file.
 
 ### Inputs
 
@@ -251,7 +249,6 @@ The report does not accept parameters.
 The following instructions will compile the report:
 
 ```{r eval = FALSE}
-
 library(reportfactory)
 compile_reports(report = "synthesis")
 
