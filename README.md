@@ -15,7 +15,7 @@ Welcome to the WHO COVID-19 trend analysis repository
 Welcome to the repository implementing the COVID-19 surveillance
 pipelines developed by the WHO COVID-19 Analytics Team. For more
 information on the infrastructure, check the [dedicated
-website](https://asmodee-infrastructure-hanbook.netlify.app/).
+website](https://asmodee-infrastructure-handbook.netlify.app/).
 
 ## General disclaimer
 
@@ -158,12 +158,12 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Wednesday 14 July
+<br>Analyses were last updated **Thursday 15 July
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Central African Republic, Chad, Saint Helena, Sao Tome and
 Principe, United Republic of Tanzania <br> Estimates of *r* could not be
-produced for the following countries:<br>Nigeria, South Sudan <br>
+produced for the following countries:<br>South Sudan <br>
 
 ### Infection levels as % of historical incidence peak
 
