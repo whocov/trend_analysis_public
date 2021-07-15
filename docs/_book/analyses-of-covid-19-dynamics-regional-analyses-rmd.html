@@ -24,7 +24,7 @@
 <meta name="author" content="Thibaut Jombart" />
 
 
-<meta name="date" content="2021-07-14" />
+<meta name="date" content="2021-07-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="overview-of-the-infrastructure.html"><a href="overview-of-the-infrastructure.html"><i class="fa fa-check"></i><b>2.1</b> Overview of the infrastructure</a></li>
 <li class="chapter" data-level="2.2" data-path="main-folders-and-files.html"><a href="main-folders-and-files.html"><i class="fa fa-check"></i><b>2.2</b> Main folders and files</a></li>
 <li class="chapter" data-level="2.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html"><i class="fa fa-check"></i><b>2.3</b> Installing the infrastructure</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading-the-repository"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
+<li class="chapter" data-level="2.3.1" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#downloading"><i class="fa fa-check"></i><b>2.3.1</b> Downloading the repository</a></li>
 <li class="chapter" data-level="2.3.2" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#getting-the-phifunc-authentication-token"><i class="fa fa-check"></i><b>2.3.2</b> Getting the phifunc authentication token</a></li>
 <li class="chapter" data-level="2.3.3" data-path="installing-the-infrastructure.html"><a href="installing-the-infrastructure.html#installing-dependencies"><i class="fa fa-check"></i><b>2.3.3</b> Installing dependencies</a></li>
 </ul></li>
@@ -216,7 +216,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="analyses-of-covid-19-dynamics-regional_analyses.rmd" class="section level2">
 <h2><span class="header-section-number">3.2</span> Analyses of COVID-19 dynamics: <em>regional_analyses.Rmd</em></h2>
-<p>This report uses the latest clean data performs a range of analyses for a
+<p>This report uses the latest clean data to perform a range of analyses for a
 specific WHO region. Analyses include estimation of the growth rate, detection
 of trend changes using ASMODEE, and figures summarising the overall dynamics of
 COVID-19 by country (pinplots and tadpoles).</p>
@@ -234,7 +234,7 @@ Figure 3.1: Example of pinplot. This figure summarises the dynamics of COVID-19 
 <div id="outputs-1" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Outputs</h3>
 <p>The main output of the report is a <code>list</code> exported as a file named
-*asmodee_outputs_[WHO region]_[data].rds* stored in <em>/asmodee_outputs/rds/</em>, and
+<em>asmodee_outputs</em>[WHO region]<em>[data].rds</em> stored in <em>/asmodee_outputs/rds/</em>, and
 containing the following elements:</p>
 <ul>
 <li><code>$summary</code>: summary of the ASMODEE results</li>
@@ -250,7 +250,7 @@ including TPR and vaccination coverage</li>
 <li><code>$timestamp</code>: the timestamp corresponding to the date of the dataset used in
 the analyses</li>
 </ul>
-<p>Other inputs include:</p>
+<p>Other outputs include:</p>
 <ul>
 <li><p><strong>pinplots</strong> and <strong>tadpoles</strong> figures saved <em>asmodee_outputs/png/</em>; these
 figures summarise the COVID-19 dynamics according to the <em>growth rate</em>, the
@@ -259,8 +259,8 @@ ASMODEE; pinplots show the current situation (see example in Figure
 <a href="analyses-of-covid-19-dynamics-regional-analyses-rmd.html#fig:pinplot">3.1</a>, while tadpoles show the trajectories of countries over the
 last few days</p></li>
 <li><p><strong>notes</strong> listing countries what were excluded from the analyses alongside the
-reason for their exclusion, stored in a markdown file named *analysis_notes_[WHO
-region]_[data].md* stored in <em>/asmodee_outputs/notes/</em></p></li>
+reason for their exclusion, stored in a markdown file named <em>analysis_notes</em>[WHO
+region]<em>[data].md</em> stored in <em>/asmodee_outputs/notes/</em></p></li>
 </ul>
 </div>
 <div id="parameters-1" class="section level3">
