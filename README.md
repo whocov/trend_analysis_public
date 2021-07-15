@@ -15,7 +15,7 @@ Welcome to the WHO COVID-19 trend analysis repository
 Welcome to the repository implementing the COVID-19 surveillance
 pipelines developed by the WHO COVID-19 Analytics Team. For more
 information on the infrastructure, check the [dedicated
-website](https://asmodee-infrastructure-hanbook.netlify.app/).
+website](https://asmodee-infrastructure-handbook.netlify.app/).
 
 ## General disclaimer
 
