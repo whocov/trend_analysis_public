@@ -203,10 +203,10 @@ analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Thursday 15 July
-2021**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Greenland, Guernsey, Holy See, San Marino <br>
+<br>Analyses were last updated **Friday 16 July 2021**.<br><br>**Notes**
+<br>The following countries reported \< 100 cases/tests over the last 7
+weeks and were not included in further analyses:<br>Greenland, Guernsey,
+Holy See, San Marino <br>
 
 ### Infection levels as % of historical incidence peak
 
