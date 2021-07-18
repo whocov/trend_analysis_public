@@ -610,7 +610,7 @@ elr_extra_to_keep <- all_elr_extras %>%
     tpr_change,
     tpr_last_date_recent,
     tpr_last_date_before,
-    vac_full_per_100,
+    vac_full_per_100,                      # percent fully vaccinated
     vaccinations_date = as_of_vaccine
          ) %>%
   mutate(
