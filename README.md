@@ -160,12 +160,11 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Sunday 18 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 19 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Central African
 Republic, Chad, Saint Helena, Sao Tome and Principe, United Republic of
-Tanzania <br> Estimates of *r* could not be produced for the following
-countries:<br>South Sudan <br>
+Tanzania <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -183,7 +182,7 @@ countries:<br>South Sudan <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 18 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 19 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Djibouti <br>
 
@@ -203,10 +202,10 @@ weeks and were not included in further analyses:<br>Djibouti <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Sunday 18 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 19 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Greenland, Guernsey,
-Holy See, Iceland, San Marino <br>
+Holy See, San Marino <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -281,7 +280,7 @@ Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 18 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 19 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>American Samoa,
 Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
