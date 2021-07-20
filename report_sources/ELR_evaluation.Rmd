@@ -198,6 +198,12 @@ get_links <- function(value1, value2){
 
 
 
+
+
+
+
+
+
 # Regional ELR trends {.tabset}  
 
 
@@ -936,74 +942,75 @@ p
 # Internal consistency  
 
 
-We examine the proportion of countries in a given week that were "caught" by the ELR process prior to their becoming a hotspot. That is, countries classified as either `r alert`, where in the previous two weeks they were listed as either `r warning` 
+<!--   -->
+
+<!-- ```{r} -->
+<!-- consistency <- ELR %>%  -->
+<!--      group_by(country) %>%  -->
+<!--      arrange(country, week) %>%  -->
+<!--      mutate( -->
+<!--           final_lag_1 = lag(final), -->
+<!--           final_lag_2 = lag(final, 2)) %>%  -->
+<!--      select(country, week, final, final_lag_1, final_lag_2) %>%  -->
+<!--      mutate(premonition = case_when( -->
+<!--           (!final %in% alert) ~ "Irrelevant", -->
+<!--           (final %in% alert) & (final_lag_1 %in% warning) ~ "Caught", -->
+<!--           TRUE ~ "Missed")) -->
+
+
+<!-- metrics <- consistency %>%  -->
+<!--      group_by(week) %>%  -->
+<!--      summarise( -->
+<!--           records = n(), -->
+<!--           alarming = sum(premonition != "Irrelevant"), -->
+<!--           caught = sum(premonition == "Caught"), -->
+<!--           missed = sum(premonition == "Missed"), -->
+<!--           prop_caught = scales::percent(caught / alarming)) -->
+
+<!-- missed_list <- consistency %>%  -->
+<!--      group_by(week) %>%  -->
+<!--      filter(premonition == "Missed") %>%  -->
+<!--      summarise( -->
+<!--           across(country, ~paste0(na.omit(.x), collapse = "; "))) -->
+
+<!-- missed_table <- left_join(metrics, missed_list, by = "week") -->
+
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- missed_table %>%  -->
+<!--   flextable::qflextable() %>%  -->
+<!--   width(j=1, width = 3) %>%  -->
+<!--   width(j=3, width = 1) %>%  -->
+<!--   flextable::set_header_labels( -->
+<!--       week = "Week",  -->
+<!--       records = "Records", -->
+<!--       alarming = "Critical\nor Very high", -->
+<!--       caught = "Caught", -->
+<!--       missed = "Missed", -->
+<!--       prop_caught = "%\nCaught", -->
+<!--       country = "Countries missed") %>%  -->
+<!--   flextable::set_caption( -->
+<!--   "ELR internal consistency", -->
+<!--   autonum = NULL, -->
+<!--   style = "Table Caption", -->
+<!--   html_escape = TRUE -->
+<!-- ) -->
+
+
+<!-- ``` -->
+
+
+
+We examine the proportion of countries in a given week that were "caught" by the ELR process prior to their becoming a hotspot. That is, for the week when a country was *first* classified as either `r alert`, were they listed in the previous two weeks as either `r warning`?  
 
 ```{r}
 consistency <- ELR %>% 
      group_by(country) %>% 
      arrange(country, week) %>% 
-     mutate(
-          final_lag_1 = lag(final),
-          final_lag_2 = lag(final, 2)) %>% 
-     select(country, week, final, final_lag_1, final_lag_2) %>% 
-     mutate(premonition = case_when(
-          (!final %in% alert) ~ "Irrelevant",
-          (final %in% alert) & (final_lag_1 %in% warning) ~ "Caught",
-          TRUE ~ "Missed"))
-
-
-metrics <- consistency %>% 
-     group_by(week) %>% 
-     summarise(
-          records = n(),
-          alarming = sum(premonition != "Irrelevant"),
-          caught = sum(premonition == "Caught"),
-          missed = sum(premonition == "Missed"),
-          prop_caught = scales::percent(caught / alarming))
-
-missed_list <- consistency %>% 
-     group_by(week) %>% 
-     filter(premonition == "Missed") %>% 
-     summarise(
-          across(country, ~paste0(na.omit(.x), collapse = "; ")))
-
-missed_table <- left_join(metrics, missed_list, by = "week")
-
-```
-
-
-```{r}
-missed_table %>% 
-  flextable::qflextable() %>% 
-  width(j=1, width = 3) %>% 
-  width(j=3, width = 1) %>% 
-  flextable::set_header_labels(
-      week = "Week", 
-      records = "Records",
-      alarming = "Critical\nor Very high",
-      caught = "Caught",
-      missed = "Missed",
-      prop_caught = "%\nCaught",
-      country = "Countries missed") %>% 
-  flextable::set_caption(
-  "ELR internal consistency",
-  autonum = NULL,
-  style = "Table Caption",
-  html_escape = TRUE
-)
-  
-
-```
-
-
-
-And now being more selective so only countries that were caught on their *first* time being `r alert`.  
-
-```{r}
-consistency <- ELR %>% 
-     group_by(country) %>% 
-     arrange(country, week) %>% 
-     select(country, week, final) %>% 
+     select(country, who_region, week, final) %>% 
+     mutate(entry = row_number()) %>% 
      mutate(first_alert = { final %in% alert } %>% { . * !duplicated(.) }) %>%
      mutate(first_row = ifelse(row_number() == 1, TRUE, FALSE)) %>% 
      # mutate(first_alert_day = first_alert,
@@ -1170,6 +1177,83 @@ save_as_image(nice_table, path = here::here("outputs", "ELR_outputs", str_glue("
   
 
 ```
+
+
+
+
+
+
+
+
+# Global early-alert trajectories {.tabset}  
+
+
+```{r, warning=F, message=F}
+medium_data <- consistency %>% 
+  group_by(country) %>%
+  
+  # Find first Medium classification in Country
+  mutate(first_med = { final %in% "4 - Medium"} %>% { . * !duplicated(.) }) %>% 
+  
+  # Number weeks by relationship to first medium
+  filter(sum(first_med, na.rm=T) > 0) %>% 
+  mutate(day_first_med = as.numeric((week - week[first_med == 1])/ 7)) %>% 
+  
+  # Factor re-ordering of ELR classifications
+  mutate(final = fct_explicit_na(final)) %>% 
+  mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
+  mutate(final = fct_rev(final)) %>% 
+  
+  # Create columns that look ahead 5 weeks
+  mutate(post_med_1 = lead(final, 1)) %>% 
+  mutate(post_med_2 = lead(final, 2)) %>% 
+  mutate(post_med_3 = lead(final, 3)) %>% 
+  mutate(post_med_4 = lead(final, 4)) %>% 
+  mutate(post_med_5 = lead(final, 5)) %>% 
+
+ 
+   # Look ahead for Critical or Very High
+  mutate(future_alert = case_when(
+    first_med == 1 & 
+      ((post_med_1[first_med == 1] %in% alert) ||
+      (post_med_2[first_med == 1]  %in% alert) ||
+      (post_med_3[first_med == 1] %in% alert) ||
+      (post_med_4[first_med == 1] %in% alert) ||
+      (post_med_5[first_med == 1] %in% alert)
+      ) ~ "Future alert",
+    TRUE ~ "Not")) %>% 
+  
+  mutate(future_alert_filled = case_when(
+    ("Future alert" %in% future_alert) ~ "Future alert",
+    TRUE ~ "Not")) %>% 
+  mutate(future_alert_filled = fct_relevel(future_alert_filled, c("Not", "Future alert")))
+    
+
+
+levels(medium_data$future_alert_filled)
+tabyl(medium_data$future_alert_filled)
+
+
+medium_data %>% 
+  filter(who_region != "t") %>% 
+  #mutate(final = fct_explicit_na(final)) %>%
+  ggplot() +
+  geom_line(aes(x = day_first_med, y = final, group = country, color = future_alert_filled), alpha = 0.5, size = 1)+
+  scale_color_manual(values = c("blue", "red"))+
+  facet_wrap(~who_region)+
+  geom_vline(xintercept = 0)+
+  #gghighlight::gghighlight(future_alert == "Future alert")+
+  theme_minimal()+
+  theme(legend.position = "none")+
+  labs(x = "Days from first 'Medium' classification",
+       y = "ELR classification",
+       title = "Medium countries that were critical/very high within 5 weeks")
+
+
+
+```
+
+
 
 
 
