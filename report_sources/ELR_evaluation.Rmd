@@ -1,7 +1,7 @@
 ---
 title: "ELR_evaluation"
 author: "Neale Batra"
-date: "7/6/2021"
+date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: TRUE
@@ -30,7 +30,8 @@ This is a report that assesses the ELR (Epidemiological Level of Risk) process, 
 ## Packages
 
 ```{r}
-pacman::p_load(here, rio, lubridate, janitor, tidyverse, flextable, 
+pacman::p_load(here, rio, lubridate, janitor, tidyverse, flextable,
+               cowplot, ggpubr, # for plots 
                DiagrammeR,     # for flow diagrams
                networkD3)      # For alluvial/Sankey diagrams
 ```
@@ -172,7 +173,7 @@ ELR %>%
   ggplot()+
   geom_line(aes(x = week, y = n), size = 1)+
   theme_minimal()+
-  labs(title = "Number of Critical/Very high countries",
+  labs(title = "Number of countries classified as Critical/Very high (n=238 each week)",
        subtitle = "(this impacts the workload of Intel team)")
 
 ```
@@ -211,7 +212,8 @@ ELR %>%
 
 # Early detection  
 
-We examine the proportion of countries in a given week that were detected by the ELR process prior to their becoming a hotspot. That is, for the week when a country was *first* classified as either `r alert`, were they listed in the previous two weeks as one of:  `r warning`?  
+We examine the proportion of countries in a given week that were detected by the ELR process prior to their becoming a hotspot. That is, for the week when a country was *first* classified as either `r alert`, were they listed in the previous two weeks as either:  `r warning` ?  
+
 
 ```{r}
 consistency <- ELR %>% 
@@ -252,7 +254,7 @@ consistency <- ELR %>%
 ```
 
 
-```{r}
+```{r, warning=F, message=F}
   
 # table by week
 # alarm = critical or very high
@@ -307,7 +309,7 @@ combined_table <- consistency_table %>%
 ```
 
 
-```{r}
+```{r, warning=F, message=F}
 nice_table <- combined_table %>% 
   flextable::qflextable() %>% 
   width(j=1, width = 3) %>% 
@@ -379,7 +381,7 @@ nice_table <- combined_table %>%
   theme_box() 
 
 # save
-save_as_image(nice_table, path = here::here("outputs", "ELR_outputs", str_glue("ELR_evaluation_{max(combined_table$week)}.png")))
+#save_as_image(nice_table, path = here::here("outputs", "ELR_outputs", str_glue("ELR_evaluation_{max(combined_table$week)}.png")))
   
 nice_table
 
@@ -388,9 +390,115 @@ nice_table
 
 
 
+## Trajectories of "Missed" countries  
+
+```{r}
+missed <- consistency %>% 
+     group_by(week) %>% 
+     filter(premonition_lag1 == "not warned") %>%
+     pull(country)
+```
+
+The "missed" countries were: `r str_c(missed, sep = ", ")` 
+
+Below, we explore their ELR trajectories:
+
+```{r, message = F, warning=F}
+# USE IF FIRST TIME RUNNING
+#case_inc <- phifunc::pull_case_death_data()
+#rio::export(case_inc, "C:/Users/Neale/Downloads/case_inc.rds")
+
+# USE IF RUNNING OFTEN IN ONE DAY
+case_inc <- rio::import("C:/Users/Neale/Downloads/case_inc.rds")
+```
 
 
-# Trajectories of "Medium" countries  {.tabset}  
+```{r, warning=F, message=F}
+ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(
+       country %in% missed,
+       value != "(Missing)"
+          ) %>% 
+     ggplot()+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+     facet_wrap(~country)
+
+```
+
+
+
+```{r}
+plot_elr_epi <- function(country_name = NULL){
+  
+elr_data <- ELR %>% 
+     select(week, country, who_region, dynamics, context, final) %>% 
+     pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
+     filter(metric == "final") %>% 
+     mutate(value = fct_rev(fct_drop(value))) %>% 
+     filter(country == country_name) %>% 
+     filter(value != "(Missing)")
+  
+    min_date_elr <- as.Date("2021-05-31")    #min(elr_data$week, na.rm=T)
+    max_date_elr <- max(elr_data$week, na.rm=T)
+     
+elr <- ggplot(data = elr_data)+
+     geom_point(aes(x = week, y = value))+
+     geom_line(aes(x = week, y = value, group = 1))+
+     scale_y_discrete(drop = F)+
+    scale_x_date(limits = c(min_date_elr, max_date_elr))+
+    labs(y = "ELR classification",
+         x = "")+
+    theme_cowplot()
+  
+
+  epi <- case_inc %>% 
+    filter(report_country == country_name,
+           report_date_WHO <= max_date_elr+6,
+           report_date_WHO >= min_date_elr) %>% 
+    select(report_country, report_date_WHO, new_num_case) %>% 
+    
+    ggplot()+
+    geom_line(aes(x = report_date_WHO, y = new_num_case), alpha = 0.3, fill = "blue")+
+    scale_y_continuous(                # adjust y-axis
+      position = "right")+             # move percent axis to the right
+    labs(y = "Daily case incidence",
+         x = "\nDate",
+         title = str_glue("ELR & epicurve for {country_name}"))+
+    theme_cowplot()+
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  
+  
+  aligned_plots <- cowplot::align_plots(elr, epi, align="hv", axis="tblr")
+  return(ggdraw(aligned_plots[[1]]) + draw_plot(aligned_plots[[2]]))
+}
+
+#plot_elr_epi(country_name = "Russian Federation")
+```
+
+When we compare the ELR trajectories to the epidemic curves, it becomes clear that some of these countries were not truly "missed" but rather ignored for some reason without any ELR classification prior to their case surge.  
+
+
+```{r, warning=F, message=F}
+map(missed, plot_elr_epi)
+
+#map(missed_plots, plot)
+```
+
+
+
+```{r}
+#ggpubr::ggarrange(plotlist = missed_plots, ncol = 1, nrow = length(missed_plots))
+```
+
+
+# Characteristics of ELR "Medium"  
 
 
 ```{r, warning=F, message=F}
@@ -457,12 +565,49 @@ medium_data %>%
 ```
 
 
-This plot depicts the trajectories of countries after they are first classified as "Medium" (day 0 on the x-axis). There are two distinct patterns:  
+This section examines the nature and trajectories of countries that are classified as ELR Medium.  
+
+
+
+If we plot the epidemiological metrics of countries when they are first classified as "Medium", they tend to be either:  
+
+* High incidence and low growth (chronic - e.g. many countries in South America), or  
+* Low incidence and high growth (budding outbreaks)  
+
+The plot below shows this dynamic, as most Medium countries are either in the upper-left, or the lower-right. 
+
+```{r, message=F, warning=F}
+points_data <- medium_data %>% 
+  filter(first_med == 1) %>% 
+  left_join(ELR %>% select(country, week,
+                           growth_rate,
+                           relative_incidence,
+                           net_increases_asmodee),
+            by = c("country", "week"))
+
+
+ggplot(points_data) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = who_region), size = 2, alpha = 0.8)+
+  scale_color_brewer(type = "qual")+
+  geom_vline(xintercept = 0)+
+  theme_grey()+
+  labs(color = "WHO regional office",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "Country metrics when first classified as 'Medium'")
+
+
+```
+
+
+The next question is - what happens to these countries *after* they are first classified as "Medium"? Do they rise upward to Critical or Very High ELR classifications? Or do they stay lower, at Medium or below?  
+
+The plot below depicts the ELR classification trajectories of countries before and after they are first classified as "Medium" (day 0 on the x-axis). Each tiny line is one country's ELR trajectory, and there is a smoothed large line. There are two distinct patterns:  
 
 1) Countries that increase to Critical or Very High within a few weeks (red)  
 2) Countries that remain at lower ELR levels (blue)  
 
-```{r, eval=T}
+```{r, eval=T, message=F, warning=F}
 medium_data %>% 
   filter(who_region != "t") %>% 
   #mutate(final = fct_explicit_na(final)) %>%
@@ -489,27 +634,15 @@ medium_data %>%
 ```
 
 
-If we look deeper and try to understand the epidemiological characteristics of countries classified as "Medium", they tend to be either:  
 
-* High incidence and low growth (chronic - e.g. many countries in South America), or  
-* Low incidence and high growth (budding outbreaks)  
+Circling back to that original points plot of the metrics of metrics when they are first classified as Medium...  
 
-The plot below shows this dynamic, as most Medium countries are either in the upper-left, or the lower-right. While countries in both sectors did increase to Critical/Very High ELR within a few weeks (red), countries in the upper-left with higher incidence and lower growth were more likely to increase.  
+While some countries in both the upper-left and lower-right sectors did increase to Critical/Very High ELR within a few weeks  of being classified as Medium (the red points above), countries in the upper-left sector (with higher incidence and lower growth) seemed to be more likely to increase than countries in the lower-right sector.  
 
-
+So we may want to pay special attention to Medium countries that have higher incidence, even if they have lower growth rates.  
 
 ```{r, message=F, warning=F}
 
-points_data <- medium_data %>% 
-  filter(first_med == 1) %>% 
-  left_join(ELR %>% select(country, week,
-                           growth_rate,
-                           relative_incidence,
-                           net_increases_asmodee),
-            by = c("country", "week"))
-
-
-  
 points_data$alert = ifelse(points_data$future_alert=="Future alert", 1, 0)
 
 ggplot(points_data, aes(growth_rate, relative_incidence, z=alert)) +
@@ -518,6 +651,7 @@ ggplot(points_data, aes(growth_rate, relative_incidence, z=alert)) +
   geom_point(aes(x = growth_rate, y = relative_incidence, color = future_alert), alpha = 1.0)+
   geom_vline(xintercept = 0)+
   scale_color_manual(values = c("red", "blue"), breaks = c("Future alert", "Not"), labels = c("Increased", "No increase"))+
+  theme_minimal()+
   labs(color = "Country data points",
        y = "% Historical Peak",
        x = "Growth rate",
@@ -552,6 +686,9 @@ ggplot(points_data, aes(growth_rate, relative_incidence, z=alert)) +
 #          title = "Growth and incidence among Medium countries,\nby future trends")
 
 ```
+
+
+One hypothesis could be that countries with smaller but faster-growing epidemics are increasing testing and so their growth rates are high. But their overall incidence is still relatively low.  
 
 
 
@@ -727,7 +864,7 @@ region <- "PAHO"
 
 ### Lines/points  
 
-```{r message = F}
+```{r message = F, out.height="150%", out.width="150%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -814,7 +951,7 @@ region <- "AFRO"
 
 ### Lines/points  
 
-```{r message = F}
+```{r message = F, out.height="150%", out.width="150%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -900,7 +1037,7 @@ region <- "EURO"
 
 ### Lines/points  
 
-```{r message = F}
+```{r message = F, out.height="150%", out.width="150%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -986,7 +1123,7 @@ region <- "EMRO"
 
 ### Lines/points  
 
-```{r message = F}
+```{r message = F, out.height="150%", out.width="150%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1076,7 +1213,7 @@ region <- "SEARO"
 
 ### Lines/points  
 
-```{r message = F}
+```{r message = F, out.height="150%", out.width="150%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1195,7 +1332,7 @@ region <- "WPRO"
 
 ### Lines/points  
 
-```{r message = F}
+```{r message = F, out.height="150%", out.width="150%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
