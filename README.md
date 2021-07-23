@@ -163,8 +163,8 @@ Links to the *rds* files:
 <br>Analyses were last updated **Friday 23 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Central African
-Republic, Chad, Saint Helena, Sao Tome and Principe, United Republic of
-Tanzania <br>
+Republic, Chad, Comoros, Saint Helena, Sao Tome and Principe, United
+Republic of Tanzania <br>
 
 ### Infection levels as % of historical incidence peak
 
