@@ -599,7 +599,7 @@ out_final <- out_full %>%
     growth_rate_lower = r_lower,
     growth_rate_upper = r_upper
   ) %>% 
-     mutate(relative_incidence = scales::percent(round(relative_incidence, digits = 1)))
+     mutate(relative_incidence = scales::percent(relative_incidence, accuracy = 0.1))
 
 # join to vaccine coverage/tpr data
 elr_extra_to_keep <- all_elr_extras %>%
@@ -614,8 +614,8 @@ elr_extra_to_keep <- all_elr_extras %>%
     vaccinations_date = as_of_vaccine
          ) %>%
   mutate(
-    tpr_recent = scales::percent(round(tpr_recent, digits = 1)),
-    tpr_before = scales::percent(round(tpr_before, digits = 1)),
+    tpr_recent = scales::percent(tpr_recent, accuracy = 0.1),
+    tpr_before = scales::percent(tpr_before, accuracy = 0.1),
     )
 
 out_final <- out_final %>% 
