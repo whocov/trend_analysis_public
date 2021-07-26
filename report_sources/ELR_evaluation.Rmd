@@ -213,7 +213,7 @@ knitr::include_graphics(
 
 # ELR classification trends  
 
-**All analyses below utilize the last `r weeks_include` weeks of ELR data, from `r max(ELR$week, na.rm=T) - weeks(weeks_include)``.**  
+**All analyses below utilize the last `r weeks_include` weeks of ELR data, from `r max(ELR$week, na.rm=T) - weeks(weeks_include)`.**  
 
 
 ```{r}
@@ -244,9 +244,13 @@ ELR %>%
     date_breaks = "2 weeks",
     date_labels = "%d\n%b"
   )+
-  facet_wrap(~final, scales = "free_y")+
+  facet_wrap(~final,
+             scales = "free_y"
+             )+
   theme_minimal()+
+  theme(legend.position = "none")+
   labs(title = "Number of countries by ELR classification",
+       subtitle = "Note free y-axis scales",
        caption = str_glue("Analysis of the last 8 weeks"))
 
 ```
