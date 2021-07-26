@@ -257,9 +257,11 @@ ELR %>%
 
 # Trajectories over time  
 
-The final ELR classification by country
+The final ELR classification by country - globally (difficult to read - see regional-specific alluvial plots in the section below).  
 
-```{r}
+
+
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
   pivot_wider(
     id_cols = c(country, who_region),
@@ -290,120 +292,213 @@ ELR_wide <- ELR %>%
   mutate(across(.cols = -n,
                 .fns = fct_rev))
 
-levels(ELR_wide$`2021-07-19`)
+#levels(ELR_wide$`2021-07-19`)
 
 
 library(ggalluvial)
-is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
-
-alluvial_gg <- ggplot(as.data.frame(ELR_wide) %>% 
-         mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x, c("Critical",
-                                      "Very high", 
-                                      "High",
-                                      "Medium",
-                                      "Low",
-                                      "Minimal",
-                                      "No Data")))),
-       aes(
-         y = n,
-         axis1 = `2021-06-14`,
-         axis2 = `2021-06-21`,
-         axis3 = `2021-06-28`,
-         axis4 = `2021-07-05`,
-         axis5 = `2021-07-12`,
-         axis6 = `2021-07-19`))+
-          #axis3 = #colnames(ELR_wide)[3],
-          #axis4 = #colnames(ELR_wide)[4],
-          #axis5 = #colnames(ELR_wide)[5],
-          #axis6 = #colnames(ELR_wide)[6],
-          #xis7 = colnames(ELR_wide)[7],
-          #axis8 = colnames(ELR_wide)[8]
-          
-  geom_alluvium(aes(fill = `2021-07-19`), width = 1/8) +
-  geom_stratum(width = 1/8, fill = "black", color = "grey") +
-  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
-  #scale_x_discrete(limits = c("Gender", "Dept"), expand = c(.05, .05)) +
-  scale_fill_brewer(type = "qual", palette = "Set1") +
-  ggtitle("Title")
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
 
 
-alluvial_gg
-```
-
-
-
-
-
-```{r}
-library(alluvial)
-
-ELR_wide <- ELR %>% 
-  
-  #filter(who_region == "EURO") %>% 
-  
-  pivot_wider(
-    id_cols = c(country, who_region),
-    names_from = week,
-    values_from = final) %>% 
-  drop_na() %>% 
-  group_by(across(contains("2021"))) %>% 
-  count() %>% 
-  ungroup() %>% 
-  mutate(across(.cols = -n, 
-                .fns = ~recode(.x,
-                              "1 - Critical" = "Critical",
-                              "2 - Very high" = "Very high", 
-                              "3 - High" = "High",
-                              "4 - Medium" = "Medium",
-                              "5 - Low" = "Low",
-                              "6 - Minimal/NA" = "Minimal",
-                              "No Data" = "No Data"))) %>% 
-  mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
+```
+
+
+```{r, warning=F, message=F}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = "[INTERNAL] ELR classification trajectories\ncolored by current classification (global)",
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
+```
+
+
+```{r, warning=F, message=F}
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = oldest_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = "[INTERNAL] ELR classification trajectories\nfrom earlest to current (global)",
+    fill = str_glue("ELR classification\non {min(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
 ```
 
 
 
 
+<!-- alluvial_gg <- ggplot( -->
+<!--   as.data.frame(ELR_wide) %>%  -->
+<!--          mutate(across(.cols = -n, -->
+<!--                 .fns = ~fct_relevel(.x, -->
+<!--                                     c("Critical", -->
+<!--                                       "Very high",  -->
+<!--                                       "High", -->
+<!--                                       "Medium", -->
+<!--                                       "Low", -->
+<!--                                       "Minimal", -->
+<!--                                       "No Data")))), -->
+<!--        aes( -->
+<!--          y = n, -->
+<!--          axis1 = `2021-06-14`, -->
+<!--          axis2 = `2021-06-21`, -->
+<!--          axis3 = `2021-06-28`, -->
+<!--          axis4 = `2021-07-05`, -->
+<!--          axis5 = `2021-07-12`, -->
+<!--          axis6 = `2021-07-19`))+ -->
+<!--           #axis3 = #colnames(ELR_wide)[3], -->
+<!--           #axis4 = #colnames(ELR_wide)[4], -->
+<!--           #axis5 = #colnames(ELR_wide)[5], -->
+<!--           #axis6 = #colnames(ELR_wide)[6], -->
+<!--           #xis7 = colnames(ELR_wide)[7], -->
+<!--           #axis8 = colnames(ELR_wide)[8] -->
+
+<!--   geom_alluvium(aes(fill = `2021-07-19`), width = 1/8) + -->
+<!--   geom_stratum(width = 1/8, aes(fill = `2021-07-19`), color = "grey") + -->
+<!--   #geom_label(stat = "stratum", size = 1.5, aes(label = after_stat(stratum))) + -->
+<!--   #scale_x_discrete(limits = c("Gender", "Dept"), expand = c(.05, .05)) + -->
+<!--   scale_fill_manual( -->
+<!--     values = c( -->
+<!--       "Critical" = "black", -->
+<!--       "Very high" = "darkred", -->
+<!--       "High" = "red", -->
+<!--       "Medium" = "darkorange", -->
+<!--       "Low" = "darkgreen", -->
+<!--       "Minimal" = "green", -->
+<!--       "No Data" = "grey")) + -->
+<!--   ggtitle("Title") -->
 
 
-```{r}
-
-# plotly attempt
+<!-- alluvial_gg -->
 
 
+<!-- Visualization with alternative R package   -->
 
-```
+
+<!-- ```{r, warning=F, message=F} -->
+<!-- library(alluvial) -->
+
+<!-- ELR_wide <- ELR %>%  -->
+
+<!--   #filter(who_region == "EURO") %>%  -->
+
+<!--   pivot_wider( -->
+<!--     id_cols = c(country, who_region), -->
+<!--     names_from = week, -->
+<!--     values_from = final) %>%  -->
+<!--   drop_na() %>%  -->
+<!--   group_by(across(contains("2021"))) %>%  -->
+<!--   count() %>%  -->
+<!--   ungroup() %>%  -->
+<!--   mutate(across(.cols = -n,  -->
+<!--                 .fns = ~recode(.x, -->
+<!--                               "1 - Critical" = "Critical", -->
+<!--                               "2 - Very high" = "Very high",  -->
+<!--                               "3 - High" = "High", -->
+<!--                               "4 - Medium" = "Medium", -->
+<!--                               "5 - Low" = "Low", -->
+<!--                               "6 - Minimal/NA" = "Minimal", -->
+<!--                               "No Data" = "No Data"))) %>%  -->
+<!--   mutate(across(.cols = -n, -->
+<!--                 .fns = ~fct_relevel(.x, -->
+<!--                                     c("Critical", -->
+<!--                                       "Very high",  -->
+<!--                                       "High", -->
+<!--                                       "Medium", -->
+<!--                                       "Low", -->
+<!--                                       "Minimal", -->
+<!--                                       "No Data")))) %>%  -->
+<!--   mutate(across(.cols = -n, -->
+<!--                 .fns = fct_rev))   -->
+
+<!--   # make alluvial plot -->
+<!--   ELR_wide %>%  -->
+<!--     select(-n) %>%  -->
+<!--     filter(8 != "No Data") %>%  -->
+<!--   alluvial(freq = ELR_wide$n, -->
+<!--            col = case_when( -->
+<!--              ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black", -->
+<!--              ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred", -->
+<!--              ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red", -->
+<!--              ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange", -->
+<!--              ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green", -->
+<!--              ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen", -->
+
+<!--              TRUE ~ "#D3D3D3"), -->
+<!--            axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1], -->
+<!--            cex = 0.7) -->
+
+<!-- #ggsave(here("outputs", "ELR_outputs", "alluvial.png")) -->
+
+<!-- ``` -->
+
+
+
+
+
 
 # Metrics trends  
 
@@ -602,6 +697,10 @@ nice_table
 
 
 ## Trajectories of "Missed" countries  
+
+As described in the table above - the current definition of "missed" is that the country has been classified as "Critical" or "Very high", but was not classified as "Medium" or "High" in the previous week.  
+
+Below we display the epicurve and ELR trajectories of each of these "missed" countries.   
 
 ```{r}
 missed <- consistency %>% 
@@ -1075,7 +1174,7 @@ region <- "PAHO"
 
 ### Lines/points  
 
-```{r message = F, out.height="150%", out.width="150%"}
+```{r message = F, out.height="200%", out.width="200%"}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1097,13 +1196,9 @@ region <- "PAHO"
 ### Alluvial  
 
 
-```{r}
-library(alluvial)
-
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
-  
   filter(who_region == region) %>% 
-  
   pivot_wider(
     id_cols = c(country, who_region),
     names_from = week,
@@ -1122,36 +1217,85 @@ ELR_wide <- ELR %>%
                               "6 - Minimal/NA" = "Minimal",
                               "No Data" = "No Data"))) %>% 
   mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+                .fns = ~fct_relevel(.x, c(
+                  "Critical",
+                  "Very high", 
+                  "High",
+                  "Medium",
+                  "Low",
+                  "Minimal",
+                  "No Data")))) %>% 
+  mutate(across(.cols = -n,
+                .fns = fct_rev))
+
+#levels(ELR_wide$`2021-07-19`)
+
+
+library(ggalluvial)
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
+
+
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
+```
+
+
+```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = str_glue("[INTERNAL] ELR classification trajectories\ncolored by current classification ({region})"),
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
 ```
 
 
@@ -1243,13 +1387,9 @@ region <- "AFRO"
 
 ### Alluvial  
 
-```{r}
-library(alluvial)
-
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
-  
   filter(who_region == region) %>% 
-  
   pivot_wider(
     id_cols = c(country, who_region),
     names_from = week,
@@ -1268,36 +1408,85 @@ ELR_wide <- ELR %>%
                               "6 - Minimal/NA" = "Minimal",
                               "No Data" = "No Data"))) %>% 
   mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+                .fns = ~fct_relevel(.x, c(
+                  "Critical",
+                  "Very high", 
+                  "High",
+                  "Medium",
+                  "Low",
+                  "Minimal",
+                  "No Data")))) %>% 
+  mutate(across(.cols = -n,
+                .fns = fct_rev))
+
+#levels(ELR_wide$`2021-07-19`)
+
+
+library(ggalluvial)
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
+
+
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
+```
+
+
+```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = str_glue("[INTERNAL] ELR classification trajectories\ncolored by current classification ({region})"),
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
 ```
 
 
@@ -1386,13 +1575,9 @@ region <- "EURO"
 
 ### Alluvial  
 
-```{r}
-library(alluvial)
-
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
-  
   filter(who_region == region) %>% 
-  
   pivot_wider(
     id_cols = c(country, who_region),
     names_from = week,
@@ -1411,36 +1596,85 @@ ELR_wide <- ELR %>%
                               "6 - Minimal/NA" = "Minimal",
                               "No Data" = "No Data"))) %>% 
   mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+                .fns = ~fct_relevel(.x, c(
+                  "Critical",
+                  "Very high", 
+                  "High",
+                  "Medium",
+                  "Low",
+                  "Minimal",
+                  "No Data")))) %>% 
+  mutate(across(.cols = -n,
+                .fns = fct_rev))
+
+#levels(ELR_wide$`2021-07-19`)
+
+
+library(ggalluvial)
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
+
+
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
+```
+
+
+```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = str_glue("[INTERNAL] ELR classification trajectories\ncolored by current classification ({region})"),
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
 ```
 
 
@@ -1530,13 +1764,9 @@ region <- "EMRO"
 ### Alluvial  
 
 
-```{r}
-library(alluvial)
-
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
-  
   filter(who_region == region) %>% 
-  
   pivot_wider(
     id_cols = c(country, who_region),
     names_from = week,
@@ -1555,37 +1785,87 @@ ELR_wide <- ELR %>%
                               "6 - Minimal/NA" = "Minimal",
                               "No Data" = "No Data"))) %>% 
   mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+                .fns = ~fct_relevel(.x, c(
+                  "Critical",
+                  "Very high", 
+                  "High",
+                  "Medium",
+                  "Low",
+                  "Minimal",
+                  "No Data")))) %>% 
+  mutate(across(.cols = -n,
+                .fns = fct_rev))
+
+#levels(ELR_wide$`2021-07-19`)
+
+
+library(ggalluvial)
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
+
+
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
 ```
+
+
+```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = str_glue("[INTERNAL] ELR classification trajectories\ncolored by current classification ({region})"),
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
+```
+
 
 
 ```{r}
@@ -1678,13 +1958,9 @@ region <- "SEARO"
 ### Alluvial  
 
 
-```{r}
-library(alluvial)
-
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
-  
   filter(who_region == region) %>% 
-  
   pivot_wider(
     id_cols = c(country, who_region),
     names_from = week,
@@ -1703,36 +1979,85 @@ ELR_wide <- ELR %>%
                               "6 - Minimal/NA" = "Minimal",
                               "No Data" = "No Data"))) %>% 
   mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+                .fns = ~fct_relevel(.x, c(
+                  "Critical",
+                  "Very high", 
+                  "High",
+                  "Medium",
+                  "Low",
+                  "Minimal",
+                  "No Data")))) %>% 
+  mutate(across(.cols = -n,
+                .fns = fct_rev))
+
+#levels(ELR_wide$`2021-07-19`)
+
+
+library(ggalluvial)
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
+
+
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
+```
+
+
+```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = str_glue("[INTERNAL] ELR classification trajectories\ncolored by current classification ({region})"),
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
 ```
 
 
@@ -1854,13 +2179,9 @@ region <- "WPRO"
 
 ### Alluvial  
 
-```{r}
-library(alluvial)
-
+```{r, warning=F, message=F}
 ELR_wide <- ELR %>% 
-  
   filter(who_region == region) %>% 
-  
   pivot_wider(
     id_cols = c(country, who_region),
     names_from = week,
@@ -1879,37 +2200,86 @@ ELR_wide <- ELR %>%
                               "6 - Minimal/NA" = "Minimal",
                               "No Data" = "No Data"))) %>% 
   mutate(across(.cols = -n,
-                .fns = ~fct_relevel(.x,
+                .fns = ~fct_relevel(.x, c(
+                  "Critical",
+                  "Very high", 
+                  "High",
+                  "Medium",
+                  "Low",
+                  "Minimal",
+                  "No Data")))) %>% 
+  mutate(across(.cols = -n,
+                .fns = fct_rev))
+
+#levels(ELR_wide$`2021-07-19`)
+
+
+library(ggalluvial)
+#is_alluvia_form(as.data.frame(ELR_wide), axes = 1:3, silent = TRUE)
+
+
+ELR_long_alluvial_original <- to_lodes_form(data.frame(ELR_wide),
+                              key = "date",
+                              axes = 1:6) %>% 
+  mutate(date = str_replace_all(date, "X2021.", "")) %>% 
+  mutate(stratum = fct_relevel(stratum,
                                     c("Critical",
                                       "Very high", 
                                       "High",
                                       "Medium",
                                       "Low",
                                       "Minimal",
-                                      "No Data")))) %>% 
-  mutate(across(.cols = -n,
-                .fns = fct_rev))  
-  
-  # make alluvial plot
-  ELR_wide %>% 
-    select(-n) %>% 
-    filter(8 != "No Data") %>% 
-  alluvial(freq = ELR_wide$n,
-           col = case_when(
-             ELR_wide[[ncol(ELR_wide)-1]] == "Critical"   ~ "black",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Very high"  ~ "darkred",
-             ELR_wide[[ncol(ELR_wide)-1]] == "High"       ~ "red",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Medium"     ~ "darkorange",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Low"        ~ "green",
-             ELR_wide[[ncol(ELR_wide)-1]] == "Minimal" ~ "darkgreen",
+                                      "No Data")))
 
-             TRUE ~ "#D3D3D3"),
-           axis_labels = colnames(ELR_wide)[1:ncol(ELR_wide)-1],
-           cex = 0.7)
+# add current ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial_original,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == max(date, na.rm=T)) %>% 
+              rename(
+                current_date = date,
+                current_ELR = stratum),
+            by = c("alluvium" )) 
 
-#ggsave(here("outputs", "ELR_outputs", "alluvial.png"))
-  
+# add earliest ELR classifications
+ELR_long_alluvial <- left_join(
+  ELR_long_alluvial,
+  ELR_long_alluvial_original %>%
+              select(-n) %>% 
+              filter(date == min(date, na.rm=T)) %>% 
+              rename(
+                oldest_date = date,
+                oldest_ELR = stratum),
+            by = c("alluvium" )) 
+
 ```
+
+```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+# plot showing current classification
+ggplot(data = ELR_long_alluvial,
+       aes(x = date, stratum = stratum, alluvium = alluvium,
+           y = n, label = stratum)) +
+  geom_alluvium(aes(fill = current_ELR)) +
+  geom_stratum() +
+  geom_text(stat = "stratum", size = 1) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Critical" = "black",
+      "Very high" = "darkred",
+      "High" = "red",
+      "Medium" = "darkorange",
+      "Low" = "darkgreen",
+      "Minimal" = "green",
+      "No Data" = "grey"))+
+  labs(
+    title = str_glue("[INTERNAL] ELR classification trajectories\ncolored by current classification ({region})"),
+    fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
+    caption = "Last 6 weeks of data")
+
+```
+
 
 
 ```{r}
