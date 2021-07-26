@@ -610,13 +610,15 @@ elr_extra_to_keep <- all_elr_extras %>%
     tpr_change,
     tpr_last_date_recent,
     tpr_last_date_before,
+    vac_oneplus_dose_per_100,
     vac_full_per_100,                      # percent fully vaccinated
     vaccinations_date = as_of_vaccine
          ) %>%
   mutate(
     tpr_recent = scales::percent(tpr_recent, accuracy = 0.1),
     tpr_before = scales::percent(tpr_before, accuracy = 0.1),
-    )
+    vac_oneplus_dose_per_100 = round(vac_oneplus_dose_per_100, digits = 1),
+    vac_full_per_100 = round(vac_full_per_100, digits = 1))
 
 out_final <- out_final %>% 
      left_join(elr_extra_to_keep, by = "iso3")
