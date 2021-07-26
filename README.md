@@ -182,7 +182,7 @@ Principe, United Republic of Tanzania <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 25 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 26 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>Djibouti <br>
 
@@ -280,7 +280,7 @@ Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 25 July 2021**.<br><br>**Notes**
+<br>Analyses were last updated **Monday 26 July 2021**.<br><br>**Notes**
 <br>The following countries reported \< 100 cases/tests over the last 7
 weeks and were not included in further analyses:<br>American Samoa,
 Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
