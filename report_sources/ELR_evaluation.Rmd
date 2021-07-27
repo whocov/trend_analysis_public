@@ -99,6 +99,7 @@ ELR_all <- ELR_raw %>%
       "None",
       "Unknown")) %>% 
   
+  
     # final = recode(
     #   final, 
     #   "6 - Minimal" = "Minimal/NA"),
@@ -170,7 +171,7 @@ map_data <- who_shp$adm0 %>%
 
 
 
-```{r include=FALSE}
+```{r include=FALSE, warning=F, message=F}
 ELR_map <- ggplot()+
   #geom_sf_who_poly(data = who_shp$adm0, fill = who_map_col("no_data")) +
   geom_sf_who_poly(data = map_data, aes(fill = final)) +
@@ -196,9 +197,9 @@ who_map_save(here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(m
 
 
 
-```{r out.width = "100%", fig.align = "center", echo=F}
+```{r out.width = "100%", fig.align = "center", echo=F, warning=F, message=F}
 knitr::include_graphics(
-  here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(ELR$week, na.rm=T)}.png"))
+  here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(map_data$week, na.rm=T)}.png"))
   )
 ```
 
@@ -249,26 +250,26 @@ ELR_table <- ELR %>%
   merge_at(i = 21:24, j = 1, part = "body") %>% 
   
   add_header_row(
-    values = c(str_glue("[INTERNAL] Weekly Epidemiological Level of Risk (ELR) assessed by HQ on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}\nRisk of experiencing high, uncontrolled transmission in the next few weeks.\nTop four classifications shown."),
+    values = c(str_glue("[INTERNAL] Weekly Epidemiological Level of Risk (ELR) assessed by HQ on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}\nRisk of experiencing high, uncontrolled transmission in the next few weeks.\n***Only the top four classifications shown.***"),
                "", "", "")) %>% 
   merge_at(i = 1, part = "header") %>% 
   bold(i = 1, bold = TRUE, part = "header") %>% 
   
-  bg(j = 2, i = ~ final_display == "Critical", part = "body", bg = "darkgrey") %>% 
+  color(j = 2, i = c(1, 5, 9, 21), "white", part = "body") %>% 
+  bg(j = 2, i = ~ final_display == "Critical", part = "body", bg = "black") %>% 
   bg(j = 2, i = ~ final_display == "Very high", part = "body", bg = "red3") %>% 
   bg(j = 2, i = ~ final_display == "High", part = "body", bg = "red") %>% 
   bg(j = 2, i = ~ final_display == "Medium", part = "body", bg = "darkorange") %>% 
 
   flextable::footnote(i = 1, j = 1:4, part = "header", value = as_paragraph(unknown_data))
-  
-  save_as_image(ELR_table, here("outputs", "ELR_outputs", str_glue("who_ELR_table_{max(ELR$week, na.rm=T)}.png")))
 
   ELR_table
-  
-  
 ```
 
-
+`
+```{r, warning=F, message=F, include=F}
+save_as_image(ELR_table, here("outputs", "ELR_outputs", str_glue("who_ELR_table_{max(map_data$week, na.rm=T)}.png")))
+```
 
 
 
@@ -277,7 +278,7 @@ ELR_table <- ELR %>%
 **All analyses below utilize the last `r weeks_include` weeks of ELR data, from `r max(ELR$week, na.rm=T) - weeks(weeks_include)`.**  
 
 
-```{r}
+```{r, warning=F, message=F}
 #############
 ELR <- ELR %>% 
   mutate(
@@ -288,14 +289,16 @@ ELR <- ELR %>%
       is.na(growth_rate) & is.na(relative_incidence) & is.na(final) ~ "No Data",
       is.na(final) ~ "6 - Minimal/NA",
       final == "6 - Minimal" ~ "6 - Minimal/NA",
-    TRUE ~ final)
-    )
+    TRUE ~ final)) %>%
+  
+  mutate(final = fct_relevel(
+      final, "1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal/NA", "Unknown", "No Data"))
     
 ```
 
 
 
-```{r}
+```{r, warning=F, message=F}
 ELR %>% 
   filter(final %in% c("1 - Critical", "2 - Very high", "3 - High")) %>% 
   count(week) %>% 
@@ -304,8 +307,8 @@ ELR %>%
   geom_line(aes(x = week, y = n), size = 1)+
   geom_label(aes(x = week, y = n, label = n))+
   theme_minimal()+
-  labs(title = "Number of countries classified as Critical, Very high, or High",
-       subtitle = "Note: this impacts the workload of Intel team")
+  labs(title = "Number of countries with final ELR classification Critical, Very high, or High",
+       subtitle = "")
 
 ```
 
@@ -340,11 +343,15 @@ ELR %>%
 
 
 
+
+
+
+
 # Trajectories over time  
 
-Classification over time by country, colored by the current ELR classification (global)  
+The trajectory of country final ELR classifications over time. Each country's line is colored by its "current" ELR classification.  
 
-note: This can be difficult to read with all the countries - see regional-specific alluvial plots in their respective section below.  
+Note: This global version can be difficult to read with all the countries - see regional-specific alluvial plots in their respective section below.  
 
 
 
@@ -432,7 +439,7 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 3) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
   theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
@@ -450,6 +457,8 @@ ggplot(data = ELR_long_alluvial,
 ```
 
 
+This plot shows the opposite direction - the trajectory of country classifications from their "initial" classification 6 weeks ago.  
+
 ```{r, warning=F, message=F, fig.height=10, fig.width=10}
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
@@ -457,7 +466,7 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = oldest_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 3) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
   theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
@@ -582,6 +591,108 @@ ggplot(data = ELR_long_alluvial,
 <!-- #ggsave(here("outputs", "ELR_outputs", "alluvial.png")) -->
 
 <!-- ``` -->
+
+
+
+
+# Intel component  
+
+The Intel team performs in-depth context assessments of countries that are either:  
+
+1) Highlighted by IBS or EBS activities, or
+2) Classified by the analytics team as Very High, High, or Unknown  
+
+
+```{r, warning=F, message=F}
+# Make column for Intel-to-assess
+
+ELR <- ELR %>% 
+  mutate(intel_to_assess = case_when(
+  `Highlighted during Validation` %in% c("Alert", "alert", "Watchlist") | 
+  dynamics %in% c("Very high", "High", "Unknown") ~ "To assess",
+  TRUE ~ "Not to assess"
+  ))
+
+```
+
+
+
+```{r, warning=F, message=F}
+ELR %>% 
+  filter(intel_to_assess == "To assess") %>% 
+  count(week) %>% 
+  
+  ggplot()+
+  geom_line(aes(x = week, y = n), size = 1)+
+  geom_label(aes(x = week, y = n, label = n))+
+  theme_minimal()+
+  labs(title = "Number of countries assessed by Intel team",
+       subtitle = "Highlighted by IBS/EBS or dynamics classification Very high or High")
+
+
+```
+
+
+
+```{r}
+
+# Make bumped up column
+
+ELR <- ELR %>% 
+  mutate(dynamics_lvl = case_when(
+    dynamics == "Very high" ~ 1,
+    dynamics == "High" ~ 2,
+    dynamics == "Medium" ~ 3,
+    dynamics == "Low" ~ 4,
+    dynamics == "Minimal" ~ 5,
+    dynamics == "Unknown" ~ 6)) %>% 
+  mutate(final_lvl = case_when(
+    final == "1 - Critical" ~ 0,
+    final == "2 - Very high" ~ 1,
+    final == "3 - High" ~ 2,
+    final == "4 - Medium" ~ 3,
+    final == "5 - Low" ~ 4,
+    final == "6 - Minimal" ~ 5,
+    final == "Unknown" ~ 6)) %>% 
+
+  mutate(bump_up = case_when(
+    context == "Present" & dynamics_lvl != final_lvl ~ "Bumped",
+    TRUE ~ "Not bumped"))
+  
+```
+
+
+This table shows the percent of countries for which the final classification was the result of a *context assessment "bump"*, meaning:  
+
+* The Intel team performed a context assessment on the country, and  
+* The context assessment concluded that aggravating factors were present to accelerate the epidemic, and  
+* The dynamics classification was consequently elevated "bumped" to one level higher  
+
+The general conclusion is that many of the "Very high" classification are due to the Intel team's investigation.
+
+Recall that "Critical" does not exist in the analytics team's dynamics classifications, and is only created when a country's dynamics are "Very high" and aggravating factors are "Present". Thus "Critical" = "Very High" + "Present". So all of Criticals should be created due to a "bump" (with rare exceptions).  
+
+
+
+```{r, warning=F, message=F}
+# Make column for Intel-to-assess
+
+ELR %>% 
+  group_by(week, final) %>% 
+  summarise(
+    n = n(),
+    agg_factors_present = sum(context == "Present", na.rm=T),
+    agg_factors_pct = scales::percent(agg_factors_present / n),
+    bumped = sum(bump_up == "Bumped", na.rm=T),
+    bumped_pct = scales::percent(bumped / n)) %>% 
+  pivot_wider(id_cols = final, names_from = week, values_from = bumped_pct) %>% 
+  flextable::qflextable()
+
+```
+
+
+
+
 
 
 
@@ -1020,7 +1131,7 @@ medium_data %>%
   #gghighlight::gghighlight(future_alert == "Future alert")+
   theme_minimal()+
   #theme(legend.position = "none")+
-  labs(x = "Days from first 'Medium' classification",
+  labs(x = "Weeks from first 'Medium' classification",
        y = "ELR classification",
        title = "Trajectories of Medium countries",
        subtitle = "Some countries increased to Critical/Very High, while others did not",
@@ -1369,7 +1480,8 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 4) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -1560,7 +1672,8 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 4) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -1748,7 +1861,8 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 4) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -1937,7 +2051,8 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 4) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -2131,7 +2246,8 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 4) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -2351,7 +2467,8 @@ ggplot(data = ELR_long_alluvial,
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
   geom_text(stat = "stratum", size = 4) +
-  theme_minimal() +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
