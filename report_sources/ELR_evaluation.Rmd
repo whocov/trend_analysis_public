@@ -25,6 +25,8 @@ This is a report that assesses the ELR (Epidemiological Level of Risk) process, 
 
 
 
+
+
 # Preparation {.tabset}
 
 ## Packages
@@ -62,7 +64,7 @@ ELR_all <- ELR_raw %>%
     
     week = linelist::guess_dates(week),
     
-    ############
+      ############
     relative_incidence = case_when(
       str_detect(relative_incidence, "%") ~ as.numeric(str_replace(relative_incidence, "%", "")),
       TRUE                                ~ 100*as.numeric(relative_incidence)),
@@ -75,20 +77,6 @@ ELR_all <- ELR_raw %>%
     algorithm_classification = recode(
       algorithm_classification,
       "Mid" = "Medium"),
-    
-    #############
-    final_raw = final,
-    
-    final = case_when(
-      is.na(growth_rate) & is.na(relative_incidence) & is.na(final) ~ "No Data",
-      is.na(final) ~ "6 - Minimal/NA",
-      final == "6 - Minimal" ~ "6 - Minimal/NA",
-    TRUE ~ final),
-    
-    # final = recode(
-    #   final, 
-    #   "6 - Minimal" = "Minimal/NA"),
-    # final = replace_na(final, "Minimal/NA"),
     
     
     #############
@@ -110,7 +98,14 @@ ELR_all <- ELR_raw %>%
       "Possible",
       "None",
       "Unknown")) %>% 
-
+  
+    # final = recode(
+    #   final, 
+    #   "6 - Minimal" = "Minimal/NA"),
+    # final = replace_na(final, "Minimal/NA"),
+    
+    
+     filter(week <= as.Date("2021-07-19")) %>% 
      arrange(week) %>% 
      drop_na(week) 
 
@@ -163,10 +158,12 @@ who_shp <- whomapper::pull_who_adm0()
 ```{r}
 map_data <- who_shp$adm0 %>% 
   left_join(ELR %>% 
-               filter(week == max(week, na.rm=T)) %>%
+              #filter(week == as.Date("2021-07-19")) %>%  
+              filter(week == max(week, na.rm=T)) %>%
                #drop_na(final) %>% 
-               select(iso3, dynamics, context, final),
-             by = c("iso_3_code" = "iso3")) #%>% 
+               select(week, iso3, dynamics, context, final),
+             by = c("iso_3_code" = "iso3")) %>%
+  mutate(final_raw = na_if(final, "No data"))
   #drop_na(final)
  
 ```
@@ -182,18 +179,19 @@ ELR_map <- ggplot()+
      option = "plasma",
      direction = 1,
      na.value = "white",
+     labels = whp_map_legend_labs,
      name = "COVID-19 ELR\nclassification"
      )+
-  
-   # scale_fill_brewer(palette = "Set3",
-   #                   na.value = who_map_col("no_data"),
-   #                   name = "WHO Region")+
 
+  # scale_fill_brewer(palette = "Set3",
+  #                   na.value = who_map_col("no_data"),
+  #                   name = "WHO Region", 
+  #                   labels = whp_map_legend_labs) +
   labs(title ="[INTERNAL USE ONLY] Weekly Epidemiological Level of Risk (ELR)",
-       subtitle = glue::glue("Risk of experiencing high, uncontrolled transmission in the next few weeks\nas assessed by HQ on {format(max(ELR$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}")) +
-  who_map_pipeline()
+       subtitle = glue::glue("Risk of experiencing high, uncontrolled transmission in the next few weeks\nas assessed by HQ on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}")) +
+  who_map_pipeline(no_data_scale = FALSE)
 
-who_map_save(here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(ELR$week, na.rm=T)}.png")), dpi = 700)
+who_map_save(here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(map_data$week, na.rm=T)}.png")), dpi = 700)
 ```
 
 
@@ -206,6 +204,69 @@ knitr::include_graphics(
 
 
 
+# Table of the most recent ELR classifications
+
+```{r, warning=F, message=F}
+
+unknown_data_list <- ELR %>% 
+  filter(week == max(ELR$week, na.rm=T)) %>% 
+  filter(is.na(final)) %>% 
+  pull(country)
+
+unknown_data <- str_glue("Countries with unknown classification due to limited data:\n{paste0(na.omit(unknown_data_list), collapse = '; ')}")
+
+library(flextable)
+
+ELR_table <- ELR %>% 
+  mutate(final_display = case_when(
+    final == "1 - Critical" ~ "Critical",
+    final == "2 - Very high" ~ "Very high",
+    final == "3 - High" ~ "High",
+    final == "4 - Medium" ~ "Medium")) %>% 
+  mutate(final_display = fct_relevel(final_display, "Critical", "Very high", "High", "Medium")) %>% 
+  filter(week == as.Date("2021-07-19")) %>% 
+  select(who_region, country, final_display) %>% 
+  drop_na(final_display) %>% 
+  filter(!final_display %in% c("6 - Minimal", "5 - Low")) %>% 
+  group_by(who_region, final_display, .drop = F) %>% 
+  summarise(
+    n = n(),
+    names = paste0(na.omit(country), collapse = "; ")) %>% 
+
+  qflextable() %>% 
+  
+  set_header_labels(         # Rename the columns in original header row
+      who_region = "WHO regional office", 
+      final_display = "ELR classification",                  
+      n = "Count",
+      names = "List") %>% 
+  theme_box() %>% 
+  merge_at(i = 1:4, j = 1, part = "body") %>% 
+  merge_at(i = 5:8, j = 1, part = "body") %>% 
+  merge_at(i = 9:12, j = 1, part = "body") %>% 
+  merge_at(i = 13:16, j = 1, part = "body") %>% 
+  merge_at(i = 17:20, j = 1, part = "body") %>% 
+  merge_at(i = 21:24, j = 1, part = "body") %>% 
+  
+  add_header_row(
+    values = c(str_glue("[INTERNAL] Weekly Epidemiological Level of Risk (ELR) assessed by HQ on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}\nRisk of experiencing high, uncontrolled transmission in the next few weeks.\nTop four classifications shown."),
+               "", "", "")) %>% 
+  merge_at(i = 1, part = "header") %>% 
+  bold(i = 1, bold = TRUE, part = "header") %>% 
+  
+  bg(j = 2, i = ~ final_display == "Critical", part = "body", bg = "darkgrey") %>% 
+  bg(j = 2, i = ~ final_display == "Very high", part = "body", bg = "red3") %>% 
+  bg(j = 2, i = ~ final_display == "High", part = "body", bg = "red") %>% 
+  bg(j = 2, i = ~ final_display == "Medium", part = "body", bg = "darkorange") %>% 
+
+  flextable::footnote(i = 1, j = 1:4, part = "header", value = as_paragraph(unknown_data))
+  
+  save_as_image(ELR_table, here("outputs", "ELR_outputs", str_glue("who_ELR_table_{max(ELR$week, na.rm=T)}.png")))
+
+  ELR_table
+  
+  
+```
 
 
 
@@ -214,6 +275,24 @@ knitr::include_graphics(
 # ELR classification trends  
 
 **All analyses below utilize the last `r weeks_include` weeks of ELR data, from `r max(ELR$week, na.rm=T) - weeks(weeks_include)`.**  
+
+
+```{r}
+#############
+ELR <- ELR %>% 
+  mutate(
+
+    final_raw = final,
+    
+    final = case_when(
+      is.na(growth_rate) & is.na(relative_incidence) & is.na(final) ~ "No Data",
+      is.na(final) ~ "6 - Minimal/NA",
+      final == "6 - Minimal" ~ "6 - Minimal/NA",
+    TRUE ~ final)
+    )
+    
+```
+
 
 
 ```{r}
@@ -226,7 +305,7 @@ ELR %>%
   geom_label(aes(x = week, y = n, label = n))+
   theme_minimal()+
   labs(title = "Number of countries classified as Critical, Very high, or High",
-       subtitle = "(n=238 each week) Note: this impacts the workload of Intel team")
+       subtitle = "Note: this impacts the workload of Intel team")
 
 ```
 
@@ -241,7 +320,7 @@ ELR %>%
   geom_point()+
   #geom_label(aes(x = week, y = n, label = n), size = 2)+
   scale_x_date(
-    date_breaks = "2 weeks",
+    date_breaks = "weeks",
     date_labels = "%d\n%b"
   )+
   facet_wrap(~final,
@@ -251,7 +330,9 @@ ELR %>%
   theme(legend.position = "none")+
   labs(title = "Number of countries by ELR classification",
        subtitle = "Note free y-axis scales",
-       caption = str_glue("Analysis of the last 8 weeks"))
+       x = "Week",
+       y = "Count of countries",
+       caption = str_glue("Analysis of the last {weeks_include} weeks"))
 
 ```
 
@@ -261,7 +342,9 @@ ELR %>%
 
 # Trajectories over time  
 
-The final ELR classification by country - globally (difficult to read - see regional-specific alluvial plots in the section below).  
+Classification over time by country, colored by the current ELR classification (global)  
+
+note: This can be difficult to read with all the countries - see regional-specific alluvial plots in their respective section below.  
 
 
 
@@ -341,15 +424,16 @@ ELR_long_alluvial <- left_join(
 ```
 
 
-```{r, warning=F, message=F}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 3) +
   theme_minimal() +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -363,18 +447,18 @@ ggplot(data = ELR_long_alluvial,
     title = "[INTERNAL] ELR classification trajectories\ncolored by current classification (global)",
     fill = str_glue("ELR classification\non {max(ELR_long_alluvial$date, na.rm=T)}"),
     caption = "Last 6 weeks of data")
-
 ```
 
 
-```{r, warning=F, message=F}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = oldest_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 3) +
   theme_minimal() +
+  theme(legend.position = "top")+
   scale_fill_manual(
     values = c(
       "Critical" = "black",
@@ -1178,7 +1262,7 @@ region <- "PAHO"
 
 ### Lines/points  
 
-```{r message = F, out.height="200%", out.width="200%"}
+```{r message = F, fig.height=10, fig.width=10}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1277,14 +1361,14 @@ ELR_long_alluvial <- left_join(
 ```
 
 
-```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 4) +
   theme_minimal() +
   scale_fill_manual(
     values = c(
@@ -1370,7 +1454,7 @@ region <- "AFRO"
 
 ### Lines/points  
 
-```{r message = F, out.height="150%", out.width="150%"}
+```{r message = F, fig.height=10, fig.width=10}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1468,14 +1552,14 @@ ELR_long_alluvial <- left_join(
 ```
 
 
-```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 4) +
   theme_minimal() +
   scale_fill_manual(
     values = c(
@@ -1558,7 +1642,7 @@ region <- "EURO"
 
 ### Lines/points  
 
-```{r message = F, out.height="150%", out.width="150%"}
+```{r message = F, fig.height=10, fig.width=10}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1656,14 +1740,14 @@ ELR_long_alluvial <- left_join(
 ```
 
 
-```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 4) +
   theme_minimal() +
   scale_fill_manual(
     values = c(
@@ -1746,7 +1830,7 @@ region <- "EMRO"
 
 ### Lines/points  
 
-```{r message = F, out.height="150%", out.width="150%"}
+```{r message = F, fig.height=10, fig.width=10}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -1845,14 +1929,14 @@ ELR_long_alluvial <- left_join(
 ```
 
 
-```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 4) +
   theme_minimal() +
   scale_fill_manual(
     values = c(
@@ -1940,7 +2024,7 @@ region <- "SEARO"
 
 ### Lines/points  
 
-```{r message = F, out.height="150%", out.width="150%"}
+```{r message = F, fig.height=10, fig.width=10}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -2039,14 +2123,14 @@ ELR_long_alluvial <- left_join(
 ```
 
 
-```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 4) +
   theme_minimal() +
   scale_fill_manual(
     values = c(
@@ -2162,7 +2246,7 @@ region <- "WPRO"
 
 ### Lines/points  
 
-```{r message = F, out.height="150%", out.width="150%"}
+```{r message = F, fig.height=10, fig.width=10}
  ELR %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
@@ -2259,14 +2343,14 @@ ELR_long_alluvial <- left_join(
 
 ```
 
-```{r, warning=F, message=F, out.height="150%", out.width="150%"}
+```{r, warning=F, message=F, fig.height=10, fig.width=10}
 # plot showing current classification
 ggplot(data = ELR_long_alluvial,
        aes(x = date, stratum = stratum, alluvium = alluvium,
            y = n, label = stratum)) +
   geom_alluvium(aes(fill = current_ELR)) +
   geom_stratum() +
-  geom_text(stat = "stratum", size = 1) +
+  geom_text(stat = "stratum", size = 4) +
   theme_minimal() +
   scale_fill_manual(
     values = c(
