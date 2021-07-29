@@ -97,7 +97,9 @@ ELR_all <- ELR_raw %>%
       "Present",
       "Possible",
       "None",
-      "Unknown")) %>% 
+      "Unknown"),
+    
+    final = na_if(final, "No Data")) %>% 
   
   
     # final = recode(
@@ -106,7 +108,7 @@ ELR_all <- ELR_raw %>%
     # final = replace_na(final, "Minimal/NA"),
     
     
-     filter(week <= as.Date("2021-07-19")) %>% 
+     #filter(week <= as.Date("2021-07-19")) %>% 
      arrange(week) %>% 
      drop_na(week) 
 
@@ -189,7 +191,7 @@ ELR_map <- ggplot()+
   #                   name = "WHO Region", 
   #                   labels = whp_map_legend_labs) +
   labs(title ="[INTERNAL USE ONLY] Weekly Epidemiological Level of Risk (ELR)",
-       subtitle = glue::glue("Risk of experiencing high, uncontrolled transmission in the next few weeks\nas assessed by HQ on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}")) +
+       subtitle = glue::glue("Risk of experiencing high, uncontrolled transmission in the next few weeks\nas assessed by Geneva Analytics & Intel teams on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}")) +
   who_map_pipeline(no_data_scale = FALSE)
 
 who_map_save(here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(map_data$week, na.rm=T)}.png")), dpi = 700)
@@ -225,7 +227,7 @@ ELR_table <- ELR %>%
     final == "3 - High" ~ "High",
     final == "4 - Medium" ~ "Medium")) %>% 
   mutate(final_display = fct_relevel(final_display, "Critical", "Very high", "High", "Medium")) %>% 
-  filter(week == as.Date("2021-07-19")) %>% 
+  filter(week == max(ELR$week, na.rm=T)) %>% 
   select(who_region, country, final_display) %>% 
   drop_na(final_display) %>% 
   filter(!final_display %in% c("6 - Minimal", "5 - Low")) %>% 
@@ -255,7 +257,7 @@ ELR_table <- ELR %>%
   merge_at(i = 1, part = "header") %>% 
   bold(i = 1, bold = TRUE, part = "header") %>% 
   
-  color(j = 2, i = c(1, 5, 9, 21), "white", part = "body") %>% 
+  color(j = 2, i = c(1, 5, 9, 13, 17, 21), "white", part = "body") %>% 
   bg(j = 2, i = ~ final_display == "Critical", part = "body", bg = "black") %>% 
   bg(j = 2, i = ~ final_display == "Very high", part = "body", bg = "red3") %>% 
   bg(j = 2, i = ~ final_display == "High", part = "body", bg = "red") %>% 
@@ -719,6 +721,8 @@ ELR %>%
 
 We examine the proportion of countries in a given week that were detected by the ELR process prior to their becoming a hotspot. That is, for the week when a country was *first* classified as either `r alert`, were they listed in the previous two weeks as either:  `r warning` ?  
 
+As a general interpretation: The ELR system is good at identifying countries one week prior to their becoming Critical/Vhigh, but not very good 2 weeks in advance. This aligns with the close analysis (below) of the "missed" countries, which shows very sudden accelerations.  
+
 
 ```{r}
 consistency <- ELR %>% 
@@ -1021,6 +1025,11 @@ medium_data <- consistency %>%
   filter(sum(first_med, na.rm=T) > 0) %>% 
   mutate(day_first_med = as.numeric((week - week[first_med == 1])/ 7)) %>% 
   
+  # remove countries on downward trajectory
+  mutate(downward = ((final_lag1 %in% c(alert, "3 - High")) | (final_lag2 %in% c(alert, "3 - High")))) %>% 
+  
+  filter(all(downward == FALSE)) %>% 
+  
   # Factor re-ordering of ELR classifications
   mutate(final = fct_explicit_na(final)) %>% 
   mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
@@ -1065,7 +1074,7 @@ medium_data %>%
   #gghighlight::gghighlight(future_alert == "Future alert")+
   theme_minimal()+
   theme(legend.position = "none")+
-  labs(x = "Days from first 'Medium' classification",
+  labs(x = "Weeks from first 'Medium' classification",
        y = "ELR classification",
        title = "Medium countries that were critical/very high within 5 weeks")
 
