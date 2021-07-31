@@ -160,10 +160,11 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Friday 30 July 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>Central African
-Republic, Chad, Comoros, Saint Helena, Sao Tome and Principe <br>
+<br>Analyses were last updated **Saturday 31 July
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>Central African Republic, Chad, Comoros, Saint Helena, Sao
+Tome and Principe <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -279,13 +280,13 @@ Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Friday 30 July 2021**.<br><br>**Notes**
-<br>The following countries reported \< 100 cases/tests over the last 7
-weeks and were not included in further analyses:<br>American Samoa,
-Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia
-(Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn
-Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis
-and Futuna <br>
+<br>Analyses were last updated **Saturday 31 July
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
+cases/tests over the last 7 weeks and were not included in further
+analyses:<br>American Samoa, Brunei Darussalam, Cook Islands, Kiribati,
+Marshall Islands, Micronesia (Federated States of), Nauru, New
+Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands,
+Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna <br>
 
 ### Infection levels as % of historical incidence peak
 
