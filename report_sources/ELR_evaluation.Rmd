@@ -80,11 +80,15 @@ ELR_all <- ELR_raw %>%
     
     
     #############
+    dynamics = case_when(
+      is.na(dynamics) & algorithm_classification == "NL" ~ "Minimal",
+      TRUE ~ dynamics),
+    
     dynamics = recode(
       dynamics, "Very High" = "Very high"),
     
     dynamics = fct_relevel(
-      dynamics, "Very high", "High", "Medium", "Low", "Minimum", "Unknown"),
+      dynamics, "Very high", "High", "Medium", "Low", "Minimal", "Unknown", "Insufficient data (chronic)"),
             
     #############
     context = recode(
@@ -99,7 +103,16 @@ ELR_all <- ELR_raw %>%
       "None",
       "Unknown"),
     
+    final = case_when(
+      is.na(final) & is.na(context) & dynamics == "No Data" ~ "6 - Minimal/NA",
+      is.na(final) & is.na(context) & dynamics == "Low" ~ "5 - Low",
+      is.na(final) & is.na(context) & dynamics == "Medium" ~ "4 - Medium",
+      is.na(final) & is.na(context) & dynamics == "Minimal" ~ "6 - Minimal",
+      TRUE ~ final),
+    
     final = na_if(final, "No Data")) %>% 
+  
+  filter(week != as.Date("2021-08-02")) %>% 
   
   
     # final = recode(
@@ -728,7 +741,7 @@ As a general interpretation: The ELR system is good at identifying countries one
 consistency <- ELR %>% 
      group_by(country) %>% 
      arrange(country, week) %>% 
-     select(country, who_region, week, final) %>% 
+     select(week, country, who_region, growth_rate, relative_incidence, net_increases_asmodee, dynamics_lvl, final_lvl, final) %>% 
      mutate(entry = row_number()) %>% 
      mutate(first_alert = { final %in% alert } %>% { . * !duplicated(.) }) %>%
      mutate(first_row = ifelse(row_number() == 1, TRUE, FALSE)) %>% 
@@ -949,7 +962,7 @@ ELR %>%
 ```{r}
 plot_elr_epi <- function(country_name = NULL){
   
-elr_data <- ELR %>% 
+elr_data <- ELR_all %>% 
      select(week, country, who_region, dynamics, context, final) %>% 
      pivot_longer(cols = c(dynamics, context, final), names_to = "metric", values_to = "value") %>% 
      filter(metric == "final") %>% 
@@ -1000,7 +1013,7 @@ When we compare the ELR trajectories to the epidemic curves, it becomes clear th
 
 ```{r, warning=F, message=F}
 map(missed, plot_elr_epi)
-
+plot_elr_epi("Indonesia")
 #map(missed_plots, plot)
 ```
 
@@ -1009,6 +1022,726 @@ map(missed, plot_elr_epi)
 ```{r}
 #ggpubr::ggarrange(plotlist = missed_plots, ncol = 1, nrow = length(missed_plots))
 ```
+
+
+
+
+
+
+# Early detection  
+
+We examine the proportion of countries in a given week that were detected by the ELR process prior to their becoming a hotspot. That is, for the week when a country was *first* classified as either `r alert`, were they listed in the previous two weeks as either:  `r warning` ?  
+
+As a general interpretation: The ELR system is good at identifying countries one week prior to their becoming Critical/Vhigh, but not very good 2 weeks in advance. This aligns with the close analysis (below) of the "missed" countries, which shows very sudden accelerations.  
+
+
+```{r}
+consistency <- ELR %>% 
+     group_by(country) %>% 
+     arrange(country, week) %>% 
+     select(week, country, who_region, growth_rate, relative_incidence, net_increases_asmodee, dynamics_lvl, final_lvl, final) %>% 
+     mutate(entry = row_number()) %>% 
+     mutate(first_alert = { final %in% alert } %>% { . * !duplicated(.) }) %>%
+     mutate(first_row = ifelse(row_number() == 1, TRUE, FALSE)) %>% 
+     # mutate(first_alert_day = first_alert,
+     #        first_alert_day = fill(first_alert_day))
+     mutate(final_lag1 = lag(final),
+            final_lag2 = lag(final, 2)) %>% 
+     ungroup() %>% 
+     mutate(premonition_lag1 = case_when(
+       first_alert == 1 &
+         first_row == TRUE ~ "first entry alert",
+       
+       first_alert == 1 & 
+         first_row == FALSE &
+         (final_lag1 %in% warning) ~ "warned",
+       
+       first_alert == 1 & 
+         first_row == FALSE & 
+         (!final_lag1 %in% warning) ~ "not warned")) %>% 
+  
+  mutate(premonition_lag2 = case_when(
+       first_alert == 1 &
+         first_row == TRUE ~ "first entry alert",
+       
+       first_alert == 1 & 
+         first_row == FALSE &
+         (final_lag2 %in% warning) ~"warned",
+       
+       first_alert == 1 & 
+         first_row == FALSE & 
+         (!final_lag2 %in% warning) ~ "not warned"))
+```
+
+
+```{r, warning=F, message=F}
+  
+# table by week
+# alarm = critical or very high
+# 
+# tabyl(consistency$premonition_lag1)
+# tabyl(consistency$premonition_lag2)
+
+
+consistency_table <- consistency %>% 
+  group_by(week) %>% 
+  summarise(
+    records = n(),
+    alert_on_first_entry = sum(premonition_lag1 == "first entry alert", na.rm=T),   # not relevant as country alarmed in it's first week being recorded
+    first_alarm = sum(first_alert == 1 & premonition_lag1 != "first entry alert", na.rm=T),  # first time country alarmed (not in it's first week)
+    caught = sum(first_alert == 1 & premonition_lag1 == "warned", na.rm=T),    # country's first alarm was preceeded lagged 1 week by Medium or higher
+    missed = sum(first_alert == 1 & premonition_lag1 == "not warned", na.rm=T), # country's first alarm was preceeded lagged 2 weeks by Medium or higher
+    prop_caught1 = scales::percent(caught / first_alarm),
+    caught2 = sum(first_alert == 1 & premonition_lag2 == "warned", na.rm=T),    # country's first alarm was preceeded lagged 1 week by Medium or higher
+    missed2 = sum(first_alert == 1 & premonition_lag2 == "not warned", na.rm=T), # country's first alarm was preceeded lagged 2 weeks by Medium or higher
+    prop_caught2 = scales::percent(caught2 / first_alarm)
+    )
+
+alarming_list <- consistency %>% 
+     group_by(week) %>% 
+     filter(premonition_lag1 == "warned" | premonition_lag1 == "not warned") %>% 
+     summarise(
+          across(country, ~paste0(na.omit(.x), collapse = "; "))) %>% 
+  rename("alarming countries" = country)
+
+
+missed_list <- consistency %>% 
+     group_by(week) %>% 
+     filter(premonition_lag1 == "not warned") %>% 
+     summarise(
+          across(country, ~paste0(na.omit(.x), collapse = "; "))) %>% 
+  rename("missed_countries" = country)
+
+
+caught_list <- consistency %>% 
+     group_by(week) %>% 
+     filter(premonition_lag1 == "warned") %>% 
+     summarise(
+          across(country, ~paste0(na.omit(.x), collapse = "; "))) %>% 
+  rename("caught_countries" = country)
+
+  
+combined_table <- consistency_table %>% 
+  left_join(missed_list, by = "week") %>% 
+  left_join(caught_list, by = "week") %>% 
+  select(week, records, alert_on_first_entry, first_alarm, caught, missed, prop_caught1, missed_countries, caught_countries, everything())
+
+```
+
+
+
+
+
+
+
+
+# Characteristics of ELR "High"
+
+
+
+```{r}
+
+high_data <- consistency %>% 
+  group_by(country) %>%
+  
+  # Find first Medium classification in Country
+  mutate(first_high = { final %in% "3 - High"} %>% { . * !duplicated(.) }) %>% 
+  
+  # Number weeks by relationship to first medium
+  filter(sum(first_high, na.rm=T) > 0) %>% 
+  mutate(day_first_high = as.numeric((week - week[first_high == 1])/ 7)) %>% 
+  
+  # Factor re-ordering of ELR classifications
+  mutate(final = fct_explicit_na(final)) %>% 
+  mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
+  mutate(final = fct_rev(final)) %>% 
+  
+  # Create columns that look ahead 5 weeks
+  mutate(post_high_1 = lead(final, 1)) %>% 
+  mutate(post_high_2 = lead(final, 2)) %>% 
+  mutate(post_high_3 = lead(final, 3)) %>% 
+  mutate(post_high_4 = lead(final, 4)) %>% 
+  mutate(post_high_5 = lead(final, 5)) %>% 
+
+    # Create columns that look ahead 5 weeks
+  mutate(pre_high_1 = lag(final, 1)) %>% 
+  mutate(pre_high_2 = lag(final, 2)) %>% 
+  mutate(pre_high_3 = lag(final, 3)) %>% 
+  mutate(pre_high_4 = lag(final, 4)) %>% 
+  mutate(pre_high_5 = lag(final, 5)) %>% 
+  
+  
+  # identify countries on downward trajectory
+  
+    # Via ELR
+    mutate(downward_elr = ((pre_high_1 %in% c(alert) | 
+                              pre_high_2 %in% c(alert) | 
+                              pre_high_3%in% c(alert) | 
+                              pre_high_4 %in% c(alert) | 
+                              pre_high_5 %in% c(alert)))) %>% 
+    
+    # # Via growth rate
+    # mutate(downward_gr = case_when(
+    #   first_med == 0 ~ NA_character_,
+    #   first_med == 1 &
+    #     growth_rate < 0 ~ "Downward",
+    #   first_med == 1 & 
+    #     growth_rate >= 0 ~ "Upward")) %>% 
+  
+  # classify highs into buckets
+  mutate(high_class = case_when(
+    
+    # downward trajectory
+    downward_elr == TRUE ~ "Downward",
+    
+    is.na(relative_incidence) &
+      is.na(growth_rate) ~ "From no data",
+    
+    # High incidence, high growth
+    relative_incidence >= 80 & 
+      growth_rate >= 0.02 ~ "High, growing",
+    
+    # High incidence, low growth
+    relative_incidence >= 80 &
+      growth_rate < 0.02 ~ "High, stable",
+    
+    # Low incidence, high growth
+    relative_incidence < 80 & 
+      growth_rate >= 0.02 ~ "Emerging",
+    
+    # Low incidence, low growth
+    relative_incidence < 80 & 
+      growth_rate < 0.02 ~ "Low concern",
+    
+    # Other
+    TRUE ~ "Other"
+    
+  )) %>% 
+  
+  group_by(country) %>% 
+  
+  # converts all rows in a country to value at first Medium
+  mutate(high_class = high_class[first_high == 1]) %>% 
+  
+  ungroup(country) %>% 
+  
+  #filter(downward_gr == "Upward") %>% 
+  #filter(all(downward_gr == "Downward")) %>% 
+  
+  select(
+    country, week, who_region, growth_rate, relative_incidence, net_increases_asmodee, dynamics_lvl, final_lvl, high_class, first_high, day_first_high,
+    pre_high_5, pre_high_4, pre_high_3, pre_high_2, pre_high_1,
+    final,
+    post_high_1, post_high_2, post_high_3, post_high_4, post_high_5) %>% 
+ 
+  # Number of weeks to hit Critical / Very High  
+  mutate(weeks_to_alarm = case_when(
+      (post_high_1 %in% alert) ~ 1,
+      (post_high_2 %in% alert) ~ 2,
+      (post_high_3 %in% alert) ~ 3,
+      (post_high_4 %in% alert) ~ 4, 
+      (post_high_5 %in% alert) ~ 5)) %>% 
+  
+  group_by(country) %>% 
+  filter(any(first_high == 1)) %>% 
+
+
+  # Look ahead for Critical or Very High
+  mutate(future_alert = case_when(
+    first_high == 1 &
+      ((post_high_1[first_high == 1] %in% alert) ||
+      (post_high_2[first_high == 1]  %in% alert) ||
+      (post_high_3[first_high == 1] %in% alert) ||
+      (post_high_4[first_high == 1] %in% alert) ||
+      (post_high_5[first_high == 1] %in% alert)
+      ) ~ "Future alert",
+    TRUE ~ "Not")) %>%
+
+  mutate(future_alert_filled = case_when(
+    ("Future alert" %in% future_alert) ~ "Future alert",
+    TRUE ~ "Not")) %>%
+  
+  mutate(future_alert_filled = fct_relevel(future_alert_filled, c("Not", "Future alert"))) %>% 
+  
+  mutate(intel_bump = ifelse(final_lvl < dynamics_lvl, "Intelbump", "NoBump"))
+
+
+
+```
+
+
+
+
+```{r, eval=F}
+high_data %>% 
+  #filter(medium_class == "High, stable") %>% 
+  ggplot() +
+  geom_line(aes(x = day_first_high, y = final, group = country, color = country), alpha = 0.5, size = 1)+
+  #scale_color_manual(values = c("blue", "red"))+
+  facet_wrap(~high_class)+
+  geom_vline(xintercept = 0)+
+  #ggrepel::geom_text_repel(aes(x = day_first_med, y = final, label = country))+
+  #gghighlight::gghighlight(future_alert == "Future alert")+
+  theme_minimal()+
+  theme(legend.position = "none")+
+  labs(x = "Weeks from first 'High' classification",
+       y = "ELR classification",
+       title = "High countries by class")
+
+
+
+# Smoothed
+high_data %>% 
+  #filter(medium_class == "High, stable") %>% 
+  ggplot() +
+  geom_line(aes(x = day_first_high, y = final, group = country), color = "grey", alpha = 0.3, size = 1)+
+  geom_smooth(aes(x = day_first_high, y = final, group = future_alert_filled, color = future_alert_filled))+
+  scale_color_manual(values = c("blue", "red"))+
+  facet_wrap(~high_class)+
+  geom_vline(xintercept = 0)+
+  #ggrepel::geom_text_repel(aes(x = day_first_med, y = final, label = country))+
+  #gghighlight::gghighlight(future_alert == "Future alert")+
+  theme_minimal()+
+  theme(legend.position = "bottom")+
+  labs(x = "Weeks from first 'High' classification",
+       y = "ELR classification",
+       title = "Future trends in countries that hit 'high', by category")
+
+
+
+```
+
+
+
+
+So now we look at the epi metrics of these respective groups:  
+
+```{r, warning=F, message=F}
+ggplot(high_data %>% filter(first_high == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = high_class), size = 2, alpha = 0.8)+
+  scale_color_brewer(type = "qual")+
+  geom_vline(xintercept = 0)+
+  theme_grey()+
+  labs(color = "Categories",
+       subtitle = "Countries metrics when they first hit High, by category",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "'High' categories")
+```
+
+
+
+
+Below, the same plot but colored by whether the country went on to alarm in the future. Not a clear pattern.
+
+```{r, warning=F, message=F}
+ggplot(high_data %>% filter(first_high == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = future_alert_filled), size = 2, alpha = 0.8)+
+  geom_vline(xintercept = 0)+
+  scale_color_manual(values = c("blue", "red"))+
+  theme_grey()+
+  labs(color = "Hit Crit/VHigh\nin future",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "Country metrics when first classified as 'High'")
+```
+
+
+
+
+# Combined  
+
+
+
+
+
+```{r}
+
+df_high  <- consistency %>% 
+  group_by(country) %>%
+  
+  # Find first Medium classification in Country
+  mutate(first = { final %in% "3 - High"} %>% { . * !duplicated(.) }) %>% 
+  
+  # Number weeks by relationship to first medium
+  filter(sum(first, na.rm=T) > 0) %>% 
+  mutate(day_first = as.numeric((week - week[first == 1])/ 7)) %>% 
+  
+  # Factor re-ordering of ELR classifications
+  mutate(final = fct_explicit_na(final)) %>% 
+  mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
+  mutate(final = fct_rev(final)) %>% 
+  
+  # Create columns that look ahead 5 weeks
+  mutate(post_1 = lead(final, 1)) %>% 
+  mutate(post_2 = lead(final, 2)) %>% 
+  mutate(post_3 = lead(final, 3)) %>% 
+  mutate(post_4 = lead(final, 4)) %>% 
+  mutate(post_5 = lead(final, 5)) %>% 
+
+    # Create columns that look ahead 5 weeks
+  mutate(pre_1 = lag(final, 1)) %>% 
+  mutate(pre_2 = lag(final, 2)) %>% 
+  mutate(pre_3 = lag(final, 3)) %>% 
+  mutate(pre_4 = lag(final, 4)) %>% 
+  mutate(pre_5 = lag(final, 5)) %>% 
+  
+  
+  # identify countries on downward trajectory
+  
+    # Via ELR
+    mutate(downward_elr = ((pre_1 %in% c(alert) | 
+                              pre_2 %in% c(alert) | 
+                              pre_3%in% c(alert) | 
+                              pre_4 %in% c(alert) | 
+                              pre_5 %in% c(alert)))) %>% 
+    
+    # # Via growth rate
+    # mutate(downward_gr = case_when(
+    #   first_med == 0 ~ NA_character_,
+    #   first_med == 1 &
+    #     growth_rate < 0 ~ "Downward",
+    #   first_med == 1 & 
+    #     growth_rate >= 0 ~ "Upward")) %>% 
+  
+  # classify highs into buckets
+  mutate(class = case_when(
+    
+    # downward trajectory
+    downward_elr == TRUE ~ "Downward",
+    
+    is.na(relative_incidence) &
+      is.na(growth_rate) ~ "From no data",
+    
+    # High incidence, high growth
+    relative_incidence >= 80 & 
+      growth_rate >= 0.02 ~ "High, growing",
+    
+    # High incidence, low growth
+    relative_incidence >= 80 &
+      growth_rate < 0.02 ~ "High, stable",
+    
+    # Low incidence, high growth
+    relative_incidence < 80 & 
+      growth_rate >= 0.02 ~ "Emerging",
+    
+    # Low incidence, low growth
+    relative_incidence < 80 & 
+      growth_rate < 0.02 ~ "Low concern",
+    
+    # Other
+    TRUE ~ "Other"
+    
+  )) %>% 
+  
+  group_by(country) %>% 
+  
+  # converts all rows in a country to value at first Medium
+  mutate(class = class[first == 1]) %>% 
+  
+  ungroup(country) %>% 
+  
+  #filter(downward_gr == "Upward") %>% 
+  #filter(all(downward_gr == "Downward")) %>% 
+  
+  select(
+    country, week, who_region, growth_rate, relative_incidence, net_increases_asmodee, dynamics_lvl, final_lvl, class, first, day_first,
+    pre_5, pre_4, pre_3, pre_2, pre_1,
+    final,
+    post_1, post_2, post_3, post_4, post_5) %>% 
+ 
+  # Number of weeks to hit Critical / Very High  
+  mutate(weeks_to_alarm = case_when(
+      (post_1 %in% alert) ~ 1,
+      (post_2 %in% alert) ~ 2,
+      (post_3 %in% alert) ~ 3,
+      (post_4 %in% alert) ~ 4, 
+      (post_5 %in% alert) ~ 5)) %>% 
+  
+  group_by(country) %>% 
+  filter(any(first == 1)) %>% 
+
+
+  # Look ahead for Critical or Very High
+  mutate(future_alert = case_when(
+    first == 1 &
+      ((post_1[first == 1] %in% alert) ||
+      (post_2[first == 1]  %in% alert) ||
+      (post_3[first == 1] %in% alert) ||
+      (post_4[first == 1] %in% alert) ||
+      (post_5[first == 1] %in% alert)
+      ) ~ "Future alert",
+    TRUE ~ "Not")) %>%
+
+  mutate(future_alert_filled = case_when(
+    ("Future alert" %in% future_alert) ~ "Future alert",
+    TRUE ~ "Not")) %>%
+  
+  mutate(future_alert_filled = fct_relevel(future_alert_filled, c("Not", "Future alert"))) %>% 
+  
+  mutate(intel_bump = ifelse(final_lvl < dynamics_lvl, "Intelbump", "NoBump")) %>% 
+  
+  mutate(detected_1 = case_when(
+      ((pre_1[first == 1] %in% "3 - High")) ~ "Detected",
+      TRUE ~ "Not")) %>%
+  
+  mutate(detected_2 = case_when(
+      ((pre_1[first == 1] %in% "3 - High")) ~ "Detected",
+      TRUE ~ "Not")) %>%
+  
+  mutate(detected_3 = case_when(
+      ((pre_1[first == 1] %in% "3 - High")) ~ "Detected",
+      TRUE ~ "Not")) %>%
+
+  mutate(criteria = "High") %>% 
+  select(criteria, everything())
+
+
+
+
+```
+
+
+```{r}
+
+df_medium  <- consistency %>% 
+  group_by(country) %>%
+  
+  # Find first Medium classification in Country
+  mutate(first = { final %in% "4 - Medium"} %>% { . * !duplicated(.) }) %>% 
+  
+  # Number weeks by relationship to first medium
+  filter(sum(first, na.rm=T) > 0) %>% 
+  mutate(day_first = as.numeric((week - week[first == 1])/ 7)) %>% 
+  
+  # Factor re-ordering of ELR classifications
+  mutate(final = fct_explicit_na(final)) %>% 
+  mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
+  mutate(final = fct_rev(final)) %>% 
+  
+  # Create columns that look ahead 5 weeks
+  mutate(post_1 = lead(final, 1)) %>% 
+  mutate(post_2 = lead(final, 2)) %>% 
+  mutate(post_3 = lead(final, 3)) %>% 
+  mutate(post_4 = lead(final, 4)) %>% 
+  mutate(post_5 = lead(final, 5)) %>% 
+
+    # Create columns that look ahead 5 weeks
+  mutate(pre_1 = lag(final, 1)) %>% 
+  mutate(pre_2 = lag(final, 2)) %>% 
+  mutate(pre_3 = lag(final, 3)) %>% 
+  mutate(pre_4 = lag(final, 4)) %>% 
+  mutate(pre_5 = lag(final, 5)) %>% 
+  
+  
+  # identify countries on downward trajectory
+  
+    # Via ELR
+    mutate(downward_elr = ((pre_1 %in% c(alert) | 
+                              pre_2 %in% c(alert) | 
+                              pre_3%in% c(alert) | 
+                              pre_4 %in% c(alert) | 
+                              pre_5 %in% c(alert)))) %>% 
+    
+    # # Via growth rate
+    # mutate(downward_gr = case_when(
+    #   first_med == 0 ~ NA_character_,
+    #   first_med == 1 &
+    #     growth_rate < 0 ~ "Downward",
+    #   first_med == 1 & 
+    #     growth_rate >= 0 ~ "Upward")) %>% 
+  
+  # classify highs into buckets
+  mutate(class = case_when(
+    
+    # downward trajectory
+    downward_elr == TRUE ~ "Downward",
+    
+    is.na(relative_incidence) &
+      is.na(growth_rate) ~ "From no data",
+    
+    # High incidence, high growth
+    relative_incidence >= 80 & 
+      growth_rate >= 0.02 ~ "High, growing",
+    
+    # High incidence, low growth
+    relative_incidence >= 80 &
+      growth_rate < 0.02 ~ "High, stable",
+    
+    # Low incidence, high growth
+    relative_incidence < 80 & 
+      growth_rate >= 0.02 ~ "Emerging",
+    
+    # Low incidence, low growth
+    relative_incidence < 80 & 
+      growth_rate < 0.02 ~ "Low concern",
+    
+    # Other
+    TRUE ~ "Other"
+    
+  )) %>% 
+  
+  group_by(country) %>% 
+  
+  # converts all rows in a country to value at first Medium
+  mutate(class = class[first == 1]) %>% 
+  
+  ungroup(country) %>% 
+  
+  #filter(downward_gr == "Upward") %>% 
+  #filter(all(downward_gr == "Downward")) %>% 
+  
+  select(
+    country, week, who_region, growth_rate, relative_incidence, net_increases_asmodee, dynamics_lvl, final_lvl, class, first, day_first,
+    pre_5, pre_4, pre_3, pre_2, pre_1,
+    final,
+    post_1, post_2, post_3, post_4, post_5) %>% 
+ 
+  # Number of weeks to hit Critical / Very High  
+  mutate(weeks_to_alarm = case_when(
+      (post_1 %in% alert) ~ 1,
+      (post_2 %in% alert) ~ 2,
+      (post_3 %in% alert) ~ 3,
+      (post_4 %in% alert) ~ 4, 
+      (post_5 %in% alert) ~ 5)) %>% 
+  
+  group_by(country) %>% 
+  filter(any(first == 1)) %>% 
+
+
+  # Look ahead for Critical or Very High
+  mutate(future_alert = case_when(
+    first == 1 &
+      ((post_1[first == 1] %in% alert) ||
+      (post_2[first == 1]  %in% alert) ||
+      (post_3[first == 1] %in% alert) ||
+      (post_4[first == 1] %in% alert) ||
+      (post_5[first == 1] %in% alert)
+      ) ~ "Future alert",
+    TRUE ~ "Not")) %>%
+  
+    mutate(detected_1 = case_when(
+      ((pre_1[first == 1] %in% "3 - High")) ~ "Detected",
+      TRUE ~ "Not")) %>%
+  
+  mutate(detected_2 = case_when(
+      ((pre_1[first == 1] %in% "3 - High")) ~ "Detected",
+      TRUE ~ "Not")) %>%
+  
+  mutate(detected_3 = case_when(
+      ((pre_1[first == 1] %in% "3 - High")) ~ "Detected",
+      TRUE ~ "Not")) %>%
+
+  mutate(future_alert_filled = case_when(
+    ("Future alert" %in% future_alert) ~ "Future alert",
+    TRUE ~ "Not")) %>%
+  
+  mutate(future_alert_filled = fct_relevel(future_alert_filled, c("Not", "Future alert"))) %>% 
+  
+  mutate(intel_bump = ifelse(final_lvl < dynamics_lvl, "Intelbump", "NoBump")) %>% 
+  
+  mutate(criteria = "Medium") %>% 
+  select(criteria, everything())
+
+
+
+```
+
+
+
+
+## combine high and low data
+```{r}
+
+df <- df_high %>% 
+  bind_rows(df_medium)
+
+```
+
+
+
+
+## Add detection
+
+```{r}
+df <- df %>% 
+  
+mutate(
+  first_row = ifelse(row_number() == 1, TRUE, FALSE)) %>% 
+     # mutate(first_alert_day = first_alert,
+     #        first_alert_day = fill(first_alert_day))
+     mutate(final_lag1 = lag(final),
+            final_lag2 = lag(final, 2)) %>% 
+     ungroup() %>% 
+     mutate(premonition_lag1 = case_when(
+       first_alert == 1 &
+         first_row == TRUE ~ "first entry alert",
+       
+       first_alert == 1 & 
+         first_row == FALSE &
+         (final_lag1 %in% warning) ~ "warned",
+       
+       first_alert == 1 & 
+         first_row == FALSE & 
+         (!final_lag1 %in% warning) ~ "not warned")) %>% 
+  
+  mutate(premonition_lag2 = case_when(
+       first_alert == 1 &
+         first_row == TRUE ~ "first entry alert",
+       
+       first_alert == 1 & 
+         first_row == FALSE &
+         (final_lag2 %in% warning) ~"warned",
+       
+       first_alert == 1 & 
+         first_row == FALSE & 
+         (!final_lag2 %in% warning) ~ "not warned"))
+
+```
+
+
+
+
+
+```{r}
+df %>% filter(criteria == "High") %>% 
+  mutate(detected = case_when(
+    alert %in% 
+  ))
+
+mutate(first_row = ifelse(row_number() == 1, TRUE, FALSE)) %>% 
+     # mutate(first_alert_day = first_alert,
+     #        first_alert_day = fill(first_alert_day))
+     mutate(final_lag1 = lag(final),
+            final_lag2 = lag(final, 2)) %>% 
+     ungroup() %>% 
+     mutate(premonition_lag1 = case_when(
+       first_alert == 1 &
+         first_row == TRUE ~ "first entry alert",
+       
+       first_alert == 1 & 
+         first_row == FALSE &
+         (final_lag1 %in% warning) ~ "warned",
+       
+       first_alert == 1 & 
+         first_row == FALSE & 
+         (!final_lag1 %in% warning) ~ "not warned")) %>% 
+  
+  mutate(premonition_lag2 = case_when(
+       first_alert == 1 &
+         first_row == TRUE ~ "first entry alert",
+       
+       first_alert == 1 & 
+         first_row == FALSE &
+         (final_lag2 %in% warning) ~"warned",
+       
+       first_alert == 1 & 
+         first_row == FALSE & 
+         (!final_lag2 %in% warning) ~ "not warned"))
+
+
+```
+
 
 
 # Characteristics of ELR "Medium"  
@@ -1025,11 +1758,6 @@ medium_data <- consistency %>%
   filter(sum(first_med, na.rm=T) > 0) %>% 
   mutate(day_first_med = as.numeric((week - week[first_med == 1])/ 7)) %>% 
   
-  # remove countries on downward trajectory
-  mutate(downward = ((final_lag1 %in% c(alert, "3 - High")) | (final_lag2 %in% c(alert, "3 - High")))) %>% 
-  
-  filter(all(downward == FALSE)) %>% 
-  
   # Factor re-ordering of ELR classifications
   mutate(final = fct_explicit_na(final)) %>% 
   mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
@@ -1042,45 +1770,328 @@ medium_data <- consistency %>%
   mutate(post_med_4 = lead(final, 4)) %>% 
   mutate(post_med_5 = lead(final, 5)) %>% 
 
+    # Create columns that look ahead 5 weeks
+  mutate(pre_med_1 = lag(final, 1)) %>% 
+  mutate(pre_med_2 = lag(final, 2)) %>% 
+  mutate(pre_med_3 = lag(final, 3)) %>% 
+  mutate(pre_med_4 = lag(final, 4)) %>% 
+  mutate(pre_med_5 = lag(final, 5)) %>% 
+  
+  
+  # identify countries on downward trajectory
+  
+    # Via ELR
+    mutate(downward_elr = ((pre_med_1 %in% c(alert) | 
+                              pre_med_2 %in% c(alert) | 
+                              pre_med_3%in% c(alert) | 
+                              pre_med_4 %in% c(alert) | 
+                              pre_med_5 %in% c(alert)))) %>% 
+    
+    # # Via growth rate
+    # mutate(downward_gr = case_when(
+    #   first_med == 0 ~ NA_character_,
+    #   first_med == 1 &
+    #     growth_rate < 0 ~ "Downward",
+    #   first_med == 1 & 
+    #     growth_rate >= 0 ~ "Upward")) %>% 
+  
+  # classify mediums into buckets
+  mutate(medium_class = case_when(
+    
+    # downward trajectory
+    downward_elr == TRUE ~ "Downward",
+    
+    is.na(relative_incidence) &
+      is.na(growth_rate) ~ "From no data",
+    
+    # High incidence, high growth
+    relative_incidence >= 80 & 
+      growth_rate >= 0.02 ~ "High, growing",
+    
+    # High incidence, low growth
+    relative_incidence >= 80 &
+      growth_rate < 0.02 ~ "High, stable",
+    
+    # Low incidence, high growth
+    relative_incidence < 80 & 
+      growth_rate >= 0.02 ~ "Emerging",
+    
+    # Low incidence, low growth
+    relative_incidence < 80 & 
+      growth_rate < 0.02 ~ "Low concern",
+    
+    # Other
+    TRUE ~ "Other"
+    
+  )) %>% 
+  
+  group_by(country) %>% 
+  
+  # converts all rows in a country to value at first Medium
+  mutate(medium_class = medium_class[first_med == 1]) %>% 
+  
+  ungroup(country) %>% 
+  
+  #filter(downward_gr == "Upward") %>% 
+  #filter(all(downward_gr == "Downward")) %>% 
+  
+  select(
+    country, week, who_region, growth_rate, relative_incidence, net_increases_asmodee, dynamics_lvl, final_lvl, medium_class, first_med, day_first_med,
+    pre_med_5, pre_med_4, pre_med_3, pre_med_2, pre_med_1,
+    final,
+    post_med_1, post_med_2, post_med_3, post_med_4, post_med_5) %>% 
  
-   # Look ahead for Critical or Very High
+  # Number of weeks to hit Critical / Very High  
+  mutate(weeks_to_alarm = case_when(
+      (post_med_1 %in% alert) ~ 1,
+      (post_med_2 %in% alert) ~ 2,
+      (post_med_3 %in% alert) ~ 3,
+      (post_med_4 %in% alert) ~ 4, 
+      (post_med_5 %in% alert) ~ 5)) %>% 
+  
+  group_by(country) %>% 
+  filter(any(first_med == 1)) %>% 
+
+
+  # Look ahead for Critical or Very High
   mutate(future_alert = case_when(
-    first_med == 1 & 
+    first_med == 1 &
       ((post_med_1[first_med == 1] %in% alert) ||
       (post_med_2[first_med == 1]  %in% alert) ||
       (post_med_3[first_med == 1] %in% alert) ||
       (post_med_4[first_med == 1] %in% alert) ||
       (post_med_5[first_med == 1] %in% alert)
       ) ~ "Future alert",
-    TRUE ~ "Not")) %>% 
-  
+    TRUE ~ "Not")) %>%
+
   mutate(future_alert_filled = case_when(
     ("Future alert" %in% future_alert) ~ "Future alert",
-    TRUE ~ "Not")) %>% 
-  mutate(future_alert_filled = fct_relevel(future_alert_filled, c("Not", "Future alert")))
-    
+    TRUE ~ "Not")) %>%
+  
+  mutate(future_alert_filled = fct_relevel(future_alert_filled, c("Not", "Future alert"))) %>% 
+  
+  mutate(intel_bump = ifelse(final_lvl < dynamics_lvl, "Intelbump", "NoBump"))
+
+
+  
+# 
+# 
+# tabyl(medium_data$medium_class)
+# other <- filter(medium_data, medium_class == "Other")
+# plot(other$growth_rate, other$relative_incidence)
 ```
+
+
+
+
+
+
+So now we look at the epi metrics of these respective groups:  
+
+```{r, warning=F, message=F}
+ggplot(high_data %>% filter(first_high == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = high_class), size = 2, alpha = 0.8)+
+  scale_color_brewer(type = "qual")+
+  geom_vline(xintercept = 0)+
+  theme_grey()+
+  labs(color = "Categories",
+       subtitle = "Countries metrics when they first hit High, by category",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "'High' categories")
+```
+
+
+
+Below, the same plot but colored by whether the country went on to alarm in the future. Not a clear pattern.
+
+```{r, warning=F, message=F}
+ggplot(high_data %>% filter(first_high == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = future_alert_filled), size = 2, alpha = 0.8)+
+  geom_vline(xintercept = 0)+
+  scale_color_manual(values = c("blue", "red"))+
+  theme_grey()+
+  labs(color = "Hit Crit/VHigh\nin future",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "Country metrics when first classified as 'High'")
+```
+
+
+
+
+
+
+
+
+
+
+We begin by classifying countries that hit "medium" by their characteristics, into one of five categories:  
+
+1) **Downward** - countries that were on a downward trend when they first hit "Medium"  
+2) **High, stable** - countries with high incidence (>80%) but low growth (<0.02)  
+3) **High, growing** - countries with high incidence *and* high growth  
+4) **Emerging** - countries with low incidence (<80%) but high growth (>0.02)  
+5) **Low concern** - countries with low incidence *and* low growth  
+6) **From no data** - countries that hit Medium after having no data (likely due to Intel classification)  
+
 
 
 ```{r, eval=F}
 medium_data %>% 
-  filter(who_region != "t") %>% 
-  #mutate(final = fct_explicit_na(final)) %>%
+  #filter(medium_class == "High, stable") %>% 
   ggplot() +
-  geom_line(aes(x = day_first_med, y = final, group = country, color = future_alert_filled), alpha = 0.5, size = 1)+
-  scale_color_manual(values = c("blue", "red"))+
-  facet_wrap(~who_region)+
+  geom_line(aes(x = day_first_med, y = final, group = country, color = country), alpha = 0.5, size = 1)+
+  #scale_color_manual(values = c("blue", "red"))+
+  facet_wrap(~medium_class)+
   geom_vline(xintercept = 0)+
+  #ggrepel::geom_text_repel(aes(x = day_first_med, y = final, label = country))+
   #gghighlight::gghighlight(future_alert == "Future alert")+
   theme_minimal()+
   theme(legend.position = "none")+
   labs(x = "Weeks from first 'Medium' classification",
        y = "ELR classification",
-       title = "Medium countries that were critical/very high within 5 weeks")
+       title = "Medium countries by class")
+
+```
+
+Now we plot smoother averages among these lines, colored by whether the country *went on* to "alarm" by hitting Critical or Very High"  
+
+
+```{r}
+# Smoothed
+medium_data %>% 
+  #filter(medium_class == "High, stable") %>% 
+  ggplot() +
+  geom_line(aes(x = day_first_med, y = final, group = country), color = "grey", alpha = 0.3, size = 1)+
+  geom_smooth(aes(x = day_first_med, y = final, group = future_alert_filled, color = future_alert_filled))+
+  scale_color_manual(values = c("blue", "red"))+
+  facet_wrap(~medium_class)+
+  geom_vline(xintercept = 0)+
+  #ggrepel::geom_text_repel(aes(x = day_first_med, y = final, label = country))+
+  #gghighlight::gghighlight(future_alert == "Future alert")+
+  theme_minimal()+
+  theme(legend.position = "bottom")+
+  labs(x = "Weeks from first 'Medium' classification",
+       y = "ELR classification",
+       title = "Future trends in countries that hit 'Medium', by category")
+
+
+# 
+# # Examine individually
+# medium_data %>% 
+#   filter(medium_class == "Low concern") %>% 
+#   ggplot() +
+#   #geom_line(aes(x = day_first_med, y = final, group = country, color = country), alpha = 0.5, size = 1)+
+#   geom_smooth(aes(x = day_first_med, y = final, group = future_alert_filled, color = future_alert_filled))+
+#   #scale_color_manual(values = c("blue", "red"))+
+#   facet_wrap(~medium_class)+
+#   geom_vline(xintercept = 0)+
+#   #ggrepel::geom_text_repel(aes(x = day_first_med, y = final, label = country))+
+#   #gghighlight::gghighlight(future_alert == "Future alert")+
+#   theme_minimal()+
+#   theme(legend.position = "none")+
+#   labs(x = "Weeks from first 'Medium' classification",
+#        y = "ELR classification",
+#        title = "Medium countries by class")
+
+
+
+# 
+# 
+# medium_data %>% 
+#   #mutate(final = fct_explicit_na(final)) %>%
+#   ggplot() +
+#   geom_line(aes(x = day_first_med, y = final, group = country, color = future_alert_filled), alpha = 0.5, size = 1)+
+#   scale_color_manual(values = c("blue", "red"))+
+#   facet_wrap(~who_region)+
+#   geom_vline(xintercept = 0)+
+#   #gghighlight::gghighlight(future_alert == "Future alert")+
+#   theme_minimal()+
+#   theme(legend.position = "none")+
+#   labs(x = "Weeks from first 'Medium' classification",
+#        y = "ELR classification",
+#        title = "Medium countries that were critical/very high within 5 weeks")
 
 
 
 ```
+
+It will be important to understand the countries that were of **Low concern**, **emerging**, or which were **high,stable** that went on to alarm (the red lines).  
+
+
+4, 5, 6 weeks ago, how many mediums were there, and where did they go, how long till rise?
+what % ended up H, VH, Crit?
+Is there anything different about those countries that differ?
+Then repeat for high - predictive value of each level
+
+
+
+So now we look at the epi metrics of these respective groups:  
+
+```{r, warning=F, message=F}
+ggplot(medium_data %>% filter(first_med == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = medium_class), size = 2, alpha = 0.8)+
+  scale_color_brewer(type = "qual")+
+  geom_vline(xintercept = 0)+
+  theme_grey()+
+  labs(color = "Categories",
+       subtitle = "Countries metrics when they first hit Medium, by category",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "'Medium' categories")
+```
+
+
+
+Below, the same plot but colored by whether the country went on to alarm in the future. Not a clear pattern.
+
+```{r, warning=F, message=F}
+ggplot(medium_data %>% filter(first_med == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = future_alert_filled), size = 2, alpha = 0.8)+
+  geom_vline(xintercept = 0)+
+  scale_color_manual(values = c("blue", "red"))+
+  theme_grey()+
+  labs(color = "Hit Crit/VHigh\nin future",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "Country metrics when first classified as 'Medium'")
+```
+
+
+
+```{r}
+medium_model_data <- medium_data %>%
+  filter(first_med == 1)
+
+model <- glm(future_alert_filled ~ intel_bump, family = "binomial", data = medium_model_data)
+
+model_clean <- model %>% 
+  broom::tidy(exponentiate = TRUE, conf.int = TRUE) %>%  ## get a tidy dataframe of estimates 
+  mutate(across(where(is.numeric), round, digits = 2))          ## round 
+
+```
+
+
+
+
+Below, the same plot but colored by whether the country went on to alarm in the future. Not a clear pattern.
+
+```{r, warning=F, message=F}
+ggplot(medium_data %>% filter(first_med == 1,
+                              medium_class == "Low concern")) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = future_alert_filled), size = 2, alpha = 0.8)+
+  geom_vline(xintercept = 0)+
+  scale_color_manual(values = c("blue", "red"))+
+  theme_grey()+
+  labs(color = "Hit Crit/VHigh\nin future",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "Country metrics when first classified as 'Medium'")
+```
+
+
+
 
 
 This section examines the nature and trajectories of countries that are classified as ELR Medium.  
@@ -1095,25 +2106,57 @@ If we plot the epidemiological metrics of countries when they are first classifi
 The plot below shows this dynamic, as most Medium countries are either in the upper-left, or the lower-right. 
 
 ```{r, message=F, warning=F}
-points_data <- medium_data %>% 
-  filter(first_med == 1) %>% 
-  left_join(ELR %>% select(country, week,
-                           growth_rate,
-                           relative_incidence,
-                           net_increases_asmodee),
-            by = c("country", "week"))
+# points_data <- medium_data %>% 
+#   filter(first_med == 1) %>% 
+#   left_join(ELR %>% select(country, week,
+#                            growth_rate,
+#                            relative_incidence,
+#                            net_increases_asmodee),
+#             by = c("country", "week"))
 
 
-ggplot(points_data) +
-  geom_point(aes(x = growth_rate, y = relative_incidence, color = who_region), size = 2, alpha = 0.8)+
+ggplot(medium_data %>% filter(first_med == 1)) +
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = medium_class), size = 2, alpha = 0.8)+
   scale_color_brewer(type = "qual")+
   geom_vline(xintercept = 0)+
   theme_grey()+
-  labs(color = "WHO regional office",
+  labs(color = "Trending",
        y = "% of historical peak",
        x = "Growth rate",
        title = "Country metrics when first classified as 'Medium'")
 
+
+
+ggplot(medium_data %>%
+         filter(first_med == 1,
+                medium_class != "Downward") %>% 
+         drop_na(weeks_to_alarm)
+       )+
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = medium_class), size = 2, alpha = 0.8)+
+  geom_vline(xintercept = 0)+
+  ggrepel::geom_text_repel(aes(x = growth_rate, y = relative_incidence, label = country, color = medium_class))+
+  theme_grey()+
+  labs(color = "Weeks to\nCrit/VHigh",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "'Medium' Countries - Epi metrics and weeks to Critical/VHigh ELR")
+
+
+
+
+ggplot(medium_data %>%
+         filter(first_med == 1,
+                medium_class != "Downward") %>% 
+         drop_na(weeks_to_alarm)
+       )+
+  geom_point(aes(x = growth_rate, y = relative_incidence, color = as.factor(weeks_to_alarm)), size = 2, alpha = 0.8)+
+  geom_vline(xintercept = 0)+
+  ggrepel::geom_text_repel(aes(x = growth_rate, y = relative_incidence, label = country, color = as.factor(weeks_to_alarm)))+
+  theme_grey()+
+  labs(color = "Weeks to\nCrit/VHigh",
+       y = "% of historical peak",
+       x = "Growth rate",
+       title = "'Medium' Countries - Epi metrics and weeks to Critical/VHigh ELR")
 
 ```
 
