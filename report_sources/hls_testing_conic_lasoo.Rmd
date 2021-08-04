@@ -1,0 +1,391 @@
+---
+title: "Testing lags between cases and deaths"
+author: "Henry Laurenson-Schafer, Thibaut Jombart"
+date: '`r format(Sys.time(), "%A %d %B %Y")`'
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
+    toc_float: TRUE
+    toc_collapse: FALSE
+    number_sections: TRUE
+    highlight: pygments
+    theme: spacelab
+    code_folding: hide
+    <!-- df_print: paged -->
+    css: !expr here::here('css', 'style.css')
+params:
+  train_start: 2020-07-01
+  train_end: 2020-12-31
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      fig.width = 8,
+                      fig.height = 6,
+                      dpi = 70,
+                      warning = TRUE,
+                      message = TRUE)
+```
+
+```{r eval = FALSE, echo = FALSE}
+
+rmarkdown::render('elr_synthesis.Rmd')
+
+```
+
+
+# Prep work {.tabset .tabset-fade .tabset-pills}
+
+## Scripts
+
+```{r warnings = FALSE}
+
+rfextras::load_scripts()
+
+```
+
+
+## Packages
+
+All CRAN packages can be installed by calling `reportfactory::install_deps()`.
+Package installs on remotes are now handled in a separate script
+`remote_packages.R` which is loaded alongside other scripts in `scripts/` using:
+
+
+```{r}
+
+pacman::p_load(
+  tidyverse,
+  rio,
+  ggrepel,
+  lubridate,
+  penalized
+)
+
+# load separately github-only packages
+library(trendbreaker)
+library(phifunc)
+```
+
+
+## Load data
+
+We load cases and deaths data
+
+```{r, warning = FALSE, message = FALSE}
+
+x_raw <- phifunc::pull_phi_data() %>% 
+     normalise_date() 
+
+```
+
+
+# Define conic lasso function
+
+```{r}
+conic_lasso <- function(x) {
+    penalized(death_new,
+              ~ case_new + case_new_lag_1  + case_new_lag_2 + case_new_lag_3 +
+                case_new_lag_4 + case_new_lag_5 + case_new_lag_6,
+              ~ 0, # no intercept
+              positive = TRUE,
+              data = x,
+              lambda1 = 0.1,
+              trace = FALSE)
+}
+
+```
+
+
+# Adding lags to data
+
+We try with 7 day lags to start with
+
+```{r}
+x <- x_raw %>% 
+     mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>% 
+     group_by(report_country, iso3, who_region, population, date_index) %>% 
+     filter(max(report_date) == date_index + days(3)) %>% 
+     summarise(across(contains("new"), ~sum(., na.rm = TRUE))) %>% 
+     arrange(date_index) %>% 
+     mutate(
+          across(c(case_new, death_new), ~round(phifunc::smooth_rolling_avg(., date_index, before = 7, after = 7)))
+     ) %>% 
+     mutate(
+          across(
+               contains("case"),
+               list(
+                    "lag_1" = ~lag(., n = 1, default = 0),
+                    "lag_2" = ~lag(., n = 2, default = 0),
+                    "lag_3" = ~lag(., n = 3, default = 0),
+                    "lag_4" = ~lag(., n = 4, default = 0),
+                    "lag_5" = ~lag(., n = 5, default = 0),
+                    "lag_6" = ~lag(., n = 6, default = 0)
+               )
+          )
+     ) %>% 
+     ungroup()
+
+
+
+```
+
+# Filtering data and applying model
+
+```{r}
+
+train_start <- ymd(params$train_start)
+train_end <- ymd(params$train_end)
+
+# nesting data and adding models
+x_nested <- x %>%
+  filter(date_index >= train_start) %>% # should be redundant now
+  na.omit() %>% 
+  nest(data = -c(report_country, iso3, who_region)) %>%
+  mutate(data_train = map(data,
+                          filter,
+                          date_index < train_end),
+         fit = map(data_train, conic_lasso))
+
+
+```
+
+# get the voerall cfr from the training data
+
+```{r}
+
+x_nested <- x_nested %>% 
+     mutate(cfr = map(fit, ~ sum(coef(.))))
+
+```
+
+# Filter out countries that have failed
+
+```{r}
+
+countries_failed <- x_nested %>% 
+     rowwise() %>% 
+     filter(sum(fit@penalized) == 0) %>% 
+     select(report_country, iso3, who_region)
+
+x_nested <- x_nested %>% 
+     filter(!report_country %in% countries_failed$report_country)
+
+
+```
+
+
+# Generate predictions for countries
+
+We also want to generate adjusted R^2 estimates, and filter out those that are too low
+
+
+```{r}
+
+# adding model predictions
+## we need to handle separately predictions for the entire dataset ("_all") and
+## for the training set, used for calculating the R2 ("_train")
+x_nested <- x_nested %>%
+  mutate(
+    # predictors for all data and training data
+    predictors_all =
+      map(data, # used for predict()
+          select,
+          starts_with("case_new")),
+    predictors_train =
+      map(data_train, # used for predict()
+          select,
+          starts_with("case_new"))) %>%
+  mutate(
+    # predictions for all and training data
+    predictions_all = map2(fit,
+                             predictors_all,
+                             ~ predict(.x, .y)),
+    # predictions
+    predictions_train = map2(fit,
+                             predictors_train,
+                             ~ predict(.x, .y)),
+    # predictions
+    # add predictions as a column in the data
+    data = map2(data,
+                predictions_all,
+                ~ mutate(.x, pred = unlist(as_tibble(.y)[, 1]))),
+    data_train = map2(data_train,
+                      predictions_train,
+                      ~ mutate(.x, pred = unlist(as_tibble(.y)[, 1])))
+    ) # add preds to data
+
+
+```
+ 
+ # Finding those with low Rw 
+ 
+```{r}
+
+# adding R2 and adjusted R2
+x_nested <- x_nested %>%
+  mutate(R2 = map(data_train, ~cor(.x$death_new, .x$pred, use = "pairwise.complete.obs")^2)) %>% 
+  mutate(R2_adj = pmap(
+    list(data_train, R2, fit), 
+    ~
+      #  - (1 - (1 - R2))
+      1 - (1 - ..2)
+     * (
+      #  ((n - 1) / (n - p))
+      (nrow(..1) - 1) / (nrow(..1) - length(coef(..3)) - 1)
+    )
+  )
+  )
+
+```
+ 
+ 
+# We check the adjusted R2 by region
+ 
+```{r}
+
+x_nested %>%
+  select(report_country, who_region, R2_adj) %>% 
+  unnest(R2_adj) %>%
+  ggplot(aes(x = ifelse(R2_adj < 0, 0, R2_adj), y = fct_reorder(report_country, R2_adj))) +
+  geom_col() +
+  facet_wrap(~who_region, scales = "free_y") +
+  geom_vline(xintercept = 0.75, linetype = "dotted", alpha = 0.5, col = "salmon") +
+  theme_bw() +
+  labs(x = "Proportion of variance explained",
+       y = "",
+       title = "Goodness-of-fit of models",
+       subtitle = "Date from 1 July 2020 to 31st Dec 2021")
+
+```
+
+
+# We filter out the countries where the adjusted R2 is less than 0.75
+
+```{r}
+
+countries_low_r2 <- x_nested %>% 
+     filter(R2_adj < 0.75)
+
+x_nested <- x_nested %>% 
+     filter(!report_country %in% countries_low_r2$report_country)
+
+```
+
+We plot our countries individually to make sure they work ok
+
+
+```{r}
+plot_decouple <- function(x) {
+     x <- x %>% 
+          select(date_index, obs_death = death_new, pred_death = pred, obs_case = case_new) %>% 
+          pivot_longer(cols = c(obs_death, pred_death, obs_case),
+                       names_to = "type",
+                       values_to = "vals") %>% 
+          mutate(val_type = ifelse(str_detect(type, pattern = "death"), "deaths", "cases"))
+     
+     ggplot(x, aes(x = date_index, y = vals, col = type)) +
+          geom_vline(xintercept = ymd("2020-12-31"), col = "salmon", linetype = "dotted", size = 1) +
+          geom_line(alpha = 0.7) +
+          geom_point(alpha = 0.7) +
+          theme_minimal() +
+          scale_y_continuous(labels = scales::comma) +
+          scale_x_date(date_breaks = "2 months", date_labels = "%d %b") +
+          labs(x = "date of report", y = NULL) +
+          scale_color_manual(values = c("#b2182b", "#2166ac", "#762a83"), name = NULL) +
+          theme(
+               plot.background = element_rect(fill = "white"),
+               legend.position = "bottom"
+          ) + 
+          facet_wrap(~val_type, scales = "free_y", ncol = 1)
+}
+
+x_plots <- x_nested %>% 
+     transmute(
+          report_country,
+          iso3,
+          plot_decouple = map2(data, report_country, ~plot_decouple(.x) + ggtitle(.y))
+     )
+
+
+walk2(x_plots$iso3, x_plots$plot_decouple, ~ggsave(glue::glue("outputs/decouple_plots/{.x}_lasoo.png"), .y, width = 6, height = 6))
+
+```
+
+
+# Assembling a df to plot, comparing predicted to observed deaths in the past week
+
+It might be better to use the last e.g. 3 weeks for this? not sure
+
+We also generate CIs from observed and predicted CFRs
+
+```{r}
+
+x_compared <- x_nested %>% 
+     transmute(
+          report_country,
+          iso3,
+          who_region,
+          obs_cases = map_dbl(data %>% 
+                                   filter(date_index == max(date_index, na.rm = T)),
+                              ~pull(., case_new)),
+          obs_deaths = map_dbl(latest_obs %>% 
+                                    filter(date_index == max(date_index, na.rm = T)),
+                               ~pull(., death_new)),
+          pred_deaths = map_dbl(data %>% 
+                                     slice(as_tibble(.), n()),
+                                ~pull(., mu))
+     )
+
+
+x_compared <- x_compared %>% 
+     pivot_longer(cols = contains("deaths"),
+                  names_to = "death_type",
+                  values_to = "deaths") %>% 
+     rowwise() %>% 
+     mutate(cfr = round(deaths) / obs_cases,
+            cfr_lower = prop_ci(round(deaths), obs_cases, result = "lower"),
+            cfr_upper = prop_ci(round(deaths), obs_cases, result = "upper"),
+            cfr_label = ifelse(death_type == "obs_deaths", "Observed", "Predicted"))  %>% 
+     group_by(report_country) %>% 
+     mutate(reduction = (deaths[cfr_label == "Predicted"] - deaths[cfr_label == "Observed"]) / deaths[cfr_label == "Predicted"]) %>% 
+     ungroup()
+
+```
+
+# We plot the differences in CFR
+
+
+```{r}
+
+x_plot_cfr %>% 
+     ggplot(aes(y = cfr, x = fct_reorder(report_country, cfr), col = cfr_label)) +
+     geom_errorbar(aes(ymin = cfr_lower, ymax = cfr_upper)) +
+     geom_point() +
+     coord_flip() +
+     theme_minimal() + 
+     facet_wrap(~who_region, scales = "free") +
+     scale_y_continuous(trans = "log10", labels = scales::percent) +
+     scale_color_manual(values = c("#fc8d59", "#91bfdb"), name = NULL) +
+     labs(y = "CFR", x = NULL)
+```
+
+# We plot the % reduction in deaths between pred and obs
+
+
+```{r}
+
+x_plot_cfr %>% 
+     group_by(iso3) %>% 
+     slice(1) %>% 
+     ggplot(aes(y = fct_reorder(report_country, reduction), x = reduction)) +
+     geom_col(fill = "#91bfdb", col = NA) +
+     geom_vline(xintercept = 1, col = "salmon", linetype = "dotted", alpha = 0.5) +
+     theme_minimal() + 
+     facet_wrap(~who_region, scales = "free") +
+     scale_x_continuous(labels = scales::percent) +
+     labs(x = "% reduction", y = NULL)
+
+```
