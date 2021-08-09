@@ -15,7 +15,7 @@ output:
     <!-- df_print: paged -->
     css: !expr here::here('css', 'style.css')
 params:
-  interactive: false
+  interactive: true
 ---
 
 ```{r setup, include=FALSE}
@@ -36,8 +36,8 @@ This is a report that assesses the ELR (Epidemiological Level of Risk) process, 
 ```{r}
 pacman::p_load(here, rio, lubridate, janitor, tidyverse, flextable,
                cowplot, ggpubr, # for plots 
-               DiagrammeR,     # for flow diagrams
-               networkD3)      # For alluvial/Sankey diagrams
+               DiagrammeR,      # for flow diagrams
+               networkD3)       # For alluvial/Sankey diagrams
 ```
 
 ## Import latest data
@@ -60,6 +60,15 @@ if (params$interactive) {
 
 
 ## Data cleaning
+
+
+```{r}
+# named vectors 
+alert <- c("1 - Critical", "2 - Very high")
+warning <- c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium")
+```
+
+
 
 ```{r, message=F, warning=F}
 ELR_all <- ELR_raw %>% 
@@ -115,13 +124,14 @@ ELR_all <- ELR_raw %>%
       "Unknown"),
     
     final = case_when(
-      is.na(final) & is.na(context) & dynamics == "No Data" ~ "6 - Minimal/NA",
-      is.na(final) & is.na(context) & dynamics == "Low" ~ "5 - Low",
-      is.na(final) & is.na(context) & dynamics == "Medium" ~ "4 - Medium",
+      is.na(final) & is.na(context) & dynamics == "Insufficient data (chronic)" ~ "No data",
+      is.na(final) & is.na(context) & dynamics == "Low"     ~ "5 - Low",
+      is.na(final) & is.na(context) & dynamics == "Medium"  ~ "4 - Medium",
       is.na(final) & is.na(context) & dynamics == "Minimal" ~ "6 - Minimal",
+      final == "No Data" ~ "No data",
       TRUE ~ final),
     
-    final = na_if(final, "No Data")) %>% 
+    final = na_if(final, "Unknown")) %>% 
   
   #filter(week != as.Date("2021-08-02")) %>% 
   
@@ -141,23 +151,139 @@ ELR_all <- ELR_raw %>%
     final == "4 - Medium" ~ 3,
     final == "5 - Low" ~ 4,
     final == "6 - Minimal" ~ 5,
-    final == "Unknown" ~ 6)) %>% 
+    final %in% c("Unknown", "Insufficient data", "No data") ~ 6)) %>% 
 
   # Make bumped up column
   mutate(bump_up = case_when(
     context == "Present" & dynamics_lvl != final_lvl ~ "Bumped",
     TRUE ~ "Not bumped")) %>% 
   
+  mutate(departures = case_when(
+    net_increases_asmodee >= 3 ~ "Accelerating",
+    TRUE ~ "Not accelerating")
+    ) %>% 
   
-    # final = recode(
-    #   final, 
-    #   "6 - Minimal" = "Minimal/NA"),
-    # final = replace_na(final, "Minimal/NA"),
+  
+  ######################################################
+  # Make pre- and post- columns, and downward trajectory
+  ######################################################
+  
+  group_by(country) %>%
+  
+  arrange(country, week) %>% 
+  
+  # row number and first entry
+  mutate(entry = row_number()) %>% 
+  mutate(first_alert = { final %in% alert } %>% { . * !duplicated(.) }) %>%
+  mutate(first_row = ifelse(row_number() == 1, TRUE, FALSE)) %>%
+  
+  # Find first Medium classification in Country
+  mutate(first = { final %in% "4 - Medium"} %>% { . * !duplicated(.) }) %>% 
+  
+  
+  # # Number weeks by relationship to first medium
+  # mutate(day_first = case_when(
+  #   
+  #   # if country never had Medium
+  #   sum(first, na.rm=T) == 0 ~ NA_real_,
+  #   
+  #   # If country had a medium
+  #   sum(first, na.rm=T) > 0  ~ as.numeric((week - week[first == 1])/ 7),
+  #   
+  #   TRUE ~ NA_real_
+  #   
+  #   )) %>% 
+  
+  # Number weeks by relationship to first medium
+  #filter(sum(first, na.rm=T) > 0) %>% 
+  #mutate(day_first = as.numeric((week - week[first == 1])/ 7)) %>% 
+  
+  # Factor re-ordering of ELR classifications
+  mutate(final = fct_explicit_na(final)) %>% 
+  mutate(final = fct_relevel(final, c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium", "5 - Low", "6 - Minimal"))) %>% 
+  mutate(final = fct_rev(final)) %>% 
+  
+  # Create columns that look before 5 weeks
+  mutate(post_1 = lead(final, 1)) %>% 
+  mutate(post_2 = lead(final, 2)) %>% 
+  mutate(post_3 = lead(final, 3)) %>% 
+  mutate(post_4 = lead(final, 4)) %>% 
+  mutate(post_5 = lead(final, 5)) %>% 
+
+  # Create columns that look after 5 weeks
+  mutate(pre_1 = lag(final, 1)) %>% 
+  mutate(pre_2 = lag(final, 2)) %>% 
+  mutate(pre_3 = lag(final, 3)) %>% 
+  mutate(pre_4 = lag(final, 4)) %>% 
+  mutate(pre_5 = lag(final, 5)) %>% 
+  
+  
+  # identify countries on downward trajectory via ELR
+  mutate(downward_elr = ((pre_1 %in% c(alert) | 
+                          pre_2 %in% c(alert) | 
+                          pre_3%in% c(alert) | 
+                          pre_4 %in% c(alert) | 
+                          pre_5 %in% c(alert)))) %>% 
+  
+  # classify mediums into buckets
+  mutate(med_class = case_when(
     
+    # non-medium
+    final != "4 - Medium" ~ NA_character_,
     
-     #filter(week <= as.Date("2021-07-19")) %>% 
-     arrange(week) %>% 
-     drop_na(week) 
+    # High vax
+    `vax_1+_pct` > 40 ~ "Substantial vaccine coverage",
+    
+    # downward trajectory
+    downward_elr == TRUE ~ "Downward trend",
+    
+    is.na(relative_incidence) &
+      is.na(growth_rate) ~ "Emerging",
+    
+    # High incidence, high growth
+    relative_incidence >= 80 & 
+      growth_rate >= 0.02 ~ "High incidence, growing",
+    
+    # High incidence, low growth
+    relative_incidence >= 80 &
+      growth_rate < 0.02 ~ "High incidence, stable",
+    
+    # Low incidence, high growth
+    relative_incidence < 80 & 
+      growth_rate >= 0.02 ~ "Emerging",
+    
+    # Low incidence, low growth
+    relative_incidence < 80 & 
+      growth_rate < 0.02 ~ "Low concern",
+    
+    # Other
+    TRUE ~ "Other"
+    
+  )) %>% 
+  
+  mutate(med_class = fct_relevel(
+    med_class,
+    c("High incidence, growing",
+    "High incidence, stable",
+    "Emerging",
+    "Low concern",
+    "Substantial vaccine coverage",
+    "Downward trend", 
+    "Other")
+    )) %>% 
+  
+  ungroup() %>% 
+
+  
+  #filter(week <= as.Date("2021-07-19")) %>% 
+  arrange(week) %>% 
+  drop_na(week) %>% 
+  
+  select(week, country, iso3, population, who_region,
+         growth_rate, relative_incidence, net_increases_asmodee,
+         `Highlighted during Validation`, `vax_1+_pct`,  context,
+         dynamics_lvl, final_lvl, final, everything())
+
 
 
 
@@ -176,12 +302,6 @@ ELR <- ELR_all %>% filter(week > max(ELR_all$week, na.rm=T) - weeks(weeks_includ
 ```
 
 
-```{r}
-# named vectors 
-alert <- c("1 - Critical", "2 - Very high")
-warning <- c("1 - Critical", "2 - Very high", "3 - High", "4 - Medium")
-```
-
 
 This analysis utilizes the last `r weeks_include` weeks of ELR data, from `r max(ELR$week, na.rm=T) - weeks(weeks_include)``
 
@@ -198,26 +318,23 @@ Showing Critical, Very high, and high
 
 ```{r, warning=F, message=F, fig.width=9, fig.height=6}
 pin_data <- ELR %>% 
-  filter(week == max(week, na.rm=T)) %>% 
-  #filter(final %in% c("1 - Critical", "2 - Very high", "3 - High")) %>% 
-  mutate(relative_incidence = relative_incidence /100) %>% 
-  mutate(departures = case_when(
-    net_increases_asmodee >= 3 ~ "Accelerating",
-    TRUE ~ "Not accelerating")
-    ) 
-  
-pin_plot <- function(data){
-  if{ data == "all"
-  }
-  ggplot(
-    data = data %>% filter(who_region == data),
+  filter(week == max(week, na.rm=T))
+
+```
+
+
+```{r}
+pin_plot <- function(data, region_name = "Global"){
+
+  pin_plot <- ggplot(
+    data = data,
     mapping = aes(
       x = growth_rate,
       y = relative_incidence,
       shape = bump_up
       ))+
   geom_vline(aes(xintercept = c(0.0)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
-  geom_hline(aes(yintercept = c(1.0)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
+  geom_hline(aes(yintercept = c(100)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
   #geom_vline(aes(xintercept = c(0.05)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
   #geom_hline(aes(yintercept = .40), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
   #geom_hline(aes(yintercept = .80), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
@@ -238,7 +355,7 @@ pin_plot <- function(data){
     final %in% c("1 - Critical", "2 - Very high", "3 - High"),
     use_direct_label = FALSE)+
   ggrepel::geom_text_repel(
-    data = pin_data %>% 
+    data = data %>% 
       filter(final %in% c("1 - Critical", "2 - Very high", "3 - High")),
     aes(label = country, segment.alpha = 0.3),
     min.segment.length = 0,
@@ -249,28 +366,92 @@ pin_plot <- function(data){
   theme_minimal(base_size = 14)+
   theme(plot.caption = element_text(face = "italic", hjust = 0))+
   coord_cartesian(xlim = c(-0.2, max(pin_data$growth_rate, na.rm=T)))+
-  scale_y_continuous(labels = scales::label_percent())+
+  scale_y_continuous(labels = scales::label_percent(scale = 1))+
   #scale_x_continuous(breaks = seq(min(ELR$growth_rate, na.rm=T), max(ELR$growth_rate, na.rm=T), .05))+
   labs(
     x = "Daily growth rate",
     y = "Case incidence\nas percent of country historical peak",
     title = str_glue("[INTERNAL] Epidemiological Level of Risk (ELR)"),
-    subtitle = str_glue("Highest final classifications globally, for {format(max(pin_data$week, na.rm=T), '%d %B, %Y')}"),
+    subtitle = str_glue("{region_name} - highest final classifications, for {format(max(pin_data$week, na.rm=T)+ days(2), '%d %B, %Y')}"),
     color = "ELR final\nclassification",
     caption = "Assessment by HQ C19 Analytics and Intel teams with verification by regional offices.\nELR levels Medium, Low, Minimal, and No data are in grey.\nELR aims to assess risk of deterioration into a situation of\nwidespread, uncontrolled COVID-19 transmission in the very near future (2-4 weeks)"
   )
+  
+pin_plot
+  
 }
 
-ggsave(here::here("outputs", "ELR_outputs", str_glue("ELR_pin_plot_global_{max(pin_data$week, na.rm=T)}.png")),
-       pin_plot,
+pin_save <- function(region_name = "Global"){
+  
+  # save plot
+  ggsave(here::here("outputs", "ELR_outputs", str_glue("ELR_pin_plot_{region_name}_{max(pin_data$week, na.rm=T)}.png")),
        width = 9,
        height = 6)
+}
+```
 
-pin_plot
+
+
+
+## Global  
+
+
+```{r, warning=F, message=F}
+pin_data %>% 
+  pin_plot(region_name = "Global")
+
+pin_save(region_name = "Global")
 ```
 
 
 ## One per region  
+
+```{r, warning=F, message=F}
+pin_data %>% 
+  filter(who_region == "AFRO") %>% 
+  pin_plot(region_name = "AFRO")
+
+pin_save(region_name = "AFRO")
+
+
+
+pin_data %>% 
+  filter(who_region == "EURO") %>% 
+  pin_plot(region_name = "EURO")
+
+pin_save(region_name = "EURO")
+
+
+pin_data %>% 
+  filter(who_region == "EMRO") %>% 
+  pin_plot(region_name = "EMRO")
+
+pin_save(region_name = "EMRO")
+
+
+pin_data %>% 
+  filter(who_region == "PAHO") %>% 
+  pin_plot(region_name = "PAHO")
+
+pin_save(region_name = "PAHO")
+
+
+pin_data %>% 
+  filter(who_region == "SEARO") %>% 
+  pin_plot(region_name = "SEARO")
+
+pin_save(region_name = "SEARO")
+
+
+pin_data %>% 
+  filter(who_region == "WPRO") %>% 
+  pin_plot(region_name = "WPRO")
+
+pin_save(region_name = "WPRO")
+
+```
+
+
 
 
 
@@ -288,30 +469,35 @@ pin_plot_med <- ggplot(
     mapping = aes(
       x = growth_rate,
       y = relative_incidence,
-      shape = bump_up
+      #shape = bump_up
       ))+
   geom_vline(aes(xintercept = c(0.0)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
   geom_hline(aes(yintercept = c(1.0)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
   
-  #geom_vline(aes(xintercept = c(0.05)), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
-  #geom_hline(aes(yintercept = .40), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
-  #geom_hline(aes(yintercept = .80), linetype = "dotted", alpha = 1, color = "salmon", size = 1)+
+  geom_point(aes(color = med_class))+
   
-  geom_point(aes(color = final))+
-  scale_shape_manual(
-    labels = c("Alert", "Watchlist"),
-    values = c(
-    "Alert" = 17,
-    "Watchlist" = 16),
-    name = "Intel alert")+
-  # scale_color_manual(
+  # scale_shape_manual(
+  #   labels = c("Alert", "Watchlist"),
   #   values = c(
-  #     "1 - Critical" = "Black",
-  #     "2 - Very high" = "Red",
-  #     "3 - High" = "Orange"))+
-  gghighlight::gghighlight(
-    final %in% c("1 - Critical", "2 - Very high", "3 - High"),
-    use_direct_label = FALSE)+
+  #   "Alert" = 17,
+  #   "Watchlist" = 16),
+  #   name = "Intel alert")+
+  
+  scale_color_manual(
+    values = c(
+      "Emerging" = "red",
+      "High incidence, growing" = "black",
+      "High incidence, stable" = "gold1",
+      "Low concern" = "blue",
+      "Substantial vaccine coverage" = "dark green",
+      "Downward trend" = "green",
+      "Other" = "grey"
+      ))+
+  
+  # gghighlight::gghighlight(
+  #   med_class %in% c("Emerging"),
+  #   use_direct_label = FALSE)+
+  
   ggrepel::geom_text_repel(
     data = pin_data_med,
     aes(label = country, segment.alpha = 0.3),
@@ -320,19 +506,27 @@ pin_plot_med <- ggplot(
     max.overlaps = Inf,
     size = 2.5
     )+
+  
   theme_minimal(base_size = 14)+
-  scale_y_continuous(labels = scales::label_percent())+
+  
+  theme(plot.caption = element_text(hjust = 0, face = "italic"))+
+  
+  scale_y_continuous(labels = scales::label_percent(scale = 1))+
   #scale_x_continuous(breaks = seq(min(ELR$growth_rate, na.rm=T), max(ELR$growth_rate, na.rm=T), .05))+
+  
   labs(
     x = "Daily growth rate",
     y = "Case incidence\nas percent of country historical peak",
-    title = str_glue("[INTERNAL] ELR 'Mediums'\n{format(max(pin_data$week, na.rm=T), '%d %B, %Y')}"),
-    color = "ELR final\nclassification",
-    caption = "caption text here..."
+    title = str_glue("[INTERNAL] ELR 'Mediums' by type"),
+    subtitle = str_glue("N = {nrow(pin_data_med)}, as assessed {format(max(pin_data$week, na.rm=T), '%d %B, %Y')}"),
+    color = "Medium ELR\ncharacterisation",
+    caption = "Assessment by HQ C19 Analytics and Intel teams with verification by regional offices.\nELR aims to assess risk of deterioration into a situation of\nwidespread, uncontrolled COVID-19 transmission in the very near future (2-4 weeks)"
   )
 
-ggsave(here::here("outputs", "ELR_outputs", str_glue("ELR_pin_plot_{max(pin_data$week, na.rm=T)}.png")),
-       pin_plot,
+pin_plot_med
+
+ggsave(here::here("outputs", "ELR_outputs", str_glue("ELR_mediums_{max(pin_data$week, na.rm=T)}.png")),
+       pin_plot_med,
        width = 9,
        height = 6)
 
@@ -376,8 +570,7 @@ map_data <- who_shp$adm0 %>%
                #drop_na(final) %>% 
                select(week, iso3, dynamics, context, final),
              by = c("iso_3_code" = "iso3")) %>%
-  mutate(final_raw = na_if(final, "No data"))
-  #drop_na(final)
+  mutate(final = na_if(final, "No data"))
  
 ```
 
@@ -386,7 +579,7 @@ map_data <- who_shp$adm0 %>%
 ```{r include=FALSE, warning=F, message=F}
 ELR_map <- ggplot()+
   #geom_sf_who_poly(data = who_shp$adm0, fill = who_map_col("no_data")) +
-  geom_sf_who_poly(data = map_data, aes(fill = final)) +
+  geom_sf_who_poly(data = map_data, aes(fill = fct_rev(final))) +
 
    scale_fill_viridis_d(
      option = "plasma",
@@ -400,8 +593,10 @@ ELR_map <- ggplot()+
   #                   na.value = who_map_col("no_data"),
   #                   name = "WHO Region", 
   #                   labels = whp_map_legend_labs) +
+  
   labs(title ="[INTERNAL USE ONLY] Weekly Epidemiological Level of Risk (ELR)",
-       subtitle = glue::glue("Risk of experiencing high, uncontrolled transmission in the next few weeks\nas assessed by Geneva Analytics & Intel teams on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}")) +
+       subtitle = glue::glue("Risk of experiencing high, uncontrolled transmission and deterioration in the next few weeks\nas assessed by Geneva Analytics & Intel teams on {format(max(map_data$week, na.rm=T)+ lubridate::days(2), '%d %b %Y')}")) +
+  
   who_map_pipeline(no_data_scale = FALSE)
 
 who_map_save(here::here("outputs", "ELR_outputs", glue::glue("who_ELR_map_{max(map_data$week, na.rm=T)}.png")), dpi = 700)
@@ -423,7 +618,7 @@ knitr::include_graphics(
 
 unknown_data_list <- ELR %>% 
   filter(week == max(ELR$week, na.rm=T)) %>% 
-  filter(is.na(final)) %>% 
+  filter(final == "No data") %>% 
   pull(country)
 
 unknown_data <- str_glue("Countries with unknown classification due to limited data:\n{paste0(na.omit(unknown_data_list), collapse = '; ')}")

@@ -1,0 +1,36 @@
+AFRO
+----
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:
+Chad, Comoros, Saint Helena
+
+
+EMRO
+----
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:
+Djibouti
+
+
+EURO
+----
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:
+Holy See, San Marino
+
+
+PAHO
+----
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:
+Anguilla, Antigua and Barbuda, Bonaire, Sint Eustatius and Saba, Cayman Islands, Dominica, Falkland Islands (Malvinas), Grenada, Montserrat, Saint Pierre and Miquelon, Turks and Caicos Islands
+
+
+SEARO
+----
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:
+Democratic People's Republic of Korea
+
+
+WPRO
+----
+The following countries reported < 100 cases/tests over the last 7 weeks and were not included in further analyses:
+American Samoa, Brunei Darussalam, Cook Islands, Kiribati, Marshall Islands, Micronesia (Federated States of), Nauru, New Caledonia, Niue, Palau, Pitcairn Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna
+
+
