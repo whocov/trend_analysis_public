@@ -36,9 +36,8 @@ jobs:
         run: |
           Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true")
           options(install.packages.check.source = "no")
-          pkgs <- c("rmarkdown", "remotes", "here")
+          pkgs <- c("rmarkdown", "remotes", "here", "reportfactory")
           install.packages(pkgs, repos = "https://cloud.r-project.org/")
-          remotes::install_github("reconhub/reportfactory", upgrade = "never")
           remotes::install_github("reconhub/rfextras", upgrade = "never")
         shell: Rscript {0}
  
