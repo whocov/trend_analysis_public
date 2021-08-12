@@ -19,8 +19,6 @@ if (file.exists(phifunc_token_file)) {
   if (phifunc_token == "") phifunc_token <- NULL
 }
 
-
-remotes::install_github("reconhub/trending", upgrade = "never")
 remotes::install_github("reconverse/i2extras", upgrade = "never")
 remotes::install_github("reconhub/trendbreaker", upgrade = "never")
 
