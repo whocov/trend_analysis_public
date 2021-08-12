@@ -239,7 +239,7 @@ x <- x %>%
 
 ## add TPR info
 x <- x %>%
-  right_join(select(all_elr_extras, -who_region), by = "iso3")
+  left_join(select(all_elr_extras, -who_region), by = "iso3")
 
 ## add classification to x_all
 x_all <- x_all %>%
