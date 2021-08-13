@@ -91,7 +91,7 @@ plan("multisession", workers = params$n_cores)
 
 ```{r }
 
-dat <- load_final_data()
+dat <- load_final_data(dc_use = TRUE)
 data_stamp <- get_timestamp(dat)
 data_stamp
 elr_extras <- dat$elr_extras
