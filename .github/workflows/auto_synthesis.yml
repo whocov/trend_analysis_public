@@ -16,6 +16,7 @@ jobs:
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
       SENDINBLUE_SMTP_PASSWORD: ${{ secrets.SENDINBLUE_SMTP_PASSWORD }}
+      GITHUB_PAT: ${{ secrets.PAT_TIBO }}
     steps:
       - name: Checkout repos
         uses: actions/checkout@v2
@@ -48,3 +49,5 @@ jobs:
           source("run_synthesis.R")
         shell: Rscript {0}
  
+env:
+  GITHUB_PAT: ${{ secrets.PAT_TIBO }}
