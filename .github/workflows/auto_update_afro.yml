@@ -19,6 +19,7 @@ jobs:
     runs-on: macos-latest
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
+      GITHUB_PAT: ${{ secrets.PAT_TIBO }}
     steps:
       - name: Checkout repos
         uses: actions/checkout@v2
@@ -66,3 +67,6 @@ jobs:
         with:
           github_token: ${{ secrets.PAT_TIBO }}
           branch: 'main'  
+
+env:
+  GITHUB_PAT: ${{ secrets.PAT_TIBO }}

@@ -25,6 +25,7 @@ jobs:
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
       WHO_REGION: ${{ github.event.inputs.whoregion}}
+      GITHUB_PAT: ${{ secrets.PAT_TIBO }}
     steps:
       - name: Checkout repos
         uses: actions/checkout@v2
@@ -70,3 +71,5 @@ jobs:
           github_token: ${{ secrets.PAT_TIBO }}
           branch: 'main'  
  
+env:
+  GITHUB_PAT: ${{ secrets.PAT_TIBO }}

@@ -19,6 +19,7 @@ jobs:
     runs-on: macos-latest
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
+      GITHUB_PAT: ${{ secrets.PAT_TIBO }}
     steps:
       - name: Checkout repos
         uses: actions/checkout@v2
@@ -58,3 +59,5 @@ jobs:
         run: |
           git push --force
  
+env:
+  GITHUB_PAT: ${{ secrets.PAT_TIBO }}
