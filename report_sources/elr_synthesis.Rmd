@@ -14,6 +14,8 @@ output:
     code_folding: hide
     <!-- df_print: paged -->
     css: !expr here::here('css', 'style.css')
+params:
+  use_decoupling: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -111,6 +113,17 @@ x <- x_all %>%
 ```
 
 
+Adding Decoupling data if needed
+
+```{r}
+
+if (params$use_decoupling) {
+     decoupling_data <- load_final_data(dc_use = TRUE)
+}
+
+dc_data <- decoupling_data$
+
+```
 ## Load VOI data
 
 ```{r }

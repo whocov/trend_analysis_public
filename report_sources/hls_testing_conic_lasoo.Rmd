@@ -413,7 +413,7 @@ It might be better to use the last e.g. 3 weeks for this? not sure
 
 We also generate CIs from observed and predicted CFRs
 
-```{r, eval = FALSE}
+```{r}
 
 x_compared <- x_nested %>% 
   transmute(
@@ -529,9 +529,18 @@ x_compared %>%
 ```
 
 
+# build data to export
+
+```{r}
+
+final_dat <- append(dat, list("dc_data" = x_compared))
+
+```
+
+
 # export the final data
 
-```{r }
+```{r}
 
 ## export data to rds file in data/clean
 file_name <- stringr::str_glue("final_dat_dc_{Sys.Date()}.rds")
