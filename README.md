@@ -1,10 +1,10 @@
 Welcome to the WHO COVID-19 trend analysis repository
 ================
 
--   [Preamble](#preamble)
--   [Quick links](#quick-links)
--   [Overall dynamics figures](#overall-dynamics-figures-1)
--   [Contributions](#contributions)
+  - [Preamble](#preamble)
+  - [Quick links](#quick-links)
+  - [Overall dynamics figures](#overall-dynamics-figures-1)
+  - [Contributions](#contributions)
 
 [![refresh-readme](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/refresh_readme.yml)
 
@@ -52,10 +52,10 @@ indicated in the relevant sections.
 This repository provides country-level analyses of COVID-19 dynamics
 characterised as summary figures, which outline:
 
--   **x-axis**: the daily growth rate of reported cases
--   **y-axis**: the current level of infections in the country (using 2
+  - **x-axis**: the daily growth rate of reported cases
+  - **y-axis**: the current level of infections in the country (using 2
     different metrics, see below)
--   **color**: indications of increase in transmissibility from ASMODEE
+  - **color**: indications of increase in transmissibility from ASMODEE
 
 The sections below provides details on these elements.
 
@@ -94,43 +94,43 @@ press, and will be linked as soon as available.
 Analyses are performed on all countries of WHO regions meeting the
 following criteria:
 
--   reported at least 100 cases or tests over the last 7 weeks
--   (*in analyses using peak incidence*) peak weekly incidence is
+  - reported at least 100 cases or tests over the last 7 weeks
+  - (*in analyses using peak incidence*) peak weekly incidence is
     strictly positive (i.e. at least on case was reported in the past)
 
 ## Getting in touch
 
--   For bug reports, feature requests, or general feedback, please use
+  - For bug reports, feature requests, or general feedback, please use
     github
     [issues](https://github.com/whocov/trend_analysis_public/issues).
 
--   You have questions, ideas, or comments you would like to share? Join
+  - You have questions, ideas, or comments you would like to share? Join
     our [discussion
     forum](https://github.com/whocov/trend_analysis_public/discussions).
 
--   Contributions to this repository are welcome through [pull
+  - Contributions to this repository are welcome through [pull
     requests](https://github.com/whocov/trend_analysis_public/pulls).
 
--   For further enquiries, send an email to [Thibaut
+  - For further enquiries, send an email to [Thibaut
     Jombart](mailto:thibautjombart@gmail.com).
 
 Note that for all matters of social interactions, this project is
 submitted to a [code of conduct](CONDUCT.md).
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 # Quick links
 
 ## Overall dynamics figures
 
--   [AFRO](https://github.com/whocov/trend_analysis_public#afro-region)
--   [EMRO](https://github.com/whocov/trend_analysis_public#emro-region)
--   [EURO](https://github.com/whocov/trend_analysis_public#euro-region)
--   [PAHO](https://github.com/whocov/trend_analysis_public#paho-region)
--   [SEARO](https://github.com/whocov/trend_analysis_public#searo-region)
--   [WPRO](https://github.com/whocov/trend_analysis_public#wpro-region)
+  - [AFRO](https://github.com/whocov/trend_analysis_public#afro-region)
+  - [EMRO](https://github.com/whocov/trend_analysis_public#emro-region)
+  - [EURO](https://github.com/whocov/trend_analysis_public#euro-region)
+  - [PAHO](https://github.com/whocov/trend_analysis_public#paho-region)
+  - [SEARO](https://github.com/whocov/trend_analysis_public#searo-region)
+  - [WPRO](https://github.com/whocov/trend_analysis_public#wpro-region)
 
 ## ASMODEE runs
 
@@ -138,21 +138,21 @@ This section contains links to *asmodee* results for each WHO region.
 Results are stored as *rds* files, each containing a `list` with the
 following items:
 
--   `summary`: summary of the ASMODEE results
--   `results`: outputs of ASMODEE
--   `plot_overall_deaths`: *ggplot2* object of the overall dynamics plot
+  - `summary`: summary of the ASMODEE results
+  - `results`: outputs of ASMODEE
+  - `plot_overall_deaths`: *ggplot2* object of the overall dynamics plot
     using death per capita on the y-axis
--   `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot
+  - `plot_overall_peaks`: *ggplot2* object of the overall dynamics plot
     using incidence as percentage of historical peak on the y-axis
 
 Links to the *rds* files:
 
--   [AFRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_AFRO_latest.rds)
--   [EMRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_EMRO_latest.rds)
--   [EURO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_EURO_latest.rds)
--   [PAHO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_PAHO_latest.rds)
--   [SEARO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_SEARO_latest.rds)
--   [WPRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_WPRO_latest.rds)
+  - [AFRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_AFRO_latest.rds)
+  - [EMRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_EMRO_latest.rds)
+  - [EURO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_EURO_latest.rds)
+  - [PAHO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_PAHO_latest.rds)
+  - [SEARO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_SEARO_latest.rds)
+  - [WPRO](https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/rds/asmodee_outputs_WPRO_latest.rds)
 
 # Overall dynamics figures
 
@@ -161,7 +161,7 @@ Links to the *rds* files:
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
 <br>Analyses were last updated **Sunday 15 August
-2021**.<br><br>**Notes** <br>The following countries reported &lt; 100
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Chad, Comoros, Saint Helena <br>
 
@@ -173,16 +173,16 @@ analyses:<br>Chad, Comoros, Saint Helena <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_AFRO_latest.png" width="85%">
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 ## EMRO region
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 15 August
-2021**.<br><br>**Notes** <br>The following countries reported &lt; 100
+<br>Analyses were last updated **Monday 16 August
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Djibouti <br>
 
@@ -194,16 +194,16 @@ analyses:<br>Djibouti <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_EMRO_latest.png" width="85%">
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 ## EURO region
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Sunday 15 August
-2021**.<br><br>**Notes** <br>The following countries reported &lt; 100
+<br>Analyses were last updated **Monday 16 August
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Holy See <br>
 
@@ -218,16 +218,16 @@ analyses:<br>Holy See <br>
 † All references to Kosovo should be understood to be in the context of
 the United Nations Security Council resolution 1244 (1999).
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 ## PAHO region
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Sunday 15 August
-2021**.<br><br>**Notes:** The following countries reported &lt; 100
+<br>Analyses were last updated **Monday 16 August
+2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Cayman Islands, Falkland Islands (Malvinas),
 Grenada, Montserrat, Saint Pierre and Miquelon, Saint Vincent and the
@@ -235,11 +235,11 @@ Grenadines <br>
 
 **Notes of geographic units**:
 
--   a dispute exists between the Governments of Argentina and the United
+  - a dispute exists between the Governments of Argentina and the United
     Kingdom of Great Britain and Northern Ireland concerning sovereignty
     over the Falkland Islands (Malvinas)
 
--   data for Bonaire, Sint Eustatius and Saba have been disaggregated
+  - data for Bonaire, Sint Eustatius and Saba have been disaggregated
     and displayed at the subnational level.
 
 ### Infection levels as % of historical incidence peak
@@ -250,16 +250,16 @@ Grenadines <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_PAHO_latest.png" width="85%">
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 [![auto-update-searo](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_searo.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_searo.yml)
 
 ## SEARO region
 
 <br>Analyses were last updated **Sunday 15 August
-2021**.<br><br>**Notes** <br>The following countries reported &lt; 100
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
 
@@ -271,16 +271,16 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_SEARO_latest.png" width="85%">
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 ## WPRO region
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
 <br>Analyses were last updated **Sunday 15 August
-2021**.<br><br>**Notes** <br>The following countries reported &lt; 100
+2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
 Micronesia (Federated States of), Nauru, New Caledonia, Niue, Palau,
@@ -296,9 +296,9 @@ for the following countries:<br>New Zealand <br>
 
 <img src="https://github.com/whocov/trend_analysis_public/raw/main/asmodee_outputs/png/pinplot_deaths_WPRO_latest.png" width="85%">
 
-------------------------------------------------------------------------
+-----
 
-------------------------------------------------------------------------
+-----
 
 # Contributions
 
@@ -310,21 +310,21 @@ team. Contributions are listed by alphabetic order:
 
 Code, data and original design:
 
--   Neale Batra
--   Yuka Jinnai
--   Thibaut Jombart
--   Olivier le Polain
--   Henry Laurenson-Schafer
--   Katelijn Vandemaele
+  - Neale Batra
+  - Yuka Jinnai
+  - Thibaut Jombart
+  - Olivier le Polain
+  - Henry Laurenson-Schafer
+  - Katelijn Vandemaele
 
 Contributed ideas and feedback:
 
--   Brett Archer
--   Raquel Medialdea Carrera
--   Laura Guzman (original idea of *Tadpole* plots)
--   Esther Hamblion
--   Orlagh Ingeborg
--   Zyleen Kassamali
+  - Brett Archer
+  - Raquel Medialdea Carrera
+  - Laura Guzman (original idea of *Tadpole* plots)
+  - Esther Hamblion
+  - Orlagh Ingeborg
+  - Zyleen Kassamali
 
 ## Sending feedback
 
@@ -332,8 +332,8 @@ Feedback is welcome via github
 [issues](https://github.com/whocov/trend_analysis_public/issues). When
 filing a new issue:
 
--   first check if a similar issue already exists
--   specify whether this is a bug report or a feature request
+  - first check if a similar issue already exists
+  - specify whether this is a bug report or a feature request
 
 ## Contributing to this repository
 
