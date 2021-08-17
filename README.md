@@ -258,7 +258,7 @@ Grenadines <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 16 August
+<br>Analyses were last updated **Tuesday 17 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
@@ -279,7 +279,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Monday 16 August
+<br>Analyses were last updated **Tuesday 17 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
