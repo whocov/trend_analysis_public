@@ -184,7 +184,7 @@ analyses:<br>Chad, Comoros, Saint Helena <br>
 <br>Analyses were last updated **Tuesday 17 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Djibouti, Sudan <br>
+analyses:<br>Djibouti <br>
 
 ### Infection levels as % of historical incidence peak
 
