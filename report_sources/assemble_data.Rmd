@@ -51,6 +51,7 @@ Package installs on remotes are now handled in a separate script
 ```{r}
 
 pacman::p_load(reportfactory, rio, here, purrr, stringr, tidyverse, forcats, # data management
+               lubridate,
                phifunc, # covid data functions
                zoo) # moving averages
 
@@ -102,7 +103,7 @@ We add/define variables from `all_dat`:
 
 ## THIS DOES NOT WORK FOR ME:
 ## testing?
-all_dat$testing_data2 <- calculate_tpr_weekly(all_dat)
+all_dat$testing_data2 <- test_data_format(all_dat$testing_data)
 
 ## Cases & deaths
 phi <- all_dat$phi_data
@@ -371,7 +372,8 @@ final_dat
 
 ```{r }
 
-testing_dat <- all_dat$testing_data %>%
+testing_dat <- pull_testing_data_all() %>% 
+  finalise_test_data(all_dat$phi_data) %>% 
   incidence2::incidence(date,
                         counts = daily_change,
                         groups = country,
@@ -661,7 +663,8 @@ Columns added include:
 
 ```{r}
 # pull in vaccine data from OWID
-testing_data_final <- all_dat$testing_data2 %>% 
+testing_data_final <- test_data_format(all_dat$testing_data) %>% 
+  mutate(across(c(tests, cases, deaths), ~ifelse(. < 0, 0, .))) %>% 
   filter(!(last_updated < week_end_date)) %>% 
   select(iso3,
          who_region,
@@ -670,7 +673,8 @@ testing_data_final <- all_dat$testing_data2 %>%
          test_num = cases) %>% 
   group_by(iso3) %>% 
   arrange(desc(week_end_date)) %>% 
-  slice(1:2) %>% 
+  slice(1:2) %>%
+  filter(n() == 2) %>% 
   mutate(time_frame = 1:n()) %>% 
   ungroup() %>% 
   pivot_wider(
@@ -681,6 +685,8 @@ testing_data_final <- all_dat$testing_data2 %>%
   rename_with(
     ~gsub("week_end_date", "tpr_last_date", .x)
   ) %>% 
+  filter(test_denom_before >= test_num_before,
+         test_denom_recent >= test_num_recent) %>% 
   mutate(
     tpr_recent = test_num_recent / test_denom_recent,
     tpr_lower_recent = prop_ci(test_num_recent, test_denom_recent, result = "lower"),
