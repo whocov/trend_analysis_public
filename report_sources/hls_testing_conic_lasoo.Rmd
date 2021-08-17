@@ -75,58 +75,65 @@ library(phifunc)
 We load cases and deaths data
 
 ```{r, warning = FALSE, message = FALSE, eval = TRUE}
-dat <- load_final_data()
+
+if (run_solo) {
+  x_raw <- phifunc::pull_phi_data() %>%
+    normalise_date()
+  
+  
+  x_vax <- phifunc::pull_owid_vax() 
+  
+  x_vax <- x_vax %>% 
+    select(iso3, report_date = date, population,
+           vaccinations = total_vaccinations,
+           vac_oneplus_dose = people_vaccinated,
+           vac_full = people_fully_vaccinated) %>% 
+    mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>% 
+    group_by(iso3) %>% 
+    arrange(report_date) %>% 
+    fill(vaccinations, .direction = "down") %>% 
+    filter(!is.na(vaccinations)) %>% 
+    group_by(iso3, date_index) %>% 
+    summarise(total_vax = max(vaccinations, na.rm = TRUE) / max(population, na.rm = T)) %>% 
+    ungroup()
+  
+} else {
+  dat <- load_final_data()
 # 
-# x_raw <- dat$trendbreaker %>% 
-#   ungroup() %>% 
-#   select(report_country,
-#          iso3,
-#          who_region,
-#          population,
-#          report_date,
-#          case_new = cases,
-#          death_new = deaths)
-
-x_raw <- phifunc::pull_phi_data() %>% 
-     normalise_date() 
+x_raw <- dat$trendbreaker %>%
+  ungroup() %>%
+  select(report_country,
+         iso3,
+         who_region,
+         population,
+         report_date,
+         case_new = cases,
+         death_new = deaths)
 
 
 
-# x_vax <- dat$trendbreaker %>% 
-#   select(
-#     iso3,
-#     report_date,
-#     population,
-#     vaccinations,
-#     vac_oneplus_dose,
-#     vac_full
-#   ) %>% 
-#   mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>% 
-#   group_by(iso3) %>% 
-#   arrange(report_date) %>% 
-#   fill(vaccinations, .direction = "down") %>% 
-#   filter(!is.na(vaccinations)) %>% 
-#   group_by(iso3, date_index) %>% 
-#   summarise(total_vax = max(vaccinations, na.rm = TRUE) / max(population, na.rm = T)) %>% 
-#   ungroup()
 
-x_vax <- phifunc::pull_owid_vax() 
-
-x_vax <- x_vax %>% 
-  select(iso3, report_date = date, population,
-         vaccinations = total_vaccinations,
-         vac_oneplus_dose = people_vaccinated,
-         vac_full = people_fully_vaccinated) %>% 
-  mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>% 
-  group_by(iso3) %>% 
-  arrange(report_date) %>% 
-  fill(vaccinations, .direction = "down") %>% 
-  filter(!is.na(vaccinations)) %>% 
-  group_by(iso3, date_index) %>% 
-  summarise(total_vax = max(vaccinations, na.rm = TRUE) / max(population, na.rm = T)) %>% 
+x_vax <- dat$trendbreaker %>%
+  select(
+    iso3,
+    report_date,
+    population,
+    vaccinations,
+    vac_oneplus_dose,
+    vac_full
+  ) %>%
+  mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>%
+  group_by(iso3) %>%
+  arrange(report_date) %>%
+  fill(vaccinations, .direction = "down") %>%
+  filter(!is.na(vaccinations)) %>%
+  group_by(iso3, date_index) %>%
+  summarise(total_vax = max(vaccinations, na.rm = TRUE) / max(population, na.rm = T)) %>%
   ungroup()
 
-  
+}
+
+
 
 ```
 
@@ -560,7 +567,7 @@ final_dat <- append(dat, list("dc_data" = x_compared))
 
 # export the final data
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 
 ## export data to rds file in data/clean
 file_name <- stringr::str_glue("final_dat_dc_{Sys.Date()}.rds")
