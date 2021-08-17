@@ -74,29 +74,49 @@ library(phifunc)
 
 We load cases and deaths data
 
-```{r, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE, eval = TRUE}
 dat <- load_final_data()
+# 
+# x_raw <- dat$trendbreaker %>% 
+#   ungroup() %>% 
+#   select(report_country,
+#          iso3,
+#          who_region,
+#          population,
+#          report_date,
+#          case_new = cases,
+#          death_new = deaths)
 
-x_raw <- dat$trendbreaker %>% 
-  ungroup() %>% 
-  select(report_country,
-         iso3,
-         who_region,
-         population,
-         report_date,
-         case_new = cases,
-         death_new = deaths)
+x_raw <- phifunc::pull_phi_data() %>% 
+     normalise_date() 
 
 
-x_vax <- dat$trendbreaker %>% 
-  select(
-    iso3,
-    report_date,
-    population,
-    vaccinations,
-    vac_oneplus_dose,
-    vac_full
-  ) %>% 
+
+# x_vax <- dat$trendbreaker %>% 
+#   select(
+#     iso3,
+#     report_date,
+#     population,
+#     vaccinations,
+#     vac_oneplus_dose,
+#     vac_full
+#   ) %>% 
+#   mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>% 
+#   group_by(iso3) %>% 
+#   arrange(report_date) %>% 
+#   fill(vaccinations, .direction = "down") %>% 
+#   filter(!is.na(vaccinations)) %>% 
+#   group_by(iso3, date_index) %>% 
+#   summarise(total_vax = max(vaccinations, na.rm = TRUE) / max(population, na.rm = T)) %>% 
+#   ungroup()
+
+x_vax <- phifunc::pull_owid_vax() 
+
+x_vax <- x_vax %>% 
+  select(iso3, report_date = date, population,
+         vaccinations = total_vaccinations,
+         vac_oneplus_dose = people_vaccinated,
+         vac_full = people_fully_vaccinated) %>% 
   mutate(date_index = floor_date(report_date, "week", 1) + days(3)) %>% 
   group_by(iso3) %>% 
   arrange(report_date) %>% 
@@ -105,6 +125,8 @@ x_vax <- dat$trendbreaker %>%
   group_by(iso3, date_index) %>% 
   summarise(total_vax = max(vaccinations, na.rm = TRUE) / max(population, na.rm = T)) %>% 
   ungroup()
+
+  
 
 ```
 
@@ -318,10 +340,8 @@ x_nested <- x_nested %>%
   mutate(R2_adj = pmap(
     list(data_train, R2, fit), 
     ~
-      #  - (1 - (1 - R2))
       1 - (1 - ..2)
     * (
-      #  ((n - 1) / (n - p))
       (nrow(..1) - 1) / (nrow(..1) - length(coef(..3)) - 1)
     )
   )
@@ -343,7 +363,7 @@ x_nested %>%
   geom_vline(xintercept = 0.75, linetype = "dotted", alpha = 0.5, col = "salmon") +
   theme_bw() +
   labs(x = "Proportion of variance explained",
-       y = "",
+       y = NULL,
        title = "Goodness-of-fit of models",
        subtitle = "Date from 1 July 2020 to 31st Dec 2021")
 
@@ -367,7 +387,7 @@ x_nested <- x_nested %>%
 We plot our countries individually to make sure they work ok
 
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 plot_decouple <- function(x) {
   
   date_th <- x$th_date[1]
@@ -531,7 +551,7 @@ x_compared %>%
 
 # build data to export
 
-```{r}
+```{r, eval = FALSE}
 
 final_dat <- append(dat, list("dc_data" = x_compared))
 
@@ -540,7 +560,7 @@ final_dat <- append(dat, list("dc_data" = x_compared))
 
 # export the final data
 
-```{r}
+```{r, eval = FALSE}
 
 ## export data to rds file in data/clean
 file_name <- stringr::str_glue("final_dat_dc_{Sys.Date()}.rds")
