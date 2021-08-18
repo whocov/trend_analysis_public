@@ -76,6 +76,8 @@ We load cases and deaths data
 
 ```{r, warning = FALSE, message = FALSE, eval = TRUE}
 
+run_solo <- FALSE
+
 if (run_solo) {
   x_raw <- phifunc::pull_phi_data() %>%
     normalise_date()
@@ -558,7 +560,7 @@ x_compared %>%
 
 # build data to export
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 
 final_dat <- append(dat, list("dc_data" = x_compared))
 
