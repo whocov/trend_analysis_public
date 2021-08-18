@@ -445,43 +445,6 @@ final_dat
 ```
 
 
-## Adding vaccinations
-
-
-```{r }
-# pull in vaccine data from OWID
-vax_data <- phifunc::pull_owid_vax()
-
-vax_data <- vax_data  %>%
-  filter(!is.na(total_vaccinations)) %>% 
-  select(
-    iso3,
-    date,
-    population,
-    who_region,
-    vaccinations = total_vaccinations,
-    vac_oneplus_dose = people_vaccinated,
-    vac_full = people_fully_vaccinated
-  ) %>%
-  group_by(iso3) %>% 
-  arrange(date) %>% 
-  fill(vac_oneplus_dose, .direction = "down") %>% 
-  fill(vac_full, .direction = "down") %>% 
-  mutate(across(starts_with("vac_"), ~replace_na(0))) %>% 
-  ungroup()
-
-
-final_dat <- final_dat %>%
-  left_join(vax_data %>% 
-              select(-population, -who_region),
-            by = c("report_date" = "date", "iso3" = "iso3"))
-
-final_dat
-
-```
-
-
-
 ## Adding PHSM  
 
 Columns added include:  
@@ -517,9 +480,6 @@ final_dat <- final_dat %>%
 
 ```{r}
 final_dat <- final_dat %>% 
-  
-  # filter out rows where there is no country
-  filter(!is.na(report_country)) %>% 
   
   # weekly rolling sum of cases and deaths
     arrange(report_country, report_date) %>%   # arrange rows 
@@ -667,12 +627,21 @@ Columns added include:
 
 
 ```{r}
+# pull in vaccine data from OWID
+vax_data <- phifunc::pull_owid_vax()
 
-vax_data_elr <- vax_data %>%
+vax_data <- vax_data %>%
   group_by(iso3) %>%
-  filter(date == max(date)) %>% 
-  rename(
-    as_of_vaccine = date
+  filter(!is.na(total_vaccinations),
+         date == max(date)) %>% 
+  select(
+    iso3,
+    who_region,
+    population,
+    as_of_vaccine = date,
+    vaccinations = total_vaccinations,
+    vac_oneplus_dose = people_vaccinated,
+    vac_full = people_fully_vaccinated,
   ) %>%
   mutate(
     across(
@@ -734,7 +703,7 @@ testing_data_final <- test_data_format(all_dat$testing_data) %>%
 # merge datasets
 
 elr_extras_final <- full_join(
-  vax_data_elr,
+  vax_data,
   testing_data_final,
   by = c("iso3", "who_region")
 )

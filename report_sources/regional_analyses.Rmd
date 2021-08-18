@@ -91,11 +91,10 @@ plan("multisession", workers = params$n_cores)
 
 ```{r }
 
-dat <- load_final_data(dc_use = TRUE)
+dat <- load_final_data()
 data_stamp <- get_timestamp(dat)
 data_stamp
 elr_extras <- dat$elr_extras
-dc_dat <- dat$dc_data
 dat <- dat$trendbreaker
 dat
 ```
@@ -113,9 +112,6 @@ dat <- dat %>%
   filter(who_region %in% params$who_region)
 
 elr_extras <- elr_extras %>% 
-  filter(who_region %in% params$who_region)
-
-dc_dat <- dc_dat %>% 
   filter(who_region %in% params$who_region)
 
 ```
@@ -844,7 +840,6 @@ asmodee_outputs <- list(
   plot_overall_peaks = plot_overall_peaks,
   df_dynamics = df_dynamics,
   elr_extras = elr_extras,
-  dc_dat = dc_dat,
   timestamp = data_stamp
 )
 

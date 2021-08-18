@@ -4,20 +4,18 @@
 #' Load latest data on Rt + predictors
 #'
 #' @author Tibo
-load_final_data <- function(dc_use = FALSE) {
-  if (dc_use) {
-    pat <- "final_dat_dc"
-  } else {
-    pat <- "final_dat"
-  }
+load_final_data <- function() {
   latest_file <- rfextras::find_latest(
-                               pattern = pat,
+                               pattern = "final_dat",
                                where = here::here("data"))
   file_date <- rfextras::extract_date(latest_file)
   out <- rio::import(latest_file)
   attr(out, "timestamp") <- file_date
   out
 }
+
+
+
 
 
 #' Extract timestamp from an object with a 'timestamp' attribute

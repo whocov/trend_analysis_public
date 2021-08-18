@@ -14,8 +14,6 @@ output:
     code_folding: hide
     <!-- df_print: paged -->
     css: !expr here::here('css', 'style.css')
-params:
-  use_decoupling: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -82,7 +80,7 @@ all_files <- list.files(here::here("asmodee_outputs"),
 
 all_content <- map(all_files, rio::import)
 regions <- all_files %>%
-     str_extract("[A-Z]{3,4}O")
+  gsub("[[:lower:][:punct:]]", "", .)
 
 all_df <- all_content %>%
   map(list("df_dynamics")) %>%
@@ -90,12 +88,6 @@ all_df <- all_content %>%
 
 all_elr_extras <- all_content %>%
   map_df(list("elr_extras"))
-
-if (params$use_decoupling) {
-     dc_dat <- all_content %>%
-          map_df(list("dc_dat"))
-}
-
 
 
 ```
@@ -116,31 +108,8 @@ x_all <- all_df %>%
 x <- x_all %>%
   filter(last_day == 0)
 
-if (params$use_decoupling) {
-     x <- x %>% 
-          left_join(all_elr_extras %>% 
-                         select(iso3, vac_coverage = vaccinations_per_100)) %>% 
-          left_join(dc_dat %>% 
-                         group_by(iso3) %>% 
-                         slice(1) %>% 
-                         select(dc_present = do_downgrade)) %>% 
-          mutate(
-               dc_present = case_when(
-                    is.na(dc_present) ~ FALSE,
-                    dc_present == "Yes" ~ TRUE,
-                    dc_present == "NO" ~ FALSE,
-                    TRUE ~ FALSE),
-               vac_coverage = replace_na(vac_coverage, 0)
-          )
-     
-
-} else {
-     x <- x %>% 
-          mutate(dc_present = NA,
-                 vac_coverage = NA_real_)
-}
-
 ```
+
 
 ## Load VOI data
 
@@ -192,7 +161,6 @@ rate (*r*), current incidence (as % of previous peak) and signs of acceleration
 	+ else if r is not < 0 -> **M**
     + else -> **L**
 * if acceleration, upgrade by 1 step (bound at **VH**)
-* if decoupling is present & vaccinations/100 persons > 30 & class >= **H** -> **M**
 
 with by default, *high_r* = 0.05, and at least 3 days of net increase to register as
 a sign of acceleration.
@@ -204,10 +172,7 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
                          high_r = 0.05,
                          r_limit = 0.02,
                          n_accel = 3,
-                         incid_tiers = c(0.4, 0.8),
-                         use_dc = FALSE,
-                         dc_present = FALSE,
-                         vac_coverage = 0) {
+                         incid_tiers = c(0.4, 0.8)) {
 
   # The output will be stored as numbers first and converted at the end:
   ## 0 = Minimal
@@ -257,13 +222,6 @@ make_classif <- function(incid, r, r_lower, r_upper, accel,
   if (accel >= n_accel & out < 4) {
     out <- out + 1
   }
-  
-  if (use_dc) {
-       if (dc_present & vac_coverage >= 0.3 & out > 2) {
-            out <- 2
-       }
-       
-  }
 
   c("Minimal", "Low", "Medium", "High", "Very High")[out + 1]
 }
@@ -275,12 +233,9 @@ x <- x %>%
   mutate(
     classif = make_classif(incid = perc_peak,
                            r = r, r_lower = r_lower, r_upper = r_upper,
-                           accel = net_increases, use_dc = params$use_decoupling, 
-                           dc_present = dc_present, vac_coverage = vac_coverage
-                           ),
+                           accel = net_increases),
     classif = factor(classif, levels =  c("Minimal", "Low", "Medium", "High", "Very High"))
-  ) %>% 
-     select(-dc_present, -vac_coverage)
+  )
 
 ## add TPR info
 x <- x %>%
