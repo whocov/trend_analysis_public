@@ -258,7 +258,7 @@ Grenadines <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Wednesday 18 August
+<br>Analyses were last updated **Thursday 19 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
