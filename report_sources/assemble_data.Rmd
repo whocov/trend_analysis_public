@@ -374,11 +374,16 @@ final_dat
 
 testing_dat <- pull_testing_data_all() %>% 
   finalise_test_data(all_dat$phi_data) %>% 
-  incidence2::incidence(date,
-                        counts = daily_change,
-                        groups = country,
-                        interval = 1) %>%
-  rename(tests = daily_change)
+  select(
+    date_index = date,
+    tests = daily_change,
+    country
+  ) 
+  # incidence2::incidence(date,
+  #                       counts = daily_change,
+  #                       groups = country,
+  #                       interval = 1) %>%
+# rename(tests = daily_change)
 testing_dat
 
 final_dat <- final_dat %>%
