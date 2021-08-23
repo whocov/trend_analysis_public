@@ -70,4 +70,3 @@ jobs:
  
 env:
   GITHUB_PAT: ${{ secrets.PAT_TIBO }}
-  PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
