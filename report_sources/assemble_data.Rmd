@@ -73,8 +73,7 @@ Here, the code depends on the parameter `params$import_data` (logical):
 ```{r eval = params$import_data, echo = params$import_data}
 
 ## Cases, deaths, and tests
-all_dat <- phifunc::read_all_data() %>%
-  clean_all_data()
+all_dat <- phifunc::read_all_data() 
 
 ## export data to rds file
 path_export <- here::here("data",
