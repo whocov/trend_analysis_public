@@ -22,11 +22,17 @@ if (file.exists(phifunc_token_file)) {
 remotes::install_github("reconverse/i2extras", upgrade = "never")
 remotes::install_github("reconhub/trendbreaker", upgrade = "never")
 
+message("install phifunc section")
+message(is.null(phifunc_token))
+
 if (!is.null(phifunc_token) & !require("phifunc")) {
+  message("INSTALLING PHIFUNC")
   remotes::install_github(
     "whocov/phifunc",
     auth_token = phifunc_token,
     subdir = "phifunc", upgrade = "never")
+} else {
+  message("TOKEN IS NULL")
 }
 
 if (!require("rfextras")) remotes::install_github("reconhub/rfextras", upgrade = "never")
