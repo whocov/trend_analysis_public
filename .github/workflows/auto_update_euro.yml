@@ -49,7 +49,6 @@ jobs:
  
       - name: Run data updates and trendbreaker on EURO countries
         run: |
-          source(here::here("scripts", "remote_packages.R"))
           library(reportfactory)
           compile_reports(report = "assemble", params = list(import_data = TRUE))
           compile_reports(report = "regional_analyses.Rmd", params = list(who_region = "EURO"))

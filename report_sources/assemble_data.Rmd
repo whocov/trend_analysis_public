@@ -24,8 +24,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width = 8,
                       fig.height = 6,
                       dpi = 70,
-                      warning = FALSE,
-                      message = FALSE)
+                      warning = TRUE,
+                      message = TRUE)
 ```
 
 This report pulls data on Rt estimates, cases, deaths, testing, and mobility
@@ -35,9 +35,10 @@ analysis.
 
 # Prep work {.tabset .tabset-fade .tabset-pills}
 
+
 ## Scripts
 
-```{r warnings = FALSE}
+```{r warnings = TRUE, message=TRUE, echo=TRUE}
 rfextras::load_scripts()
 ```
 
@@ -73,8 +74,7 @@ Here, the code depends on the parameter `params$import_data` (logical):
 ```{r eval = params$import_data, echo = params$import_data}
 
 ## Cases, deaths, and tests
-all_dat <- phifunc::read_all_data() %>%
-  clean_all_data()
+all_dat <- phifunc::read_all_data() 
 
 ## export data to rds file
 path_export <- here::here("data",
@@ -374,11 +374,16 @@ final_dat
 
 testing_dat <- pull_testing_data_all() %>% 
   finalise_test_data(all_dat$phi_data) %>% 
-  incidence2::incidence(date,
-                        counts = daily_change,
-                        groups = country,
-                        interval = 1) %>%
-  rename(tests = daily_change)
+  select(
+    date_index = date,
+    tests = daily_change,
+    country
+  ) 
+  # incidence2::incidence(date,
+  #                       counts = daily_change,
+  #                       groups = country,
+  #                       interval = 1) %>%
+# rename(tests = daily_change)
 testing_dat
 
 final_dat <- final_dat %>%
