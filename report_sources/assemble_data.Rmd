@@ -24,8 +24,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width = 8,
                       fig.height = 6,
                       dpi = 70,
-                      warning = TRUE,
-                      message = TRUE)
+                      warning = FALSE,
+                      message = FALSE)
 ```
 
 This report pulls data on Rt estimates, cases, deaths, testing, and mobility
@@ -38,7 +38,7 @@ analysis.
 
 ## Scripts
 
-```{r warnings = TRUE, message=TRUE, echo=TRUE}
+```{r}
 rfextras::load_scripts()
 ```
 
@@ -188,7 +188,7 @@ Dataset is imported from Oxford Github site. Cleaning includes:
 * Marking days when national stay-home orders change stringency  
 * 
 
-```{r}
+```{r, eval = FALSE}
 # import Oxford data
 ####################
 oxCGRT_raw <- read_csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv") 
@@ -459,7 +459,7 @@ Columns added include:
 * Order scope general or targeted  
 
 
-```{r}
+```{r, eval = FALSE}
 final_dat <- final_dat %>% 
   
   # add oxford stayhome PHSM info for all calendar days
@@ -474,7 +474,7 @@ final_dat <- final_dat %>%
   
   # add "day-before-lockdown" column (day 0 is country's date of fall 2020 lockdown)
   group_by(report_country) %>% 
-  mutate(day_num = as.numeric(report_date - max(earliest_lockdown, na.rm=T))) 
+  mutate(day_num = as.numeric(report_date - max(earliest_lockdown, na.rm = T))) 
 ```
 
 
