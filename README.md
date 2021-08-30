@@ -201,7 +201,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Saturday 28 August
+<br>Analyses were last updated **Monday 30 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Holy See <br>
@@ -225,12 +225,12 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Saturday 28 August
+<br>Analyses were last updated **Monday 30 August
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Anguilla, Cayman Islands, Falkland Islands (Malvinas),
-Grenada, Montserrat, Saint Pierre and Miquelon, Saint Vincent and the
-Grenadines <br>
+Montserrat, Saint Pierre and Miquelon, Saint Vincent and the Grenadines
+<br>
 
 **Notes of geographic units**:
 
@@ -278,7 +278,7 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Saturday 28 August
+<br>Analyses were last updated **Monday 30 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
