@@ -519,7 +519,7 @@ n_plots <- length(unique(voi$report_country))
 
 Make the plot:
 
-```{r fig.height = 2 * round(n_plots / 3), out.width = "100%"}
+```{r fig.height = 2 * round(n_plots / 3), out.width = "100%", eval = FALSE}
 
 # generate color palette for variants
 lev <- levels(voi$variant)
