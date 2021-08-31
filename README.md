@@ -201,7 +201,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Monday 30 August
+<br>Analyses were last updated **Tuesday 31 August
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Holy See <br>
