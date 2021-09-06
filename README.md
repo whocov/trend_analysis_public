@@ -181,7 +181,7 @@ analyses:<br>Chad, Comoros, Saint Helena <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 05 September
+<br>Analyses were last updated **Monday 06 September
 2021**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
