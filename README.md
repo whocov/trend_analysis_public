@@ -160,7 +160,7 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Sunday 05 September
+<br>Analyses were last updated **Monday 06 September
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Chad, Comoros, Saint Helena <br>
@@ -201,7 +201,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Sunday 05 September
+<br>Analyses were last updated **Monday 06 September
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Holy See <br>
@@ -277,14 +277,13 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 05 September
+<br>Analyses were last updated **Monday 06 September
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
 Micronesia (Federated States of), Nauru, New Caledonia, Niue, Palau,
 Pitcairn Islands, Samoa, Solomon Islands, Tokelau, Tonga, Tuvalu,
-Vanuatu, Wallis and Futuna <br> Estimates of *r* could not be produced
-for the following countries:<br>New Zealand <br>
+Vanuatu, Wallis and Futuna <br>
 
 ### Infection levels as % of historical incidence peak
 
