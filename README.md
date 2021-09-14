@@ -203,7 +203,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Monday 13 September
+<br>Analyses were last updated **Tuesday 14 September
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Faroe Islands, Holy See <br>
@@ -227,7 +227,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Monday 13 September
+<br>Analyses were last updated **Tuesday 14 September
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Cayman Islands, Falkland Islands (Malvinas), Montserrat,
@@ -258,7 +258,7 @@ Saint Pierre and Miquelon <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 13 September
+<br>Analyses were last updated **Tuesday 14 September
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea <br>
