@@ -5,7 +5,7 @@ name: auto-update-paho
 # events but only for the master branch, as well as 1200 every day
 on:
   schedule:
-     - cron:  '30 12,14,18 * * *'
+     - cron:  '30 12,17 * * *'
   workflow_dispatch:
 #  push:
 #    branches: [ main ]
@@ -15,7 +15,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 # Important: ubuntu-latest is not set up properly for R, so use macOS
 jobs:
-  auto-update-paho:
+  auto-update-euro:
     runs-on: macos-latest
     env:
       PHIFUNC_TOKEN: ${{ secrets.PHIFUNC_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
           install.packages("ggnewscale") # ensure dep: phifunc
         shell: Rscript {0}
  
-      - name: Run data updates and trendbreaker on PAHO countries
+      - name: Run data updates and trendbreaker on EURO countries
         run: |
           library(reportfactory)
           compile_reports(report = "assemble", params = list(import_data = TRUE))
@@ -59,7 +59,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add asmodee_outputs
-          git commit -m "Automatic update of regional_analyses results - PAHO"
+          git commit -m "Automatic update of regional_analyses results - EURO"
           git pull
       
       - name: Push changes

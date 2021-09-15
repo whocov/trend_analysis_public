@@ -5,7 +5,7 @@ name: auto-update-searo
 # events but only for the master branch, as well as 1200 every day
 on:
   schedule:
-     - cron:  '30 12,14,18 * * *'
+     - cron:  '30 12,17 * * *'
   workflow_dispatch:
 #  push:
 #    branches: [ main ]
