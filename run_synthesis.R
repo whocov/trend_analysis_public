@@ -20,7 +20,7 @@ library(magrittr)
 
 recipients <- c("thibautjombart@gmail.com",
                 "polaino@who.int",
-                "batran@who.int",
+                "motazen@who.int",
                 "laurensonschaferh@who.int",
                 "vandemaelek@who.int")
 
