@@ -1,14 +1,13 @@
 
 
 # compile report
-setwd(here::here("report_sources"))
-rmarkdown::render('elr_synthesis.Rmd')
+rmarkdown::render('report_sources/elr_synthesis.Rmd')
+setwd(here::here("dynamics_outputs"))
 
 # zip report
 zip_name <- sprintf( "elr_synthesis_%s.zip", Sys.Date())
-zip(files = c("elr_synthesis.html",
-              "dynamics_synthesis.xlsx",
-              "excluded_countries.txt"),
+zip(files = c("csv/dynamics_synthesis.csv",
+              "notes/excluded_countries.txt"),
     zipfile = zip_name)
 
 # get smtp password from environment

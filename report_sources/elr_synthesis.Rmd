@@ -596,7 +596,10 @@ out_final <- out_final %>%
 ```{r }
 
 ## export asmodee summary
-rio::export(out_final, file = "dynamics_synthesis.xlsx", overwrite = TRUE)
+write_csv(out_final, here::here("dynamics_outputs/csv/dynamics_synthesis.csv"), na = "")
+
+## export asmodee summary (dated)
+rio::export(out_final, file = here::here(paste0("dynamics_outputs/csv/dynamics_synthesis_", Sys.Date(), ".csv")))
 
 ```
 
@@ -641,6 +644,9 @@ notes <- gsub("<br>", "\n", notes)
 ```{r }
 
 ## export notes to file
-writeLines(notes, "excluded_countries.txt")
+writeLines(notes, here::here("dynamics_outputs/notes/excluded_countries.txt"))
+
+## export notes to file
+writeLines(notes, here::here(paste0("dynamics_outputs/notes/excluded_countries_", Sys.Date(), ".txt")))
 
 ```

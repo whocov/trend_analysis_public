@@ -48,6 +48,20 @@ jobs:
         run: |
           source("run_synthesis.R")
         shell: Rscript {0}
+        
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add asmodee_outputs
+          git commit -m "Dynamics synthesis for all regions"
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT_TIBO }}
+          branch: 'main'  
+
  
 env:
   GITHUB_PAT: ${{ secrets.PAT_TIBO }}
