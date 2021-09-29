@@ -53,7 +53,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add dynamics_output
+          git add dynamics_outputs
           git commit -m "Dynamics synthesis for all regions"
       
       - name: Push changes
