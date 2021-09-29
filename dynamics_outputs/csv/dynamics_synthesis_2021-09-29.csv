@@ -219,7 +219,7 @@ assessment_date,country,iso3,region,population,growth_rate,relative_incidence,ne
 2021-09-27,Mongolia,MNG,WPRO,3278290,-0.015,71.6%,2,Low,-0.016,-0.013,19.7%,18.9%,increasing,2021-08-01,2021-07-25,68.6,64.9,2021-09-27
 2021-09-27,Nauru,NRU,WPRO,10834,,,,,,,,,,,,70.3,66.9,2021-08-31
 2021-09-27,New Caledonia,NCL,WPRO,285498,0.06,90.7%,0,Very High,0.056,0.064,,,,,,44.6,27.8,2021-09-21
-2021-09-27,New Zealand,NZL,WPRO,4822233,-0.017,23.1%,0,Minimal,-0.033,-0,0.1%,0.2%,decreasing,2021-09-26,2021-09-19,67.5,38,2021-09-27
+2021-09-27,New Zealand,NZL,WPRO,4822233,-0.017,23.1%,0,Minimal,-0.033,0,0.1%,0.2%,decreasing,2021-09-26,2021-09-19,67.5,38,2021-09-27
 2021-09-27,Niue,NIU,WPRO,1618,,,,,,,,,,,,74.3,71.1,2021-08-02
 2021-09-27,Northern Mariana Islands (Commonwealth of the),MNP,WPRO,57557,,,,,,,,,,,,,,
 2021-09-27,Palau,PLW,WPRO,18092,,,,,,,,,,,,,,
