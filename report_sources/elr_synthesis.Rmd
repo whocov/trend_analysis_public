@@ -596,10 +596,10 @@ out_final <- out_final %>%
 ```{r }
 
 ## export asmodee summary
-write_csv(out_final, here::here("dynamics_outputs/csv/dynamics_synthesis.csv"), na = "")
+write_excel_csv(out_final, here::here("dynamics_outputs/csv/dynamics_synthesis.csv"), na = "")
 
 ## export asmodee summary (dated)
-rio::export(out_final, file = here::here(paste0("dynamics_outputs/csv/dynamics_synthesis_", Sys.Date(), ".csv")))
+write_excel_csv(out_final, here::here(paste0("dynamics_outputs/csv/dynamics_synthesis_", Sys.Date(), ".csv")), na = "")
 
 ```
 
