@@ -184,8 +184,8 @@ could not be produced for the following countries:<br>Liberia, Uganda
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
 <br>Analyses were last updated **Tuesday 12 October
-2021**.<br><br>**Notes** <br>Estimates of *r* could not be produced for
-the following countries:<br>Sudan <br>
+2021**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
