@@ -101,7 +101,7 @@ The latest data are automatically detected and loaded by the auxiliary function
 ```{r echo = FALSE}
 
 cap <-
-"Example of pinplot. This figure summarises the dynamics of COVID-19 at a national level, using three complementary metrics: the daily growth rate *r* (*x* axis), the currentl weekly incidence (*y* axis), and the number of net increases showing trend acceleration detected by ASMODEE (colors). Another variant of this figure uses weekly incidence of deaths per capita on the *y* axis. Countries to the right show faster epidemic growth, and countries near the top experience high levels of incidence. Countries displayed in red show signs of acceleration, so that they may move further to the right in the coming days. This figure was generated for EMRO on 11th July 2021."
+"Example of pinplot. This figure summarises the dynamics of COVID-19 at a national level, using three complementary metrics: the daily growth rate *r* (*x* axis), the current weekly incidence (*y* axis), and the number of net increases showing trend acceleration detected by ASMODEE (colors). Another variant of this figure uses weekly incidence of deaths per capita on the *y* axis. Countries to the right show faster epidemic growth, and countries near the top experience high levels of incidence. Countries displayed in red show signs of acceleration, so that they may move further to the right in the coming days. This figure was generated for EMRO on 11th July 2021."
 
 ```
 
@@ -139,7 +139,7 @@ Other outputs include:
   \@ref(fig:pinplot), while tadpoles show the trajectories of countries over the
   last few days
   
-* **notes** listing countries what were excluded from the analyses alongside the
+* **notes** listing countries that were excluded from the analyses alongside the
   reason for their exclusion, stored in a markdown file named _analysis_notes_[WHO
   region]_[data].md_ stored in */asmodee_outputs/notes/*
 
