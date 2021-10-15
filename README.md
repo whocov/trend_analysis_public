@@ -203,7 +203,7 @@ successfully included in the analyses. <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Thursday 14 October
+<br>Analyses were last updated **Friday 15 October
 2021**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Holy See <br> Estimates of *r* could not be produced for
@@ -228,12 +228,11 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Thursday 14 October
+<br>Analyses were last updated **Friday 15 October
 2021**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Falkland Islands (Malvinas), Montserrat, Saba, Saint Pierre
-and Miquelon, Sint Eustatius <br> Estimates of *r* could not be produced
-for the following countries:<br>Brazil <br>
+and Miquelon, Sint Eustatius <br>
 
 **Notes of geographic units**:
 
