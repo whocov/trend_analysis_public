@@ -160,7 +160,7 @@ Links to the *rds* files:
 
 [![auto-update-afro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_afro.yml)
 
-<br>Analyses were last updated **Sunday 02 January
+<br>Analyses were last updated **Monday 03 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Saint Helena, Sao Tome and Principe <br> Estimates of *r*
@@ -182,7 +182,7 @@ could not be produced for the following countries:<br>Chad <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Sunday 02 January
+<br>Analyses were last updated **Monday 03 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Djibouti <br>
@@ -203,7 +203,7 @@ analyses:<br>Djibouti <br>
 
 [![auto-update-euro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_euro.yml)
 
-<br>Analyses were last updated **Sunday 02 January
+<br>Analyses were last updated **Monday 03 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Holy See, Tajikistan <br>
@@ -227,7 +227,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Sunday 02 January
+<br>Analyses were last updated **Monday 03 January
 2022**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Falkland Islands (Malvinas), Montserrat, Saba, Saint
@@ -258,7 +258,7 @@ Barthélemy, Saint Pierre and Miquelon, Sint Eustatius <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Sunday 02 January
+<br>Analyses were last updated **Monday 03 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea, Timor-Leste <br>
@@ -279,7 +279,7 @@ analyses:<br>Democratic People’s Republic of Korea, Timor-Leste <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Sunday 02 January
+<br>Analyses were last updated **Monday 03 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
