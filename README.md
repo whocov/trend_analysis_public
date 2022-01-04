@@ -182,9 +182,8 @@ analyses:<br>Guinea-Bissau, Saint Helena <br>
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
 <br>Analyses were last updated **Tuesday 04 January
-2022**.<br><br>**Notes** <br>The following countries reported \< 100
-cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Djibouti <br>
+2022**.<br><br>**Notes** <br>Nothing to report. All countries were
+successfully included in the analyses. <br>
 
 ### Infection levels as % of historical incidence peak
 
@@ -229,8 +228,8 @@ the United Nations Security Council resolution 1244 (1999).
 <br>Analyses were last updated **Tuesday 04 January
 2022**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Falkland Islands (Malvinas), Montserrat, Saba, Sint
-Eustatius <br>
+analyses:<br>Falkland Islands (Malvinas), Montserrat, Saba, Saint Pierre
+and Miquelon, Sint Eustatius <br>
 
 **Notes of geographic units**:
 
