@@ -163,8 +163,7 @@ Links to the *rds* files:
 <br>Analyses were last updated **Tuesday 04 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
-analyses:<br>Saint Helena <br> Estimates of *r* could not be produced
-for the following countries:<br>Chad <br>
+analyses:<br>Guinea-Bissau, Saint Helena <br>
 
 ### Infection levels as % of historical incidence peak
 
