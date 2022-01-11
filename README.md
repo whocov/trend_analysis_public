@@ -225,7 +225,7 @@ the United Nations Security Council resolution 1244 (1999).
 
 [![auto-update-paho](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_paho.yml)
 
-<br>Analyses were last updated **Monday 10 January
+<br>Analyses were last updated **Tuesday 11 January
 2022**.<br><br>**Notes:** The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Falkland Islands (Malvinas), Montserrat, Saba <br>
@@ -255,7 +255,7 @@ analyses:<br>Falkland Islands (Malvinas), Montserrat, Saba <br>
 
 ## SEARO region
 
-<br>Analyses were last updated **Monday 10 January
+<br>Analyses were last updated **Tuesday 11 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Democratic People’s Republic of Korea, Timor-Leste <br>
@@ -276,7 +276,7 @@ analyses:<br>Democratic People’s Republic of Korea, Timor-Leste <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Monday 10 January
+<br>Analyses were last updated **Tuesday 11 January
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>American Samoa, Cook Islands, Kiribati, Marshall Islands,
