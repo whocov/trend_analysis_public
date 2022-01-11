@@ -181,7 +181,7 @@ analyses:<br>Saint Helena <br>
 
 [![auto-update-emro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_emro.yml)
 
-<br>Analyses were last updated **Monday 10 January
+<br>Analyses were last updated **Tuesday 11 January
 2022**.<br><br>**Notes** <br>Nothing to report. All countries were
 successfully included in the analyses. <br>
 
