@@ -9,7 +9,7 @@ output:
     toc_float: TRUE
     toc_collapse: FALSE
     number_sections: TRUE
-    self_contained: TRUE
+    self_contained: no
     highlight: pygments
     theme: spacelab
     code_folding: hide
