@@ -772,7 +772,7 @@ We assess the significance of changes by comparing the respective Binomial 95%
 confidence intervals:
 
 
-```{r }
+```{r, eval= FALSE}
 
 elr_extras <- elr_extras %>%
   mutate(

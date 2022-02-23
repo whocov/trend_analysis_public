@@ -261,7 +261,9 @@ out <- x %>%
          classif,
          r, r_lower, r_upper,
          perc_peak, net_increases,
-         tpr_recent, tpr_before, tpr_change) %>%
+         # removing tpr change for memory reasons
+         # tpr_change,
+         tpr_recent, tpr_before) %>%
   mutate(r = round(r, 3),
          r_lower = round(r_lower, 3),
          r_upper = round(r_upper, 3),

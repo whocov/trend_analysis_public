@@ -699,15 +699,15 @@ testing_data_final <- test_data_format(all_dat$testing_data) %>%
     ~gsub("week_end_date", "tpr_last_date", .x)
   ) %>% 
   filter(test_denom_before >= test_num_before,
-         test_denom_recent >= test_num_recent) %>% 
-  mutate(
-    tpr_recent = test_num_recent / test_denom_recent,
-    tpr_lower_recent = prop_ci(test_num_recent, test_denom_recent, result = "lower"),
-    tpr_upper_recent = prop_ci(test_num_recent, test_denom_recent, result = "upper"),
-    tpr_before = test_num_before / test_denom_before,
-    tpr_lower_before = prop_ci(test_num_before, test_denom_before, result = "lower"),
-    tpr_upper_before = prop_ci(test_num_before, test_denom_before, result = "upper")
-  )
+         test_denom_recent >= test_num_recent) #%>% 
+  # mutate(
+  #   tpr_recent = test_num_recent / test_denom_recent,
+  #   tpr_lower_recent = prop_ci(test_num_recent, test_denom_recent, result = "lower"),
+  #   tpr_upper_recent = prop_ci(test_num_recent, test_denom_recent, result = "upper"),
+  #   tpr_before = test_num_before / test_denom_before,
+  #   tpr_lower_before = prop_ci(test_num_before, test_denom_before, result = "lower"),
+  #   tpr_upper_before = prop_ci(test_num_before, test_denom_before, result = "upper")
+  # )
 
 ```
 ## Finalising extra dataset for ELR
