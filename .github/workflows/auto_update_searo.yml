@@ -50,8 +50,8 @@ jobs:
       - name: Run data updates and trendbreaker on SEARO countries
         run: |
           library(reportfactory)
-          compile_reports(report = "assemble", params = list(import_data = TRUE))
-          compile_reports(report = "regional_analyses.Rmd", params = list(who_region = "SEARO"))
+          compile_reports(report = "assemble", params = list(import_data = TRUE), quiet = FALSE)
+          compile_reports(report = "regional_analyses.Rmd", params = list(who_region = "SEARO"), quiet = FALSE)
         shell: Rscript {0}
         
       - name: Commit files
