@@ -576,7 +576,7 @@ averages; we proceed as:
    day
 2. use the lag function to get values of 2 and 3 weeks ago
 
-```{r }
+```{r, eval = FALSE}
 
 final_dat <- final_dat %>%
   arrange(report_country, report_date) %>%
