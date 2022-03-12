@@ -276,12 +276,12 @@ analyses:<br>Democratic People’s Republic of Korea <br>
 
 [![auto-update-wpro](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml/badge.svg)](https://github.com/whocov/trend_analysis_public/actions/workflows/auto_update_wpro.yml)
 
-<br>Analyses were last updated **Friday 11 March
+<br>Analyses were last updated **Saturday 12 March
 2022**.<br><br>**Notes** <br>The following countries reported \< 100
 cases/tests over the last 7 weeks and were not included in further
 analyses:<br>Marshall Islands, Micronesia (Federated States of), Nauru,
-Niue, Pitcairn Islands, Samoa, Tokelau, Tuvalu, Vanuatu, Wallis and
-Futuna <br> Estimates of *r* could not be produced for the following
+Niue, Pitcairn Islands, Samoa, Tokelau, Tuvalu, Wallis and Futuna <br>
+Estimates of *r* could not be produced for the following
 countries:<br>Tonga <br>
 
 ### Infection levels as % of historical incidence peak
